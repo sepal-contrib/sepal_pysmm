@@ -5,7 +5,7 @@ echo "Creating virtual env"
 cd 
 mkdir smm
 cd smm
-python3.6 -m venv env --system-site-packages
+python3.6 -m venv2 env --system-site-packages
 source env/bin/activate
 
 pip install ipyleaflet

@@ -10,11 +10,11 @@ import time
 import ee
 
 from multiprocessing import Process
-from pysmm.derive_SM import get_map
+from derive_SM import get_map
 
-from pysmm.GEE_wrappers import GEE_extent
-from pysmm.GEE_wrappers import GEE_pt
-from pysmm.utils import gdrive
+from GEE_wrappers import GEE_extent
+from GEE_wrappers import GEE_pt
+from utils import gdrive
 
 
 # Get SEPAL user

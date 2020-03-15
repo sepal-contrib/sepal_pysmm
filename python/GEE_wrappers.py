@@ -7,11 +7,13 @@ import ee
 import numpy as np
 import pandas as pd
 import pytesmo.time_series.anomaly as anomaly
+import warnings
+
 from pytesmo.temporal_matching import df_match
 from sklearn.linear_model import LinearRegression
-from pysmm.utils import gdrive
+from utils import gdrive
 
-import warnings
+
 
 
 class GEE_pt(object):

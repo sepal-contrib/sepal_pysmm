@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import time
-from pysmm.GEE_wrappers import GEE_extent
-from pysmm.GEE_wrappers import GEE_pt
+
+from GEE_wrappers import GEE_extent
+from GEE_wrappers import GEE_pt
 
 
 def get_map(minlon, minlat, maxlon, maxlat,
