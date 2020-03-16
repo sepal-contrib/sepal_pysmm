@@ -11,9 +11,7 @@ import sys
 import time
 import ee
 
-from multiprocessing import Process
 from derive_SM import get_map
-
 from GEE_wrappers import GEE_extent
 from GEE_wrappers import GEE_pt
 from utils import gdrive

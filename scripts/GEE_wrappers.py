@@ -15,10 +15,6 @@ from pytesmo.temporal_matching import df_match
 from sklearn.linear_model import LinearRegression
 from utils import gdrive
 
-try:
-    import copy_reg
-except:
-    import copyreg as copy_reg
 
 
 class GEE_pt(object):
