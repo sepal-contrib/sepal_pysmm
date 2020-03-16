@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import datetime as dt
 import math
 import os
@@ -13,7 +15,10 @@ from pytesmo.temporal_matching import df_match
 from sklearn.linear_model import LinearRegression
 from utils import gdrive
 
-
+try:
+    import copy_reg
+except:
+    import copyreg as copy_reg
 
 
 class GEE_pt(object):
@@ -1211,6 +1216,7 @@ class GEE_extent(object):
         warnings.simplefilter(action='ignore', category=UserWarning)
 
         MLmodel_tuple = pickle.load(open(modelpath, 'rb'), encoding='latin1') # Changed line to open pickle file pickled in older version
+        print(MLmodel_tuple)
         MLmodel1 = {'SVRmodel': MLmodel_tuple[0], 'scaler': MLmodel_tuple[1]}
         MLmodel2 = {'SVRmodel': MLmodel_tuple[2], 'scaler': MLmodel_tuple[3]}
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 import ast
 import concurrent
@@ -77,13 +79,11 @@ def export_to_sepal(task, file_name, out_path):
             break
     else:
         print('Export completed')
-    print(file_name + '.tif')
-    print(out_path + file_name + '.tif')
     
     if success == 1:
        # initialise Google Drive
         drive_handler = gdrive()
-        print('Downloading files ...')
+        print('\nDownloading files ...')
         print(file_name)
         drive_handler.download_file(file_name + '.tif',
                                     out_path + file_name + '.tif')
@@ -155,4 +155,4 @@ for task, file_name in tasks:
 finish = time.perf_counter()
 
 print(f'Finished in {round(finish-start,2)} seconds')
-print(f'The images were downloaded in {out_path} SEPAL path.')
+print(f'The images were downloaded in {out_path} SEPAL folder.')

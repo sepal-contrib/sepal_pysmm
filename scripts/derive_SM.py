@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import matplotlib.pyplot as plt
 import numpy as np
@@ -90,7 +92,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
 
 
         finish = time.perf_counter()
-        print('Finished the image {} in {} seconds, and using the {} processor'.format(outname, round(finish-start,2), os.getpid()))
+        print('Finished the image {} in {} seconds'.format(outname, round(finish-start,2)))
 
         return GEE_interface
 
