@@ -101,18 +101,22 @@ year = list_to_int(args.year)
 month = list_to_int(args.month)
 day = list_to_int(args.day)
 
-    
-out_att_name = str(int(args.out_att_name))
+
+aoi_name, selected_feature = ast.literal_eval(args.out_att_name)
+
+selected_feature = str(int(selected_feature))
+aoi_name = aoi_name.split('/')[-1]
 
 # Create a folder to download the pysmm images
-out_path = os.path.join(os.path.expanduser('~'),'pysmm_downloads/')
+out_path = os.path.join(os.path.expanduser('~'), 'pysmm_downloads',
+                        aoi_name, selected_feature)
 if not os.path.exists(out_path):
     os.makedirs(out_path)
 
 # Download SM maps to GEE
 
 start = time.perf_counter()
-file_sufix = "{}_{}".format(user, out_att_name)
+file_sufix = "{}_{}".format(user, selected_feature)
     
 maps = []
 file_names = []
@@ -140,8 +144,6 @@ print(f'Images created in {round(finish-start,2)} seconds')
 start = time.perf_counter()
 
 print('\nPlease wait until the images are processed and downloaded into your SEPAL account...')
-
-# Download maps into SEPAL account
 
 ee.Initialize()
 tasks = [export_sm(year, name) for year, name in remove_duplicates(maps, file_sufix)]
