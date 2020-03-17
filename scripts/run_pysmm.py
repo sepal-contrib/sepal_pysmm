@@ -83,9 +83,9 @@ def export_to_sepal(task, file_name, out_path):
         drive_handler = gdrive()
         print('\nDownloading files ...')
         print(file_name)
-        drive_handler.download_file(file_name + '.tif',
-                                    out_path + file_name + '.tif')
-        drive_handler.delete_file(file_name + '.tif')
+        drive_handler.download_file(f'{file_name}.tif',
+                                    os.path.join(out_path, f'{file_name}.tif'))
+        drive_handler.delete_file(f'{file_name}.tif')
     else:
         file_exp.cancel()
 
