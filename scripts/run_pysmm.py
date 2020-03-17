@@ -38,12 +38,13 @@ def export_map(file_name, gee_interface):
 def remove_duplicates(maps, file_sufix):
     args = []
     for map1 in maps:
-        file_name = 'SMCmap_' + \
-                str(map1.S1_DATE.year) + '_' + \
-                str(map1.S1_DATE.month) + '_' + \
-                str(map1.S1_DATE.day) + '_' + \
-                file_sufix
-        args.append([map1, file_name])
+        if map1 is not None:
+            file_name = 'SMCmap_' + \
+                    str(map1.S1_DATE.year) + '_' + \
+                    str(map1.S1_DATE.month) + '_' + \
+                    str(map1.S1_DATE.day) + '_' + \
+                    file_sufix
+            args.append([map1, file_name])
     
     # Remove the repeated images
     unique_maps = dict((x[1], x) for x in args).values()
