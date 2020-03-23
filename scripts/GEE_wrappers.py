@@ -1212,7 +1212,7 @@ class GEE_extent(object):
         warnings.simplefilter(action='ignore', category=UserWarning)
 
         MLmodel_tuple = pickle.load(open(modelpath, 'rb'), encoding='latin1') # Changed line to open pickle file pickled in older version
-        print(MLmodel_tuple)
+
         MLmodel1 = {'SVRmodel': MLmodel_tuple[0], 'scaler': MLmodel_tuple[1]}
         MLmodel2 = {'SVRmodel': MLmodel_tuple[2], 'scaler': MLmodel_tuple[3]}
 

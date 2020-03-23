@@ -67,17 +67,25 @@ def export_sm(image, file_name):
     return task, file_name
 
 def export_to_sepal(task, file_name, out_path):
-    timeout=True
-    start = time.time()
-    success = 1
+
+    FAILED = 'FAILED'
+    CANCEL_REQUESTED = 'CANCEL_REQUESTED'
+    CANCELLED = 'CANCELLED'
+    COMPLETED = 'COMPLETED'
     
-    while (task.active() == True):
-        time.sleep(2)
-        if timeout == True and (time.time() - start) > 4800:
+    success = 1
+
+    while success == 1:
+        if task.status()['state'] == FAILED:
+            print(f"The task {file_name} has failed.")
             success = 0
+        elif task.status()['state'] in [CANCEL_REQUESTED, CANCELLED]:
+            print(f"The task {file_name} has been canceled.")
+            success = 0
+        elif task.status()['state'] == COMPLETED:
+            print(f'Export {file_name} completed')
             break
-    else:
-        print('Export completed')
+        time.sleep(5)
     
     if success == 1:
        # initialise Google Drive
@@ -85,10 +93,10 @@ def export_to_sepal(task, file_name, out_path):
         print('\nDownloading files ...')
         print(file_name)
         drive_handler.download_file(file_name + '.tif',
-                                    os.path.join(out_path, file_name+'.tif'))
+                                    os.path.join(out_path, file_name + '.tif'))
         drive_handler.delete_file(file_name + '.tif')
     else:
-        file_exp.cancel()
+        task.cancel()
 
 def list_to_int(arg):
     return [int(s) for s in ast.literal_eval(arg)]
@@ -135,7 +143,6 @@ for y, m, d in itertools.product(year, month, day):
         'day' : d
     }
     args=(minlon, minlat, maxlon, maxlat, out_path)
-    
     maps.append(get_map(*args, **kwargs))
 
     

@@ -1,4 +1,4 @@
-source('~/ws_idn_20190819/scripts/s0_parameters.R')
+source('~/sepal_pysmm/scripts/s0_parameters.R')
 
 options(echo=TRUE)
 args <- commandArgs(TRUE)
@@ -26,9 +26,9 @@ postprocess_pysmm <- function(tile_dir){
                    1))
     
     system(sprintf("gdal_calc.py -A %s -B %s --co=COMPRESS=LZW --type=UInt16 --overwrite --outfile=%s --calc=\"%s\"",
-                   paste0(tile_dir,file),
-                   paste0(tile_dir,"tmp_closing.tif"),
-                   paste0(tile_dir,"close_",file),
+                   paste0(tile_dir, file),
+                   paste0(tile_dir, "tmp_closing.tif"),
+                   paste0(tile_dir, "close_",file),
                    "(A==0)*B+A"
     ))
     

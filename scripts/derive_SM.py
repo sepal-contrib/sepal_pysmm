@@ -92,7 +92,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
 
 
         finish = time.perf_counter()
-        print('Finished the image {} in {} seconds'.format(outname, round(finish-start,2)))
+        print('The image {} has been processed in {} seconds'.format(outname, round(finish-start,2)))
 
         return GEE_interface
 
