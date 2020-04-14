@@ -34,9 +34,9 @@ parser.add_argument('out_att_name')
 args = parser.parse_args()
 
 
-download_to_sepal = os.path.join(os.path.expanduser('~'),'/sepal_pysmm/scripts/download_to_sepal.py')
+download_to_sepal = os.path.join(os.path.expanduser('~'),'sepal_pysmm/scripts/download_to_sepal.py')
 def export_images(tasks_file_name, out_path):
-    download_to_sepal = os.path.join(os.path.expanduser('~'),'/sepal_pysmm/scripts/download_to_sepal.py')
+    download_to_sepal = os.path.join(os.path.expanduser('~'),'sepal_pysmm/scripts/download_to_sepal.py')
     process = subprocess.Popen(['python3',  download_to_sepal,
                                 tasks_file_name,
                                 out_path
@@ -182,7 +182,7 @@ finish = time.perf_counter()
 
 print(f'Finished in {round(finish-start,2)} seconds')
 print(f'The images are being processed into your GEE accound, after finished, check your {out_path} SEPAL folder.')
-print(f'You can copy and paste the following command into the bash console to download the images later:')
+print(f'You can copy and paste the following command into the bash console to download the images later: \n')
 print(f'python3 {download_to_sepal} {tasks_file_name} {out_path}')
 
 
