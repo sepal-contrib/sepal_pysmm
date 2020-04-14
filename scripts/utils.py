@@ -10,7 +10,8 @@ from apiclient import discovery
 class gdrive(object):
 
     def __init__(self):
-
+        
+        self.initialize = ee.Initialize()
         self.credentials = ee.Credentials()
         self.service = discovery.build(serviceName='drive', version='v3', cache_discovery=False, credentials=self.credentials)
 

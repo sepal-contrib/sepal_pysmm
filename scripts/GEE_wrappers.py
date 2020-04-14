@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import datetime as dt
+import timeit
 import math
 import os
 import pickle
@@ -14,7 +15,6 @@ import warnings
 from pytesmo.temporal_matching import df_match
 from sklearn.linear_model import LinearRegression
 from utils import gdrive
-
 
 
 class GEE_pt(object):
@@ -188,8 +188,10 @@ class GEE_pt(object):
         def createAvg(image):
             # average pixels within the time-series foot print
             gee_roi = ee.Geometry.Point(self.lon, self.lat).buffer(self.buffer)
-            # tmp = ee.Image(image).resample()
+            #tmp = ee.Image(image).resample()
+
             tmp = ee.Image(image)
+
 
             # Conver to linear before averaging
             tmp = tmp.addBands(ee.Image(10).pow(tmp.select('VV').divide(10)))
@@ -260,6 +262,7 @@ class GEE_pt(object):
         # create average for buffer area - i.e. compute time-series
         gee_s1_mapped = gee_s1_track_fltd.map(createAvg)
         tmp = gee_s1_mapped.getInfo()
+        print(tmp)
         # get vv
         vv_sig0 = 10 * np.log10(
             np.array([x['properties']['result']['VV'] for x in tmp['features']], dtype=np.float))
@@ -508,7 +511,7 @@ class GEE_pt(object):
             mask = ssm_vv_cor.select('correlation').gt(0.1)
             return (image.updateMask(mask))
 
-        import timeit
+            
 
         tic = timeit.default_timer()
 
@@ -585,17 +588,18 @@ class GEE_pt(object):
 
         print(('Extracting data from ' + str(len(available_tracks)) + ' Sentinel-1 tracks...'))
         print(available_tracks)
-
+        # Creación diccionario
         out_dict = {}
         for track_nr in available_tracks:
-            out_dict[str(int(track_nr))] = self._s1_track_ts(gee_s1_filtered,
+            track_nr = track_nr.item()  # value corrected, .item() to convert most NumPy values to a native Python type
+            out_dict[str(track_nr)] = self._s1_track_ts(gee_s1_filtered,
                                                              track_nr,
                                                              dual_pol,
                                                              varmask,
                                                              returnLIA,
                                                              masksnow,
                                                              tempfilter)
-
+        print(out_dict)
         toc = timeit.default_timer()
 
         print(('Time-series extraction finished in ' + "{:10.2f}".format(toc - tic) + 'seconds'))
@@ -617,7 +621,8 @@ class GEE_pt(object):
 
         # load SVR model
         modelpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SVRmodel.p')
-        MLmodel = pickle.load(open(modelpath, 'rb'))
+        MLmodel = pickle.load(open(modelpath, 'rb'), encoding='latin1')
+
 
         # extract land cover
         self.extr_LC()
@@ -1099,7 +1104,7 @@ class GEE_extent(object):
         
 
         dates = np.array([dt.date(year=int(x[17:21]), month=int(x[21:23]), day=int(x[23:25])) for x in tmp_ids])
-        print(f'There are {dates.size} available dates...')
+
 
         # find the closest acquisitions
         doi = dt.date(year=year, month=month, day=day)
@@ -1306,7 +1311,7 @@ class GEE_extent(object):
 
         alpha_times_k1 = [ee.Image(alpha1[i].multiply(k_x1x2_1[i])) for i in range(n_vectors1)]
 
-        print(n_vectors1)
+        #print(n_vectors1)
 
         alpha_times_k_sum_1 = ee.ImageCollection(alpha_times_k1).reduce(ee.Reducer.sum())
         # alpha_times_k_sum = alpha_times_k.reduce(ee.Reducer.sum())
@@ -1387,7 +1392,7 @@ class GEE_extent(object):
 
         alpha_times_k2 = [ee.Image(alpha2[i].multiply(k_x1x2_2[i])) for i in range(n_vectors2)]
 
-        print(n_vectors2)
+        #print(n_vectors2)
 
         alpha_times_k_sum_2 = ee.ImageCollection(alpha_times_k2).reduce(ee.Reducer.sum())
 

@@ -5,9 +5,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import time
+from copy import deepcopy
+
 
 from GEE_wrappers import GEE_extent
 from GEE_wrappers import GEE_pt
+
+def create_out_name(year, month, day, file_sufix):
+    
+    year = str(year)
+    month = str(month)
+    day = str(day)
+
+    if len(day) < 2:
+        day = f'0{day}'
+    if len(month) < 2:
+        month = f'0{month}'
+
+    return f'SMCmap_{year}_{month}_{day}_{file_sufix}'
 
 
 def get_map(minlon, minlat, maxlon, maxlat,
@@ -19,7 +34,11 @@ def get_map(minlon, minlat, maxlon, maxlat,
             tempfilter=True,
             mask='Globcover',
             masksnow=True,
-            filename=None):
+            filename=None, 
+            start_date=False,
+            stop_date=False
+            ):
+
     """Get S1 soil moisture map
 
             Atributes:
@@ -37,11 +56,8 @@ def get_map(minlon, minlat, maxlon, maxlat,
             filename: (string) add to file name
             
         """
-    
     if filename is not None:
-        if isinstance(filename, str):
-            print(filename)
-        else:
+        if not isinstance(filename, str):
             filename = str(filename)
         
     maskcorine = False
@@ -56,6 +72,8 @@ def get_map(minlon, minlat, maxlon, maxlat,
         return
 
     if year is not None:
+        maps = []
+
         start = time.perf_counter()
 
         GEE_interface = GEE_extent(minlon, minlat, maxlon, maxlat, outpath, sampling=sampling)
@@ -77,67 +95,89 @@ def get_map(minlon, minlat, maxlon, maxlat,
         # get the SRTM
         GEE_interface.get_terrain()
 
-        outname = 'SMCmap_' + \
-                  str(GEE_interface.S1_DATE.year) + '_' + \
-                  str(GEE_interface.S1_DATE.month) + '_' + \
-                  str(GEE_interface.S1_DATE.day) + '_' + \
-                  filename
+        outname = create_out_name(GEE_interface.S1_DATE.year, 
+                                    GEE_interface.S1_DATE.month,
+                                    GEE_interface.S1_DATE.day, 
+                                    filename)
 
         # Estimate soil moisture
         GEE_interface.estimate_SM()
-
-        #GEE_interface.GEE_2_disk(name=outname, timeout=False)
-
-        #GEE_interface = None
 
 
         finish = time.perf_counter()
         print('The image {} has been processed in {} seconds'.format(outname, round(finish-start,2)))
 
-        return GEE_interface
-
+        maps.append([GEE_interface, outname])
+        return maps
 
     else:
-
+        
         # if no specific date was specified extract entire time series
         GEE_interface = GEE_extent(minlon, minlat, maxlon, maxlat, outpath, sampling=sampling)
 
-        # get list of S1 dates
+        #get list of S1 dates
         dates = GEE_interface.get_S1_dates(tracknr=tracknr)
-        dates = np.unique(dates)
+        
+        dates = pd.DataFrame(np.unique(dates)).set_index(0).sort_index()
 
-        for dateI in dates:
-            # retrieve S1
-            GEE_interface.get_S1(dateI.year, dateI.month, dateI.day,
-                                 tempfilter=tempfilter,
-                                 applylcmask=maskcorine,
-                                 mask_globcover=maskglobcover,
-                                 trackflt=tracknr,
-                                 masksnow=masksnow)
+        if start_date:
+            # The user has selected a range
+            dates = dates[start_date:stop_date]
+            first=dates.index.to_list()[0]
+            last=dates.tail(1).index.to_list()[0]
+            
+            print(f'There are {len(dates)} unique images.')
+            print(f'The first available date is {first} and the last is {last}.\n')
+
+        else:
+            # The user has selected the entire series
+            first=dates.index.to_list()[0]
+            last=dates.tail(1).index.to_list()[0]
+            print(f'There are {len(dates)} unique images.\n')
+            print(f'The first available date is {first} and the last is {last}.\n')
+
+        maps = []
+        i = 0
+        for dateI, rows in dates.iterrows():
+            start = time.perf_counter()
+            GEE_interface2 = deepcopy(GEE_interface)
+
+            GEE_interface2.get_S1(dateI.year, dateI.month, dateI.day,
+                               tempfilter=tempfilter,
+                               applylcmask=maskcorine,
+                               mask_globcover=maskglobcover,
+                               trackflt=tracknr,
+                               masksnow=masksnow)
             # retrieve GLDAS
-            GEE_interface.get_gldas()
-            if GEE_interface.GLDAS_IMG is None:
-                return
-            # get Globcover
-            GEE_interface.get_globcover()
-            # get the SRTM
-            GEE_interface.get_terrain()
+            GEE_interface2.get_gldas()
+            if GEE_interface2.GLDAS_IMG is not None:
+                # get Globcover
+                GEE_interface2.get_globcover()
+                
+                # get the SRTM
 
-            outname = 'SMCmap_' + \
-                      str(GEE_interface.S1_DATE.year) + '_' + \
-                      str(GEE_interface.S1_DATE.month) + '_' + \
-                      str(GEE_interface.S1_DATE.day) + '_' + \
-                      filename
+                GEE_interface2.get_terrain()
 
-            if overwrite == False and os.path.exists(outpath + outname + '.tif'):
-                print(outname + ' already done')
-                continue
 
-            # Estimate soil moisture
-            GEE_interface.estimate_SM()
+                outname = create_out_name(GEE_interface2.S1_DATE.year, 
+                                            GEE_interface2.S1_DATE.month,
+                                            GEE_interface2.S1_DATE.day, 
+                                            filename)
+                # Estimate soil moisture
 
-            GEE_interface.GEE_2_disk(name=outname, timeout=False)
+                GEE_interface2.estimate_SM()
 
+                finish = time.perf_counter()
+                print('The image {} has been processed in {} seconds'.format(outname, round(finish-start,2)))
+
+                maps.append([GEE_interface2, outname])
+                del GEE_interface2
+
+            i += 1
+           #if i == 2:
+           #    break
+
+        return maps
         GEE_interface = None
 
 def get_ts(loc,
