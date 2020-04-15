@@ -34,16 +34,17 @@ parser.add_argument('out_att_name')
 args = parser.parse_args()
 
 
-download_to_sepal = os.path.join(os.path.expanduser('~'),'sepal_pysmm/scripts/download_to_sepal.py')
 def export_images(tasks_file_name, out_path):
     download_to_sepal = os.path.join(os.path.expanduser('~'),'sepal_pysmm/scripts/download_to_sepal.py')
-    process = subprocess.Popen(['python3',  download_to_sepal,
+    
+    process = subprocess.Popen(['nohup', 'python3',  download_to_sepal,
                                 tasks_file_name,
                                 out_path
                             ],
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, 
-                            universal_newlines=True)
+                            universal_newlines=True,
+                            start_new_session=True) 
     return process
 
 
