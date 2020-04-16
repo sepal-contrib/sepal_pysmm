@@ -33,18 +33,18 @@ parser.add_argument('maxlat', type=float)
 parser.add_argument('out_att_name')
 args = parser.parse_args()
 
+download_to_sepal = os.path.join(os.path.expanduser('~'),'sepal_pysmm/scripts/download_to_sepal.py')
 
 def export_images(tasks_file_name, out_path):
-    download_to_sepal = os.path.join(os.path.expanduser('~'),'sepal_pysmm/scripts/download_to_sepal.py')
     
-    process = subprocess.Popen(['nohup', 'python3',  download_to_sepal,
+    process = subprocess.Popen(['/usr/bin/nohup', 'python3',  download_to_sepal,
                                 tasks_file_name,
                                 out_path
                             ],
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, 
                             universal_newlines=True,
-                            start_new_session=True) 
+                            preexec_fn=os.setpgrp) 
     return process
 
 
@@ -154,37 +154,30 @@ else:
         print(f'Processing all available images in the time series...')
         maps = get_map(*args, **kwargs)
 
-finish = time.perf_counter()
-print(f'Image(s) created in {round(finish-start,2)} seconds')
+if maps:
+    print('\nPlease wait until the images are processed and downloaded into your SEPAL account...')
 
-start = time.perf_counter()
+    tasks_ids_names = []
+    for image, filename in maps:
+        task, filename = export_sm(image, filename)
+        tasks_ids_names.append(f"{task.id}, {filename}\n")+
+    now = date=datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
-print('\nPlease wait until the images are processed and downloaded into your SEPAL account...')
+    del maps
+    tasks_file_name = os.path.join(out_path, f'task_{now}.txt')
 
-ee.Initialize()
-
-tasks_ids_names = []
-for image, filename in maps:
-    task, filename = export_sm(image, filename)
-    tasks_ids_names.append(f"{task.id}, {filename}\n")
-
-tasks_file_name = os.path.join(out_path, 'tasks_and_names.txt')
-
-with open(tasks_file_name, 'w') as tasks_file:
-    for item in tasks_ids_names:
-        tasks_file.write(f"{item}")
-tasks_file.close()
+    with open(tasks_file_name, 'w') as tasks_file:
+        for item in tasks_ids_names:
+            tasks_file.write(f"{item}")
+    tasks_file.close()
 
 
-process = export_images(tasks_file_name, out_path)
+    process = export_images(tasks_file_name, out_path)
+    print(process.pid)
 
-finish = time.perf_counter()
-
-
-print(f'Finished in {round(finish-start,2)} seconds')
-print(f'The images are being processed into your GEE accound, after finished, check your {out_path} SEPAL folder.')
-print(f'You can copy and paste the following command into the bash console to download the images later: \n')
-print(f'python3 {download_to_sepal} {tasks_file_name} {out_path}')
+    print(f'The images are being processed into your GEE accound, after finished, check your {out_path} SEPAL folder.\n')
+    print(f'If the process takes too long, you can close your SEPAL session and copy and paste the command below in the command line later, to download the images: \n')
+    print(f'"python3 {download_to_sepal} {tasks_file_name} {out_path}"')
 
 
 

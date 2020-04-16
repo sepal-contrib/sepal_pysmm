@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import time
+import ee
+import datetime
 from copy import deepcopy
 
 
@@ -23,6 +25,14 @@ def create_out_name(year, month, day, file_sufix):
         month = f'0{month}'
 
     return f'SMCmap_{year}_{month}_{day}_{file_sufix}'
+
+def gldas_date():
+    ee.Initialize()
+    gldas_test = ee.ImageCollection("NASA/GLDAS/V021/NOAH/G025/T3H") \
+        .select('SoilMoi0_10cm_inst')
+    last_gldas = gldas_test.aggregate_max('system:index').getInfo()
+    last_date = datetime.datetime(int(last_gldas[1:5]), int(last_gldas[5:7]), int(last_gldas[7:9])).date()
+    return last_date
 
 
 def get_map(minlon, minlat, maxlon, maxlat,
@@ -72,43 +82,49 @@ def get_map(minlon, minlat, maxlon, maxlat,
         return
 
     if year is not None:
-        maps = []
+        asked_date = datetime.datetime(year, month, day).date()
+        gldas_last_date = gldas_date()
+        if asked_date <= gldas_last_date:
+            maps = []
 
-        start = time.perf_counter()
+            start = time.perf_counter()
 
-        GEE_interface = GEE_extent(minlon, minlat, maxlon, maxlat, outpath, sampling=sampling)
+            GEE_interface = GEE_extent(minlon, minlat, maxlon, maxlat, outpath, sampling=sampling)
 
-        # retrieve S1
-        GEE_interface.get_S1(year, month, day,
-                             tempfilter=tempfilter,
-                             applylcmask=maskcorine,
-                             mask_globcover=maskglobcover,
-                             trackflt=tracknr,
-                             masksnow=masksnow)
+            # retrieve S1
+            GEE_interface.get_S1(year, month, day,
+                                 tempfilter=tempfilter,
+                                 applylcmask=maskcorine,
+                                 mask_globcover=maskglobcover,
+                                 trackflt=tracknr,
+                                 masksnow=masksnow)
 
-        # retrieve GLDAS
-        GEE_interface.get_gldas()
-        if GEE_interface.GLDAS_IMG is None:
-            return
-        # get Globcover
-        GEE_interface.get_globcover()
-        # get the SRTM
-        GEE_interface.get_terrain()
+            # retrieve GLDAS
+            GEE_interface.get_gldas()
+            if GEE_interface.GLDAS_IMG is None:
+                return
+            # get Globcover
+            GEE_interface.get_globcover()
+            # get the SRTM
+            GEE_interface.get_terrain()
 
-        outname = create_out_name(GEE_interface.S1_DATE.year, 
-                                    GEE_interface.S1_DATE.month,
-                                    GEE_interface.S1_DATE.day, 
-                                    filename)
+            outname = create_out_name(GEE_interface.S1_DATE.year, 
+                                        GEE_interface.S1_DATE.month,
+                                        GEE_interface.S1_DATE.day, 
+                                        filename)
 
-        # Estimate soil moisture
-        GEE_interface.estimate_SM()
+            # Estimate soil moisture
+            GEE_interface.estimate_SM()
 
 
-        finish = time.perf_counter()
-        print('The image {} has been processed in {} seconds'.format(outname, round(finish-start,2)))
+            finish = time.perf_counter()
+            print('The image {} has been processed in {} seconds'.format(outname, round(finish-start,2)))
 
-        maps.append([GEE_interface, outname])
-        return maps
+            maps.append([GEE_interface, outname])
+            return maps
+        else:
+            print('There is no image available for the requested date.')
+            print(f'Try with a date before to {gldas_last_date}.')
 
     else:
         
@@ -119,10 +135,12 @@ def get_map(minlon, minlat, maxlon, maxlat,
         dates = GEE_interface.get_S1_dates(tracknr=tracknr)
         
         dates = pd.DataFrame(np.unique(dates)).set_index(0).sort_index()
-
+        gldas_last_date = gldas_date()
         if start_date:
             # The user has selected a range
             dates = dates[start_date:stop_date]
+            dates = dates[:gldas_last_date]
+
             first=dates.index.to_list()[0]
             last=dates.tail(1).index.to_list()[0]
             
@@ -131,8 +149,10 @@ def get_map(minlon, minlat, maxlon, maxlat,
 
         else:
             # The user has selected the entire series
-            first=dates.index.to_list()[0]
-            last=dates.tail(1).index.to_list()[0]
+            first = dates.index.to_list()[0]
+            dates = dates[:gldas_last_date]
+
+            last = dates.tail(1).index.to_list()[0]
             print(f'There are {len(dates)} unique images.\n')
             print(f'The first available date is {first} and the last is {last}.\n')
 
@@ -168,7 +188,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
                 GEE_interface2.estimate_SM()
 
                 finish = time.perf_counter()
-                print('The image {} has been processed in {} seconds'.format(outname, round(finish-start,2)))
+                print(f'{i+1}. The image {outname} has been processed in {round(finish-start,2)} seconds')
 
                 maps.append([GEE_interface2, outname])
                 del GEE_interface2

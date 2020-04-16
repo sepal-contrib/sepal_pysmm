@@ -1445,11 +1445,11 @@ class GEE_extent(object):
             .filterDate(doi, doi.advance(3, 'hour'))
 
         if gldas.size().getInfo() == 0:
-            print('No GLDAS product for specified date')
+            #print('No GLDAS product for specified date')
             gldas_test = ee.ImageCollection("NASA/GLDAS/V021/NOAH/G025/T3H") \
                 .select('SoilMoi0_10cm_inst')
             last_gldas = gldas_test.aggregate_max('system:index').getInfo()
-            print(('ID of latest available product: ' + last_gldas))
+            #print(('ID of latest available product: ' + last_gldas))
             self.GLDAS_IMG = None
             self.GLDAS_MEAN = None
             return
