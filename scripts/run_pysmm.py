@@ -160,7 +160,7 @@ if maps:
     tasks_ids_names = []
     for image, filename in maps:
         task, filename = export_sm(image, filename)
-        tasks_ids_names.append(f"{task.id}, {filename}\n")+
+        tasks_ids_names.append(f"{task.id}, {filename}\n")
     now = date=datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
     del maps
