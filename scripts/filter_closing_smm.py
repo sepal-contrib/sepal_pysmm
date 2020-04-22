@@ -3,25 +3,12 @@
 import argparse
 import subprocess
 import os
+import sys
 import ntpath
 import re
+from time import sleep
 from datetime import datetime
 
-#def run(folder):
-#    """This module applies the closing filter to all the 
-#    images in the input folder, using the morfeo toolbox.
-#
-#    """
-
-IMAGES_TYPES = ('.tif')
-
-def extract_image_info(image):
-
-    image_name = ntpath.basename(image)
-    match = re.search(r'\d{4}_\d{2}_\d{2}', image_name) 
-    image_date = datetime.strptime(match.group(), '%Y_%m_%d').date()
-
-    return image_name, image_date
 
 def filter_closing(image, tmp_path):
 
@@ -41,12 +28,13 @@ def filter_closing(image, tmp_path):
 
 def gdal_calculation(image, tmp_image, out_path):
 
-    image_name = extract_image_info(image)[0]
+    image_name = ntpath.basename(image)
     closed_image = os.path.join(out_path, 'close_'+image_name)
 
     process = subprocess.run(['gdal_calc.py',
                                 '-A', image,
                                 '-B', tmp_image,
+                                '--NoDataValue=0',
                                 '--co=COMPRESS=LZW',
                                 '--type=UInt16',
                                 '--overwrite',
@@ -65,31 +53,36 @@ def remove_tmp_image(tmp_image):
 
 def raw_to_processed(image):
 
-    image_name = extract_image_info(image)[0]
+    image_name = ntpath.basename(image)
     out_close_path = os.path.dirname(os.path.abspath(image)) \
-                    .replace('raw', '1_processed')
+                    .replace('0_raw', '1_processed')
 
     if not os.path.exists(out_close_path):
         os.makedirs(out_close_path)
 
     if not os.path.exists(os.path.join(out_close_path, 'close_'+image_name)):
+        message = f'\b\rProcessing: {image_name}...'
+        sys.stdout.write(message)
         filter_process, tmp_image = filter_closing(image, out_close_path)
-
         if filter_process.returncode == 0:
             gdal_process = gdal_calculation(image, tmp_image, out_close_path)
-
             if gdal_process.returncode == 0:
-                print(f'Image: {image_name} processed.')
                 remove_tmp_image(tmp_image)
             else:    
                 print(gdal_process.stderr)
         else:
-            print("The process couldn't be completed")
+            message = "\b\rThe process couldn't be completed"
+            sys.stdout.write(message)
             print(filter_process.stderr)
     else:
-        print(f'Skipping: Image "{image_name}" already exists')
-    return 
+        message = f'\b\rSkipping: Image "{image_name}" already exists'
+        sys.stdout.write(message)
 
+    
+    sleep(0.08)
+    sys.stdout.write("\b\r"+" "*(len(message)))
+    sys.stdout.flush()
+    return 
 
     # Search all Image files in inputs recursively if the files are in directories
 

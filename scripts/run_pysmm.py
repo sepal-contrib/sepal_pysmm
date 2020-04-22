@@ -110,7 +110,6 @@ if not os.path.exists(out_path):
 
 # Download SM maps to GEE
 
-start = time.perf_counter()
 
 args=(args.minlon, args.minlat, args.maxlon, args.maxlat, out_path)
 kwargs = {
