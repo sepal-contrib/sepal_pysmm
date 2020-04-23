@@ -35,6 +35,8 @@ with open(args.tasks_file, "r") as tasks_file:
 
 print(tasks)
 
+drive_handler = gdrive()
+
 def check_for_not_completed(task):
 
     state = ee.data.getTaskStatus(task[0])[0]['state']
@@ -43,15 +45,21 @@ def check_for_not_completed(task):
     
     if state in to_remove_states:
         if state == COMPLETED:
-            drive_handler = gdrive()
-            print('Downloading files ...')
-            drive_handler.download_file(file_name + '.tif',
-                                        os.path.join(out_path, file_name + '.tif'))
+            output_file = os.path.join(out_path, f'{file_name}.tif')
+            if not os.path.exists(output_file):
+                print('Downloading files ...')
+                drive_handler.download_file(file_name + '.tif',
+                                            output_file,
+                                            items_to_search)
+            else:
+                print(f'Skipping: File {file_name} already exists.')
         return False
     return True
 
 def download(tasks):
     while tasks:
+        global items_to_search
+        items_to_search = drive_handler.get_items()
         tasks  = list(filter(check_for_not_completed, tasks))
         time.sleep(180)
     print('Done!')

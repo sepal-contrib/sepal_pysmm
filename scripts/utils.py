@@ -30,16 +30,21 @@ class gdrive(object):
             for item in items:
                 print('{0} ({1})'.format(item['name'], item['id']))
 
-
-    def get_id(self, filename):
+    def get_items(self):
 
         service = self.service
-
+        
         # get list of files
-        results = service.files().list(
-            pageSize=50, fields="nextPageToken, files(id, name)").execute()
+        results = service.files().list( q ="mimeType='image/tiff'",
+                                        pageSize=1000, 
+                                        fields="nextPageToken, files(id, name)").execute()
         items = results.get('files', [])
 
+        return items
+
+    def get_id(self, items_to_search, filename):
+
+        items = items_to_search
         # extract list of names and id and find the wanted file
         namelist = np.array([items[i]['name'] for i in range(len(items))])
         idlist = np.array([items[i]['id'] for i in range(len(items))])
@@ -51,12 +56,12 @@ class gdrive(object):
             return(1, idlist[file_pos])
 
 
-    def download_file(self, filename, localpath):
+    def download_file(self, filename, localpath, items_to_search):
 
         service = self.service
 
         # get file id
-        success, fId = self.get_id(filename)
+        success, fId = self.get_id(items_to_search, filename)
         if success == 0:
             print(filename + ' not found')
             return
