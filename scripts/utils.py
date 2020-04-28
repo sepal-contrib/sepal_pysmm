@@ -72,19 +72,19 @@ class gdrive(object):
         done = False
         while done is False:
             status, done = downloader.next_chunk()
-            print('Download %d%%.' % int(status.progress() * 100))
+            #print('Download %d%%.' % int(status.progress() * 100))
 
         fo = open(localpath, 'wb')
         fo.write(fh.getvalue())
         fo.close()
 
 
-    def delete_file(self, filename):
+    def delete_file(self, items_to_search, filename):
 
         service = self.service
 
         # get file id
-        success, fId = self.get_id(filename)
+        success, fId = self.get_id(items_to_search, filename)
 
         if success == 0:
             print(filename + ' not found')
