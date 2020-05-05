@@ -177,7 +177,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
         tasks = []
         i = 0
 
-        pbar = tqdm(total = len(dates), desc="Processing files...", bar_format="{l_bar}{bar:30}{r_bar}{bar:-60b}")
+        pbar = tqdm(total = len(dates))
         for dateI, rows in dates.iterrows():
             start = time.perf_counter()
             GEE_interface2 = deepcopy(GEE_interface)
