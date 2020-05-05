@@ -14,7 +14,7 @@ import warnings
 
 from pytesmo.temporal_matching import df_match
 from sklearn.linear_model import LinearRegression
-from utils import gdrive
+from .utils import gdrive
 
 
 class GEE_pt(object):

@@ -7,11 +7,12 @@ import pandas as pd
 import time
 import ee
 import datetime
+from tqdm import tqdm
 from copy import deepcopy
 
 
-from GEE_wrappers import GEE_extent
-from GEE_wrappers import GEE_pt
+from .GEE_wrappers import GEE_extent
+from .GEE_wrappers import GEE_pt
 
 def create_out_name(year, month, day, file_sufix):
     
@@ -34,6 +35,20 @@ def gldas_date():
     last_date = datetime.datetime(int(last_gldas[1:5]), int(last_gldas[5:7]), int(last_gldas[7:9])).date()
     return last_date
 
+def export_sm(image, file_name):
+    
+    description = f'fileexp_{file_name}'
+    
+    task = ee.batch.Export.image.toDrive(
+        image=image.__getattribute__('ESTIMATED_SM'),
+        description=description,
+        fileNamePrefix=file_name,
+        scale=image.sampling,
+        region=image.roi.getInfo()['coordinates'],
+        maxPixels=1000000000000
+    )
+    task.start()
+    return task, file_name
 
 def get_map(minlon, minlat, maxlon, maxlat,
             outpath,
@@ -85,6 +100,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
         asked_date = datetime.datetime(year, month, day).date()
         gldas_last_date = gldas_date()
         if asked_date <= gldas_last_date:
+            print(f'Processing the closest image to {year}-{month}-{day}...')
             maps = []
 
             start = time.perf_counter()
@@ -144,6 +160,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
             first=dates.index.to_list()[0]
             last=dates.tail(1).index.to_list()[0]
             
+            print(f'Processing all images available between {start_date} and {stop_date}...')
             print(f'There are {len(dates)} unique images.')
             print(f'The first available date is {first} and the last is {last}.\n')
 
@@ -153,11 +170,14 @@ def get_map(minlon, minlat, maxlon, maxlat,
             dates = dates[:gldas_last_date]
 
             last = dates.tail(1).index.to_list()[0]
+            print(f'Processing all available images in the time series...')
             print(f'There are {len(dates)} unique images.\n')
             print(f'The first available date is {first} and the last is {last}.\n')
 
-        maps = []
+        tasks = []
         i = 0
+
+        pbar = tqdm(total = len(dates), desc="Processing files...", bar_format="{l_bar}{bar:30}{r_bar}{bar:-60b}")
         for dateI, rows in dates.iterrows():
             start = time.perf_counter()
             GEE_interface2 = deepcopy(GEE_interface)
@@ -171,34 +191,44 @@ def get_map(minlon, minlat, maxlon, maxlat,
             # retrieve GLDAS
             GEE_interface2.get_gldas()
             if GEE_interface2.GLDAS_IMG is not None:
-                # get Globcover
-                GEE_interface2.get_globcover()
                 
-                # get the SRTM
-
-                GEE_interface2.get_terrain()
-
-
                 outname = create_out_name(GEE_interface2.S1_DATE.year, 
                                             GEE_interface2.S1_DATE.month,
                                             GEE_interface2.S1_DATE.day, 
                                             filename)
+
+                pbar.desc = f'Processing: {outname}...'
+
+                # get Globcover
+                GEE_interface2.get_globcover()
+                
+                # get the SRTM
+                GEE_interface2.get_terrain()
+
+
+
                 # Estimate soil moisture
 
                 GEE_interface2.estimate_SM()
 
-                finish = time.perf_counter()
-                print(f'{i+1}. The image {outname} has been processed in {round(finish-start,2)} seconds')
+                task, f_name = export_sm(GEE_interface2, outname)
+                tasks.append(f"{task.id}, {f_name}\n")
 
-                maps.append([GEE_interface2, outname])
                 del GEE_interface2
 
-            i += 1
-           #if i == 2:
+                # Finish time count
+                finish = time.perf_counter()
+                
+
+            pbar.update(1)
+           #  i += 1
+           # if i == 2:
            #    break
 
-        return maps
+        pbar.close()
         GEE_interface = None
+        return tasks
+        
 
 def get_ts(loc,
            workpath,

@@ -13,170 +13,206 @@ import time
 import ee
 import geemap
 
-from derive_SM import get_map
-from GEE_wrappers import GEE_extent
-from GEE_wrappers import GEE_pt
-from utils import gdrive
-
-# Get SEPAL user
-user = getpass.getuser()
-
-# Create parser arguments
-parser = argparse.ArgumentParser()
-parser.add_argument('year', help ="List of years to be processed")
-parser.add_argument('month', help ="List of months to be processed")
-parser.add_argument('day', help ="List of days to be processed")
-parser.add_argument('minlon', type=float)
-parser.add_argument('minlat', type=float)
-parser.add_argument('maxlon', type=float)
-parser.add_argument('maxlat', type=float)
-parser.add_argument('out_att_name')
-args = parser.parse_args()
-
-download_to_sepal = os.path.join(os.path.expanduser('~'),'sepal_pysmm/scripts/download_to_sepal.py')
-
-def export_images(tasks_file_name, out_path):
-    
-    process = subprocess.Popen(['/usr/bin/nohup', 'python3',  download_to_sepal,
-                                tasks_file_name,
-                                out_path
-                            ],
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE, 
-                            universal_newlines=True,
-                            preexec_fn=os.setpgrp) 
-    return process
+from .derive_SM import get_map
+from .GEE_wrappers import GEE_extent
+from .GEE_wrappers import GEE_pt
+from .utils import gdrive
 
 
-def export_map(file_name, gee_interface):
-    print(f'Exporting {file_name}.')
-    gee_interface.GEE_2_disk(outdir=out_path, name=file_name, timeout=False)
+def run_pysmm(year, month, day, out_att_name):
+    # Get SEPAL user
+    user = getpass.getuser()
+
+    # Create parser arguments
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('year', help ="List of years to be processed")
+    # parser.add_argument('month', help ="List of months to be processed")
+    # parser.add_argument('day', help ="List of days to be processed")
+    # parser.add_argument('ee_asset', help="GEE path asset")
+    # parser.add_argument('minlon', type=float)
+    # parser.add_argument('minlat', type=float)
+    # parser.add_argument('maxlon', type=float)
+    # # parser.add_argument('maxlat', type=float)
+
+    # parser.add_argument('out_att_name')
+    # args = parser.parse_args()
 
 
+    download_to_sepal = os.path.join(os.getcwd(), 'scripts/download_to_sepal.py')
+    print(download_to_sepal)
 
-def export_sm(image, file_name):
-    
-    description = f'fileexp_{file_name}'
-    
-    task = ee.batch.Export.image.toDrive(
-        image=image.__getattribute__('ESTIMATED_SM'),
-        description=description,
-        fileNamePrefix=file_name,
-        scale=image.sampling,
-        region=image.roi.getInfo()['coordinates'],
-        maxPixels=1000000000000
-    )
-    task.start()
-    return task, file_name
-
+    def export_images(tasks_file_name, out_path):
         
-def list_to_int(arg):
-    return [int(s) for s in ast.literal_eval(arg)]
+        process = subprocess.Popen(['python3',  download_to_sepal,
+                                    tasks_file_name,
+                                    out_path
+                                ],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE, 
+                                universal_newlines=True,
+                                preexec_fn=os.setpgrp) 
+        return process
+
+
+    def export_map(file_name, gee_interface):
+        print(f'Exporting {file_name}.')
+        gee_interface.GEE_2_disk(outdir=out_path, name=file_name, timeout=False)
 
 
 
-single_date = False
-start_date = False
-
-if args.year != 'False':
+    def export_sm(image, file_name):
         
-    year = list_to_int(args.year)
-    month = list_to_int(args.month)
-    day = list_to_int(args.day)
+        description = f'fileexp_{file_name}'
+        
+        task = ee.batch.Export.image.toDrive(
+            image=image.__getattribute__('ESTIMATED_SM'),
+            description=description,
+            fileNamePrefix=file_name,
+            scale=image.sampling,
+            region=image.roi.getInfo()['coordinates'],
+            maxPixels=1000000000000
+        )
+        task.start()
+        return task, file_name
 
-    if len(year)<2:
-        year, month, day = year[0], month[0], day[0]
-        single_date = True
+            
+    def list_to_int(arg):
+        return [int(s) for s in ast.literal_eval(arg)]
 
+
+
+    single_date = False
+    start_date = False
+
+    if year != 'False':
+            
+        year = list_to_int(year)
+        month = list_to_int(month)
+        day = list_to_int(day)
+
+        if len(year)<2:
+            year, month, day = year[0], month[0], day[0]
+            single_date = True
+
+        else:
+            start_date = datetime.datetime(year[0], month[0], day[0]).date()
+            stop_date = datetime.datetime(year[1], month[1], day[1]).date()
     else:
-        start_date = datetime.datetime(year[0], month[0], day[0]).date()
-        stop_date = datetime.datetime(year[1], month[1], day[1]).date()
-else:
-    year, month, day = False, False, False
+        year, month, day = False, False, False
 
 
 
-# Set the sufix and prefix names
-aoi_name, selected_feature = ast.literal_eval(args.out_att_name)
-file_sufix = f"{user}_{selected_feature}"
-selected_feature = str(int(selected_feature))
-aoi_name = aoi_name.split('/')[-1]
-
-# Create a folder to download the pysmm images
-out_path = os.path.join(os.path.expanduser('~'), 'pysmm_downloads',
-                        '0_raw', aoi_name, selected_feature)
-if not os.path.exists(out_path):
-    os.makedirs(out_path)
-
-# Download SM maps to GEE
+    # Set the sufix and prefix names
+    aoi, field, column  = ast.literal_eval(out_att_name)
+    file_sufix = f"{user}_{field}"
+    selected_feature = str(int(field))
+    aoi_name = aoi.split('/')[-1]
 
 
-args=(args.minlon, args.minlat, args.maxlon, args.maxlat, out_path)
-kwargs = {
-    'sampling' : 100,
-    'tracknr' : None,
-    'tempfilter' : True,
-    'mask' : 'Globcover',
-    'masksnow' : False,
-    'overwrite' : True,
-    'filename' : file_sufix,
-    'year' : None,
-    'month' : None,
-    'day' : None,
-    'start_date' : False,
-    'stop_date' : False,
-}
+    # Read EE coordinates
+    ee.Initialize()
+    aoi_ee = ee.FeatureCollection(aoi).filterMetadata(column, 'equals', float(field))\
+                .geometry()
 
 
-# To process single date or non row dates.
+    study_area = aoi_ee.bounds().coordinates()
+
+    coords = study_area.get(0).getInfo()
+    ll, ur = coords[0], coords[2]
+    minlon, minlat, maxlon, maxlat = ll[0], ll[1], ur[0], ur[1]
 
 
-if single_date:
-    print(f'Processing the closest image to {year}-{month}-{day}...')
-    kwargs['year']= year
-    kwargs['month']=month
-    kwargs['day']=day
-    maps = get_map(*args, **kwargs)
+    # Create a folder to download the pysmm images
+    out_path = os.path.join(os.path.expanduser('~'), 'pysmm_downloads',
+                            '0_raw', aoi_name, selected_feature)
+    if not os.path.exists(out_path):
+        os.makedirs(out_path)
 
-# To get the the series map in row
-else:
+    # Download SM maps to GEE
 
-    # To get the series map in a specified range
-    if start_date:
-        print(f'Processing all images available between {start_date} and {stop_date}...')
-        kwargs['start_date'] = start_date
-        kwargs['stop_date'] = stop_date
-        maps = get_map(*args, **kwargs)
 
-    # To retreive the entire series
+    args=(minlon, minlat, maxlon, maxlat, out_path)
+    kwargs = {
+        'sampling' : 100,
+        'tracknr' : None,
+        'tempfilter' : True,
+        'mask' : 'Globcover',
+        'masksnow' : False,
+        'overwrite' : True,
+        'filename' : file_sufix,
+        'year' : None,
+        'month' : None,
+        'day' : None,
+        'start_date' : False,
+        'stop_date' : False,
+    }
+
+
+    # To process single date or non row dates.
+
+
+    if single_date:
+        
+        kwargs['year']= year
+        kwargs['month']=month
+        kwargs['day']=day
+        tasks = get_map(*args, **kwargs)
+
+    # To get the the series map in row
     else:
-        print(f'Processing all available images in the time series...')
-        maps = get_map(*args, **kwargs)
 
-if maps:
-    print('\nPlease wait until the images are processed and downloaded into your SEPAL account...')
+        # To get the series map in a specified range
+        if start_date:
+            kwargs['start_date'] = start_date
+            kwargs['stop_date'] = stop_date
+            tasks = get_map(*args, **kwargs)
 
-    tasks_ids_names = []
-    for image, filename in maps:
-        task, filename = export_sm(image, filename)
-        tasks_ids_names.append(f"{task.id}, {filename}\n")
-    now = date=datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        # To retreive the entire series
+        else:
+            tasks = get_map(*args, **kwargs)
 
-    del maps
-    tasks_file_name = os.path.join(out_path, f'task_{now}.txt')
+    if tasks:
+        now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        tasks_file_name = os.path.join(out_path, f'task_{now}.txt')
 
-    with open(tasks_file_name, 'w') as tasks_file:
-        for item in tasks_ids_names:
-            tasks_file.write(f"{item}")
-    tasks_file.close()
-
-
+        with open(tasks_file_name, 'w') as tasks_file:
+            for item in tasks:
+                tasks_file.write(f"{item}")
+        tasks_file.close()
+    del tasks
+    
     process = export_images(tasks_file_name, out_path)
     print(process.pid)
 
     print(f'The images are being processed into your GEE accound, after finished, check your {out_path} SEPAL folder.\n')
-    print(f'If the process takes too long, you can close your SEPAL session and copy and paste the command below in the command line later, to download the images: \n')
-    print(f'"python3 {download_to_sepal} {tasks_file_name} {out_path}"')
+    print(f'If the process takes too long, you can close your SEPAL session and use the SEPAL download tool later. \n')
+    # print(f'"python3 {download_to_sepal} {tasks_file_name} {out_path}"')
+
+    # if maps:
+    #     print('\nPlease wait until the images are processed and downloaded into your SEPAL account...')
+
+    #     tasks_ids_names = []
+    #     for image, filename in maps:
+    #         task, filename = export_sm(image, filename, aoi_ee)
+    #         tasks_ids_names.append(f"{task.id}, {filename}\n")
+        
+    #     now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+
+    #     del maps
+    #     tasks_file_name = os.path.join(out_path, f'task_{now}.txt')
+
+    #     with open(tasks_file_name, 'w') as tasks_file:
+    #         for item in tasks_ids_names:
+    #             tasks_file.write(f"{item}")
+    #     tasks_file.close()
+
+
+    #     process = export_images(tasks_file_name, out_path)
+    #     print(process.pid)
+
+    #     print(f'The images are being processed into your GEE accound, after finished, check your {out_path} SEPAL folder.\n')
+    #     print(f'If the process takes too long, you can close your SEPAL session and copy and paste the command below in the command line later, to download the images: \n')
+    #     print(f'"python3 {download_to_sepal} {tasks_file_name} {out_path}"')
 
 
 
