@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import os
+import sys
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -100,8 +102,10 @@ def get_map(minlon, minlat, maxlon, maxlat,
         asked_date = datetime.datetime(year, month, day).date()
         gldas_last_date = gldas_date()
         if asked_date <= gldas_last_date:
-            print(f'Processing the closest image to {year}-{month}-{day}...')
-            maps = []
+            
+            sys.stdout.write(f'Processing the closest image too {year}-{month}-{day}...')
+            p_bar = tqdm(total=1)
+            tasks = []
 
             start = time.perf_counter()
 
@@ -133,11 +137,16 @@ def get_map(minlon, minlat, maxlon, maxlat,
             GEE_interface.estimate_SM()
 
 
-            finish = time.perf_counter()
-            print('The image {} has been processed in {} seconds'.format(outname, round(finish-start,2)))
 
-            maps.append([GEE_interface, outname])
-            return maps
+            finish = time.perf_counter()
+            p_bar.desc = f'The image {outname}.tif has been processed'
+
+            task, f_name = export_sm(GEE_interface, outname)
+            tasks.append(f"{task.id}, {f_name}\n")
+
+            p_bar.update(1)
+            p_bar.close()
+            return tasks
         else:
             print('There is no image available for the requested date.')
             print(f'Try with a date before to {gldas_last_date}.')
@@ -160,9 +169,14 @@ def get_map(minlon, minlat, maxlon, maxlat,
             first=dates.index.to_list()[0]
             last=dates.tail(1).index.to_list()[0]
             
-            print(f'Processing all images available between {start_date} and {stop_date}...')
-            print(f'There are {len(dates)} unique images.')
-            print(f'The first available date is {first} and the last is {last}.\n')
+
+            sys.stdout.write(f'Processing all images available between {start_date} and {stop_date}...')
+            sys.stdout.write(f'There are {len(dates)} unique images.')
+            sys.stdout.write(f'The first available date is {first} and the last is {last}.')
+
+            # print(f'Processing all images available between {start_date} and {stop_date}...')
+            # print(f'There are {len(dates)} unique images.')
+            # print(f'The first available date is {first} and the last is {last}.\n')
 
         else:
             # The user has selected the entire series
@@ -170,14 +184,20 @@ def get_map(minlon, minlat, maxlon, maxlat,
             dates = dates[:gldas_last_date]
 
             last = dates.tail(1).index.to_list()[0]
-            print(f'Processing all available images in the time series...')
-            print(f'There are {len(dates)} unique images.\n')
-            print(f'The first available date is {first} and the last is {last}.\n')
+
+            sys.stdout.write(f'Processing all available images in the time series...')
+            sys.stdout.write(f'There are {len(dates)} unique images.\n')
+            sys.stdout.write(f'The first available date is {first} and the last is {last}.\n')
+
+
+            # print(f'Processing all available images in the time series...')
+            # print(f'There are {len(dates)} unique images.\n')
+            # print(f'The first available date is {first} and the last is {last}.\n')
 
         tasks = []
         i = 0
 
-        pbar = tqdm(total = len(dates))
+        p_bar = tqdm(total=len(dates))
         for dateI, rows in dates.iterrows():
             start = time.perf_counter()
             GEE_interface2 = deepcopy(GEE_interface)
@@ -197,7 +217,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
                                             GEE_interface2.S1_DATE.day, 
                                             filename)
 
-                pbar.desc = f'Processing: {outname}...'
+                p_bar.desc = f'Processing: {outname}...'
 
                 # get Globcover
                 GEE_interface2.get_globcover()
@@ -220,12 +240,12 @@ def get_map(minlon, minlat, maxlon, maxlat,
                 finish = time.perf_counter()
                 
 
-            pbar.update(1)
+            p_bar.update(1)
            #  i += 1
            # if i == 2:
            #    break
 
-        pbar.close()
+        p_bar.close()
         GEE_interface = None
         return tasks
         

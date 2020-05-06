@@ -39,7 +39,6 @@ def run_pysmm(year, month, day, out_att_name):
 
 
     download_to_sepal = os.path.join(os.getcwd(), 'scripts/download_to_sepal.py')
-    print(download_to_sepal)
 
     def export_images(tasks_file_name, out_path):
         
@@ -184,7 +183,7 @@ def run_pysmm(year, month, day, out_att_name):
     process = export_images(tasks_file_name, out_path)
     print(process.pid)
 
-    print(f'The images are being processed into your GEE accound, after finished, check your {out_path} SEPAL folder.\n')
+    print(f'The images are being processed into your GEE account, after finished, check your {out_path} SEPAL folder.\n')
     print(f'If the process takes too long, you can close your SEPAL session and use the SEPAL download tool later. \n')
     # print(f'"python3 {download_to_sepal} {tasks_file_name} {out_path}"')
 
