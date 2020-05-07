@@ -9,7 +9,7 @@ import pandas as pd
 import time
 import ee
 import datetime
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from copy import deepcopy
 
 
@@ -103,8 +103,8 @@ def get_map(minlon, minlat, maxlon, maxlat,
         gldas_last_date = gldas_date()
         if asked_date <= gldas_last_date:
             
-            sys.stdout.write(f'Processing the closest image too {year}-{month}-{day}...')
-            p_bar = tqdm(total=1)
+            print(f'Processing the closest image too {year}-{month}-{day}...')
+            p_bar = tqdm(total = 1  , desc="Starting...", ncols=700,  bar_format="{l_bar}{bar}{r_bar}")
             tasks = []
 
             start = time.perf_counter()
@@ -139,7 +139,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
 
 
             finish = time.perf_counter()
-            p_bar.desc = f'The image {outname}.tif has been processed'
+            p_bar.desc = f'Image {outname}.tif processed'
 
             task, f_name = export_sm(GEE_interface, outname)
             tasks.append(f"{task.id}, {f_name}\n")
@@ -169,14 +169,9 @@ def get_map(minlon, minlat, maxlon, maxlat,
             first=dates.index.to_list()[0]
             last=dates.tail(1).index.to_list()[0]
             
-
-            sys.stdout.write(f'Processing all images available between {start_date} and {stop_date}...')
-            sys.stdout.write(f'There are {len(dates)} unique images.')
-            sys.stdout.write(f'The first available date is {first} and the last is {last}.')
-
-            # print(f'Processing all images available between {start_date} and {stop_date}...')
-            # print(f'There are {len(dates)} unique images.')
-            # print(f'The first available date is {first} and the last is {last}.\n')
+            print(f'Processing all images available between {start_date} and {stop_date}...')
+            print(f'There are {len(dates)} unique images.')
+            print(f'The first available date is {first} and the last is {last}.\n')
 
         else:
             # The user has selected the entire series
@@ -185,19 +180,14 @@ def get_map(minlon, minlat, maxlon, maxlat,
 
             last = dates.tail(1).index.to_list()[0]
 
-            sys.stdout.write(f'Processing all available images in the time series...')
-            sys.stdout.write(f'There are {len(dates)} unique images.\n')
-            sys.stdout.write(f'The first available date is {first} and the last is {last}.\n')
-
-
-            # print(f'Processing all available images in the time series...')
-            # print(f'There are {len(dates)} unique images.\n')
-            # print(f'The first available date is {first} and the last is {last}.\n')
+            print(f'Processing all available images in the time series...')
+            print(f'There are {len(dates)} unique images.\n')
+            print(f'The first available date is {first} and the last is {last}.\n')
 
         tasks = []
         i = 0
 
-        p_bar = tqdm(total=len(dates))
+        p_bar = tqdm(total=len(dates), desc="Starting...", ncols=700,  bar_format="{l_bar}{bar}{r_bar}")
         for dateI, rows in dates.iterrows():
             start = time.perf_counter()
             GEE_interface2 = deepcopy(GEE_interface)
