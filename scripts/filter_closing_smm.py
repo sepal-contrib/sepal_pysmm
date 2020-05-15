@@ -79,7 +79,7 @@ def raw_to_processed(image):
         sys.stdout.write(message)
 
     
-    sleep(0.04)
+    sleep(0.01)
     sys.stdout.write("\b\r"+" "*(len(message)))
     sys.stdout.flush()
     return 
