@@ -76,7 +76,7 @@ def run(task_file, out_path, overwrite=False, rmdrive=False):
 
     def download(tasks):
         while tasks:
-            pbar.desc = f'Retrieving images...'
+            pbar.desc = f'Retrieving tasks status...'
             global items_to_search
             items_to_search = drive_handler.get_items()
             tasks  = list(filter(check_for_not_completed, tasks))

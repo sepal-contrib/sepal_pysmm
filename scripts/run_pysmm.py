@@ -23,21 +23,6 @@ def run_pysmm(year, month, day, out_att_name):
     # Get SEPAL user
     user = getpass.getuser()
 
-    # Create parser arguments
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('year', help ="List of years to be processed")
-    # parser.add_argument('month', help ="List of months to be processed")
-    # parser.add_argument('day', help ="List of days to be processed")
-    # parser.add_argument('ee_asset', help="GEE path asset")
-    # parser.add_argument('minlon', type=float)
-    # parser.add_argument('minlat', type=float)
-    # parser.add_argument('maxlon', type=float)
-    # # parser.add_argument('maxlat', type=float)
-
-    # parser.add_argument('out_att_name')
-    # args = parser.parse_args()
-
-
     download_to_sepal = os.path.join(os.getcwd(), 'scripts/download_to_sepal.py')
 
     def export_images(tasks_file_name, out_path):
@@ -181,7 +166,6 @@ def run_pysmm(year, month, day, out_att_name):
     del tasks
     
     process = export_images(tasks_file_name, out_path)
-    print(process.pid)
 
     print(f'The images are being processed into your GEE account, after finished, check your {out_path} SEPAL folder.\n')
     print(f'If the process takes too long, you can close your SEPAL session and use the SEPAL download tool later. \n')

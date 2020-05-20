@@ -11,6 +11,7 @@
 #
 import datetime
 import os
+import re
 
 
 def calc_date(year, jday):
