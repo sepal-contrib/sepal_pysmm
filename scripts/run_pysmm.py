@@ -163,12 +163,13 @@ def run_pysmm(year, month, day, out_att_name):
             for item in tasks:
                 tasks_file.write(f"{item}")
         tasks_file.close()
+        process = export_images(tasks_file_name, out_path)
+        print(f'The images are being processed into your GEE account, after finished, check your {out_path} SEPAL folder.\n')
+        print(f'If the process takes too long, you can close your SEPAL session and use the SEPAL download tool later. \n')
+
     del tasks
     
-    process = export_images(tasks_file_name, out_path)
 
-    print(f'The images are being processed into your GEE account, after finished, check your {out_path} SEPAL folder.\n')
-    print(f'If the process takes too long, you can close your SEPAL session and use the SEPAL download tool later. \n')
     # print(f'"python3 {download_to_sepal} {tasks_file_name} {out_path}"')
 
     # if maps:

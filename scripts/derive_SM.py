@@ -103,7 +103,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
         gldas_last_date = gldas_date()
         if asked_date <= gldas_last_date:
             
-            print(f'Processing the closest image too {year}-{month}-{day}...')
+            print(f'Processing the closest image to {year}-{month}-{day}...')
             p_bar = tqdm(total = 1  , desc="Starting...", ncols=700,  bar_format="{l_bar}{bar}{r_bar}")
             tasks = []
 
