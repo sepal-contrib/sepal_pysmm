@@ -164,8 +164,8 @@ def run_pysmm(year, month, day, out_att_name):
                 tasks_file.write(f"{item}")
         tasks_file.close()
         process = export_images(tasks_file_name, out_path)
-        print(f'The images are being processed into your GEE account, after finished, check your {out_path} SEPAL folder.\n')
-        print(f'If the process takes too long, you can close your SEPAL session and use the SEPAL download tool later. \n')
+        print(f'The images are being processed into your GEE account.\n')
+        print(f'If the process takes too long, you can close your SEPAL session and use the SEPAL download tool. \n')
 
     del tasks
     
