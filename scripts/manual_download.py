@@ -59,7 +59,7 @@ div.output_stderr{
 <center><h1><b>GEE Download Task Module</b></h1></center>
 <p>With this module you can track and download the images processed into your Google Earth Engine account 
 by providing the 'tasks' text file, the results will be stored directly into your SEPAL account.</br>
-<b>Note that if you check the overwrite and remove options, the result can't be undone.</b>
+<b>Note that if you check the overwrite and remove options, the results cannot be undone.</b>
 </p>
 """
 
