@@ -168,36 +168,6 @@ def run_pysmm(year, month, day, out_att_name):
         print(f'You can close your SEPAL session and use the SEPAL download tool.\n')
 
     del tasks
-    
-
-    # print(f'"python3 {download_to_sepal} {tasks_file_name} {out_path}"')
-
-    # if maps:
-    #     print('\nPlease wait until the images are processed and downloaded into your SEPAL account...')
-
-    #     tasks_ids_names = []
-    #     for image, filename in maps:
-    #         task, filename = export_sm(image, filename, aoi_ee)
-    #         tasks_ids_names.append(f"{task.id}, {filename}\n")
-        
-    #     now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-
-    #     del maps
-    #     tasks_file_name = os.path.join(out_path, f'task_{now}.txt')
-
-    #     with open(tasks_file_name, 'w') as tasks_file:
-    #         for item in tasks_ids_names:
-    #             tasks_file.write(f"{item}")
-    #     tasks_file.close()
-
-
-    #     process = export_images(tasks_file_name, out_path)
-    #     print(process.pid)
-
-    #     print(f'The images are being processed into your GEE accound, after finished, check your {out_path} SEPAL folder.\n')
-    #     print(f'If the process takes too long, you can close your SEPAL session and copy and paste the command below in the command line later, to download the images: \n')
-    #     print(f'"python3 {download_to_sepal} {tasks_file_name} {out_path}"')
-
 
 
 
