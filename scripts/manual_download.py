@@ -7,6 +7,12 @@ from scripts.ipyfilechooser import FileChooser
 from scripts import download_to_sepal
 import getpass
 
+BUTTON_STYLE = {'button_color':'rgba(28,28,28,.99)'}
+button_layout = widgets.Layout(
+    width='175px',
+)
+
+
 def export_images(tasks_file_name, overwrite=False, rmdrive=False):
     out_path = os.path.split(tasks_file_name)[0]
     download_to_sepal.run(tasks_file_name, out_path, overwrite, rmdrive)
@@ -28,6 +34,8 @@ def start():
     w_run_button.description = 'Download images'
     w_run_button.button_style = 'success'
     w_run_button.icon = 'check'
+    w_run_button.style=BUTTON_STYLE
+    w_run_button.layout=button_layout
     display(HTML(html_header))
     display(fc)
     display(VBox([w_run.children[0], w_run.children[1], w_run_button]))
@@ -59,7 +67,7 @@ div.output_stderr{
 <center><h1><b>GEE Download Task Module</b></h1></center>
 <p>With this module you can track and download the images processed into your Google Earth Engine account 
 by providing the 'tasks' text file, the results will be stored directly into your SEPAL account.</br>
-<b>Note that if you check the overwrite and remove options, the results cannot be undone.</b>
+<b>Note that if you check the overwrite and remove options, the result can't be undone.</b>
 </p>
 """
 
@@ -68,6 +76,10 @@ fc = FileChooser(f'/home/{user}/')
 
 change_b = fc.children[-1].children[0]
 change_b.button_style='info'
+
+change_b.style=BUTTON_STYLE
+change_b.layout=button_layout
+
 
 cancel_b = fc.children[-1].children[1]
 cancel_b.button_style='danger'
