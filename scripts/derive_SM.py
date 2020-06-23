@@ -16,6 +16,10 @@ from copy import deepcopy
 from .GEE_wrappers import GEE_extent
 from .GEE_wrappers import GEE_pt
 
+import logging
+logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
+
+
 def create_out_name(year, month, day, file_sufix):
     
     year = str(year)

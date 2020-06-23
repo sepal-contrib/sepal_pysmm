@@ -6,6 +6,8 @@ import numpy as np
 from googleapiclient.http import MediaIoBaseDownload
 from apiclient import discovery
 
+import logging
+logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
 class gdrive(object):
 

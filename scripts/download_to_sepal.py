@@ -15,6 +15,9 @@ CANCELLED = 'CANCELLED'
 COMPLETED = 'COMPLETED'
 UNKNOWN = 'UNKNOWN'
 
+import logging
+logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
+
 
 def run(task_file, out_path, overwrite=False, rmdrive=False):
 

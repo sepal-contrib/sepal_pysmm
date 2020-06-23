@@ -7,6 +7,9 @@ from scripts.ipyfilechooser import FileChooser
 from scripts import download_to_sepal
 import getpass
 
+import logging
+logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
+
 BUTTON_STYLE = {'button_color':'rgba(28,28,28,.99)'}
 button_layout = widgets.Layout(
     width='175px',

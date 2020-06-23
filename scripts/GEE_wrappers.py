@@ -16,6 +16,9 @@ from pytesmo.temporal_matching import df_match
 from sklearn.linear_model import LinearRegression
 from .utils import gdrive
 
+import logging
+logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
+
 
 class GEE_pt(object):
     """Class to create an interface with GEE for the extraction of parameter time series

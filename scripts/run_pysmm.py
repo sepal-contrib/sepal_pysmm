@@ -18,6 +18,9 @@ from .GEE_wrappers import GEE_extent
 from .GEE_wrappers import GEE_pt
 from .utils import gdrive
 
+import logging
+logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
+
 
 def run_pysmm(year, month, day, out_att_name):
     # Get SEPAL user
