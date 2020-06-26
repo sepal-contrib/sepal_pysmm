@@ -28,11 +28,11 @@ def run_pysmm(year, month, day, out_att_name):
 
     download_to_sepal = os.path.join(os.getcwd(), 'scripts/download_to_sepal.py')
 
-    def export_images(tasks_file_name, out_path):
+    def export_images(tasks_file_name, outpath):
         
         process = subprocess.Popen(['python3',  download_to_sepal,
                                     tasks_file_name,
-                                    out_path
+                                    outpath
                                 ],
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE, 
@@ -43,7 +43,7 @@ def run_pysmm(year, month, day, out_att_name):
 
     def export_map(file_name, gee_interface):
         print(f'Exporting {file_name}.')
-        gee_interface.GEE_2_disk(outdir=out_path, name=file_name, timeout=False)
+        gee_interface.GEE_2_disk(outdir=outpath, name=file_name, timeout=False)
 
 
 
@@ -110,15 +110,15 @@ def run_pysmm(year, month, day, out_att_name):
 
 
     # Create a folder to download the pysmm images
-    out_path = os.path.join(os.path.expanduser('~'), 'pysmm_downloads',
+    outpath = os.path.join(os.path.expanduser('~'), 'pysmm_downloads',
                             '0_raw', aoi_name, selected_feature)
-    if not os.path.exists(out_path):
-        os.makedirs(out_path)
+    if not os.path.exists(outpath):
+        os.makedirs(outpath)
 
     # Download SM maps to GEE
 
 
-    args=(minlon, minlat, maxlon, maxlat, out_path)
+    args=(minlon, minlat, maxlon, maxlat, outpath)
     kwargs = {
         'sampling' : 100,
         'tracknr' : None,
@@ -159,14 +159,8 @@ def run_pysmm(year, month, day, out_att_name):
             tasks = get_map(*args, **kwargs)
 
     if tasks:
-        now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        tasks_file_name = os.path.join(out_path, f'task_{now}.txt')
 
-        with open(tasks_file_name, 'w') as tasks_file:
-            for item in tasks:
-                tasks_file.write(f"{item}")
-        tasks_file.close()
-        process = export_images(tasks_file_name, out_path)
+        #process = export_images(tasks_file_name, outpath) option to export automatically
         print(f'The images are being processed into your GEE account.\n')
         print(f'You can close your SEPAL session and use the SEPAL download tool.\n')
 

@@ -79,18 +79,17 @@ def run(task_file, out_path, overwrite=False, rmdrive=False):
 
     def download(tasks):
         while tasks:
-            pbar.desc = f'Retrieving tasks status...'
+            pbar.set_description('Retrieving tasks status...')
             global items_to_search
             items_to_search = drive_handler.get_items()
             tasks  = list(filter(check_for_not_completed, tasks))
             if tasks:
-                pbar.desc = f'Waiting...'
-                time.sleep(60)
+                pbar.set_description('Waiting...')
+                time.sleep(45)
         
 
-
     global pbar
-    pbar = tqdm(total = len(tasks), desc="Downloading files...", ncols=700,  bar_format="{l_bar}{bar}{r_bar}")
+    pbar = tqdm(total = len(tasks), desc="Starting...", ncols=700,  bar_format="{l_bar}{bar}{r_bar}")
     download(tasks)
-    pbar.desc = 'Done!'
+    pbar.set_description('Done!')
     pbar.close()

@@ -90,7 +90,12 @@ def get_map(minlon, minlat, maxlon, maxlat,
     if filename is not None:
         if not isinstance(filename, str):
             filename = str(filename)
-        
+    
+
+    now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    tasks_file_name = os.path.join(outpath, f'task_{now}.txt')
+
+
     maskcorine = False
     maskglobcover = False
 
@@ -141,12 +146,16 @@ def get_map(minlon, minlat, maxlon, maxlat,
             GEE_interface.estimate_SM()
 
 
-
             finish = time.perf_counter()
             p_bar.desc = f'Image {outname}.tif processed'
 
             task, f_name = export_sm(GEE_interface, outname)
             tasks.append(f"{task.id}, {f_name}\n")
+
+            # Write the text file
+            with open(tasks_file_name, 'a') as tasks_file:
+                tasks_file.write(f"{task.id}, {f_name}\n")
+
 
             p_bar.update(1)
             p_bar.close()
@@ -157,7 +166,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
 
     else:
         
-        # if no specific date was specified extract entire time series
+        # if no specific date was specified extract entire time series or a range
         GEE_interface = GEE_extent(minlon, minlat, maxlon, maxlat, outpath, sampling=sampling)
 
         #get list of S1 dates
@@ -225,8 +234,13 @@ def get_map(minlon, minlat, maxlon, maxlat,
 
                 GEE_interface2.estimate_SM()
 
+                # Export each image and get the task name and id
                 task, f_name = export_sm(GEE_interface2, outname)
                 tasks.append(f"{task.id}, {f_name}\n")
+
+                # Write the text file
+                with open(tasks_file_name, 'a') as tasks_file:
+                    tasks_file.write(f"{task.id}, {f_name}\n")
 
                 del GEE_interface2
 
@@ -235,9 +249,6 @@ def get_map(minlon, minlat, maxlon, maxlat,
                 
 
             p_bar.update(1)
-           #  i += 1
-           # if i == 2:
-           #    break
 
         p_bar.close()
         GEE_interface = None
