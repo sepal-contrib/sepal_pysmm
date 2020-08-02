@@ -63,11 +63,19 @@ def run(stat, bands, nodata, output, output_type, num_process, chunksize, start_
 
     print("\nLoading and prepare images in path(s):", flush=True)
     # search all Image files in inputs recursively if the files are in directories
+
     images_files = []
     for _input in inputs:
         if os.path.isfile(_input):
+            # The input is a text file containing the images to be processed.
+            if _input.endswith('.txt'):
+                with open(_input, "r") as tf:
+                    for line in tf:
+                        images_files.append(line.strip())
+
             if _input.endswith(IMAGES_TYPES):
                 images_files.append(os.path.abspath(_input))
+
         elif os.path.isdir(_input):
             for root, dirs, files in os.walk(_input):
                 if len(files) != 0:
