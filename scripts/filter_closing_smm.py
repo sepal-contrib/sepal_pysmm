@@ -17,8 +17,8 @@ def filter_closing(image, tmp_path):
                                 '-in', image,
                                 '-out', tmp_image,
                                 '-structype', 'ball',
-                                '-xradius', '1',
-                                '-yradius', '1',
+                                '-structype.ball.xradius', '1',
+                                '-structype.ball.yradius', '1',
                                 '-filter', 'closing'
                             ],
                             stdout=subprocess.PIPE,
