@@ -22,7 +22,15 @@ import logging
 logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
 
-def run_pysmm(year, month, day, out_att_name):
+def run_pysmm(Aoi, Date, Alert):
+    """ Process the input variables to start the "derive_sm" module.
+
+    Args:
+
+        Aoi: 
+        Date:    
+    """
+
     # Get SEPAL user
     user = getpass.getuser()
 
@@ -41,10 +49,6 @@ def run_pysmm(year, month, day, out_att_name):
         return process
 
 
-    def export_map(file_name, gee_interface):
-        print(f'Exporting {file_name}.')
-        gee_interface.GEE_2_disk(outdir=outpath, name=file_name, timeout=False)
-
 
 
     def export_sm(image, file_name):
@@ -62,63 +66,52 @@ def run_pysmm(year, month, day, out_att_name):
         task.start()
         return task, file_name
 
-            
-    def list_to_int(arg):
-        return [int(s) for s in ast.literal_eval(arg)]
-
-
-
     single_date = False
     start_date = False
 
-    if year != 'False':
-            
-        year = list_to_int(year)
-        month = list_to_int(month)
-        day = list_to_int(day)
+    if Date.date_method == 'Single date':
+        
+        single_date = True
+        year = Date.single_date.year
+        month = Date.single_date.month
+        day = Date.single_date.day
 
-        if len(year)<2:
-            year, month, day = year[0], month[0], day[0]
-            single_date = True
+    elif Date.date_method == 'Range':
 
-        else:
-            start_date = datetime.datetime(year[0], month[0], day[0]).date()
-            stop_date = datetime.datetime(year[1], month[1], day[1]).date()
+        start_date = Date.start_date
+        stop_date = Date.end_date
+
     else:
+        # The selected attribute is all time series
         year, month, day = False, False, False
 
 
-
     # Set the sufix and prefix names
-    aoi, field, column  = ast.literal_eval(out_att_name)
+    aoi = Aoi.assetId
+    field = Aoi.field
+    column = Aoi.column
+
     file_sufix = f"{user}_{field}"
-    selected_feature = str(int(field))
     aoi_name = aoi.split('/')[-1]
 
 
     # Read EE coordinates
-    ee.Initialize()
-    aoi_ee = ee.FeatureCollection(aoi).filterMetadata(column, 'equals', float(field))\
-                .geometry()
 
-
-    study_area = aoi_ee.bounds().coordinates()
-
-    coords = study_area.get(0).getInfo()
-    ll, ur = coords[0], coords[2]
-    minlon, minlat, maxlon, maxlat = ll[0], ll[1], ur[0], ur[1]
+    selected_feature = Aoi.get_selected_feature()
+    minlon, minlat, maxlon, maxlat = Aoi.get_bounds(selected_feature)
 
 
     # Create a folder to download the pysmm images
     outpath = os.path.join(os.path.expanduser('~'), 'pysmm_downloads',
-                            '0_raw', aoi_name, selected_feature)
+                            '0_raw', str(aoi_name), str(field))
+
     if not os.path.exists(outpath):
         os.makedirs(outpath)
 
     # Download SM maps to GEE
 
 
-    args=(minlon, minlat, maxlon, maxlat, outpath)
+    args=(minlon, minlat, maxlon, maxlat, outpath, Alert)
     kwargs = {
         'sampling' : 100,
         'tracknr' : None,
@@ -161,10 +154,7 @@ def run_pysmm(year, month, day, out_att_name):
     if tasks:
 
         #process = export_images(tasks_file_name, outpath) option to export automatically
-        print(f'The images are being processed into your GEE account.\n')
-        print(f'You can close your SEPAL session and use the SEPAL download tool.\n')
+        Alert.add_msg(f'The images are being processed into your GEE account.\n\
+                            You can close your SEPAL session  and use the download tool', type_='success')
 
     del tasks
-
-
-

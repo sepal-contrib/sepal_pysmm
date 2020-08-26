@@ -19,16 +19,25 @@ import logging
 logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
 
-def run(task_file, out_path, overwrite=False, rmdrive=False):
+def run(task_file, alert, overwrite=False, rmdrive=False):
+
+    out_path = os.path.split(task_file)[0]
 
     ee.Initialize()
 
     to_remove_states = {CANCEL_REQUESTED, CANCELLED, FAILED, COMPLETED, UNKNOWN}
 
     tasks = []
-    with open(task_file, "r") as tf:
-        for line in tf:
-            tasks.append([x.strip() for x in line.split(",")])
+    try:
+        with open(task_file, "r") as tf:
+            for line in tf:
+                tasks.append([x.strip() for x in line.split(",")])
+    
+    except Exception as e:
+        alert.add_msg(f'{e}', type_='error')
+        return
+
+
 
     drive_handler = gdrive()
 
@@ -71,7 +80,7 @@ def run(task_file, out_path, overwrite=False, rmdrive=False):
                     remove_from_list(task[0])
                     drive_handler.delete_file(items_to_search, f'{file_name}.tif')
             elif state in [UNKNOWN, FAILED]:
-                print(task, state)
+                alert.add_msg(f'There was an error task, state', type_='error')
             return False
         return True
 
@@ -93,3 +102,5 @@ def run(task_file, out_path, overwrite=False, rmdrive=False):
     download(tasks)
     pbar.set_description('Done!')
     pbar.close()
+
+    alert.add_msg(f'All the images were downloaded succesfully', type_='success')

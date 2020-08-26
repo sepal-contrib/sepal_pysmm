@@ -6,8 +6,11 @@ import os
 import sys
 import ntpath
 import re
+
 from time import sleep
 from datetime import datetime
+from osgeo import gdal
+from tqdm.auto import trange, tqdm
 
 
 def filter_closing(image, tmp_path):
@@ -17,8 +20,8 @@ def filter_closing(image, tmp_path):
                                 '-in', image,
                                 '-out', tmp_image,
                                 '-structype', 'ball',
-                                '-xradius', '1',
-                                '-yradius', '1',
+                                '-structype.ball.xradius', '1',
+                                '-structype.ball.yradius', '1',
                                 '-filter', 'closing'
                             ],
                             stdout=subprocess.PIPE,
@@ -47,9 +50,12 @@ def gdal_calculation(image, tmp_image, out_path):
     return process
 
 def remove_tmp_image(tmp_image):
-
     os.remove(tmp_image)
     return
+
+def get_dimension(image):
+    raster = gdal.Open(image)
+    return [raster.RasterXSize, raster.RasterYSize]
 
 def raw_to_processed(image):
 
@@ -84,22 +90,38 @@ def raw_to_processed(image):
     sys.stdout.flush()
     return 
 
-    # Search all Image files in inputs recursively if the files are in directories
+def run_filter(process_path, alert):
 
-#    image_files = []    
-#
-#    if os.path.isdir(folder):
-#        for root, dirs, files in os.walk(folder):
-#            if len(files) != 0:
-#                files = [os.path.join(root, x) for x in files if x.endswith(IMAGES_TYPES)]
-#                [image_files.append(os.path.abspath(file)) for file in files]
-#    else:
-#        print(f'ERROR: The {folder} joined is not a directory path.')
-#    print(f'There are {len(image_files)} images to process, please wait...')
-#
-#    dates = []
-#    for image in image_files:
-#        dates.append(extract_image_info(image))
-#        raw_to_processed(image)
+    IMAGES_TYPES = ('.tif')
+    folder = process_path
+    image_files = []
+    if os.path.isdir(folder):
+        for root, dirs, files in os.walk(folder):
+            if len(files) != 0:
+                files = [os.path.join(root, x) for x in files if x.endswith(IMAGES_TYPES)]
+                [image_files.append(os.path.abspath(file)) for file in files]
+        image_files.sort()
+    
+    else:
+        alert.add_msg(f'ERROR: The {folder} is not a directory path.', type_='error')
+    
+    if len(image_files) > 0:
+        dimension = get_dimension(image_files[0])
+        alert.add_msg(f'There are {len(image_files)} images to process, please wait...', type_='info')
+        print(f'The image dimension is {dimension[0]} x {dimension[1]} px')
 
-#    print('Done!')
+    else:
+        alert.add_msg(f'Error: The folder: "{folder}" is empty.', type_='error')
+        return 1
+
+    try:
+        for i in trange(len(image_files)):
+            raw_to_processed(image_files[i])
+
+        alert.add_msg(f'All the images were correctly processed.', type_='success')
+
+    except Exception as e:
+        alert.add_msg(f'{e}', type_='error')
+        return
+
+    return 0

@@ -58,6 +58,7 @@ def export_sm(image, file_name):
 
 def get_map(minlon, minlat, maxlon, maxlat,
             outpath,
+            Alert,
             sampling=100,
             year=None, month=None, day=None,
             tracknr=None,
@@ -112,7 +113,7 @@ def get_map(minlon, minlat, maxlon, maxlat,
         gldas_last_date = gldas_date()
         if asked_date <= gldas_last_date:
             
-            print(f'Processing the closest image to {year}-{month}-{day}...')
+            Alert.add_msg(f'Processing the closest image to {year}-{month}-{day}...')
             p_bar = tqdm(total = 1  , desc="Starting...", ncols=700,  bar_format="{l_bar}{bar}{r_bar}")
             tasks = []
 
@@ -161,8 +162,8 @@ def get_map(minlon, minlat, maxlon, maxlat,
             p_bar.close()
             return tasks
         else:
-            print('There is no image available for the requested date.')
-            print(f'Try with a date before to {gldas_last_date}.')
+            Alert.add_msg(f'There is no image available for the requested date. \
+                Try with a date before to {gldas_last_date}.', type_='warning')
 
     else:
         
