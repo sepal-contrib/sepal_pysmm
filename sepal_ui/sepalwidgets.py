@@ -113,6 +113,12 @@ class PathSelector(v.Container, HasTraits):
             ),
         ])]
 
+    def widget_field(self):
+        return self.children[0].children[1].children[0]
+
+    def widget_column(self):
+        return self.children[0].children[0].children[0]
+
     def return_paths(self, column=""):
         
         """ Create a list of folders in a given path
@@ -131,7 +137,7 @@ class PathSelector(v.Container, HasTraits):
     @observe('column')
     def _on_column(self, change):
         options = self.return_paths(column=self.column)
-        self.children[0].children[1].children[0].items=options
+        self.widget_field().items=options
 
     def _field_widget(self):
         

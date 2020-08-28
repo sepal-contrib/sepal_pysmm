@@ -4,6 +4,8 @@ import sys
 sys.path.append('..')
 
 from traitlets import HasTraits, link
+from functools import partial
+
 import ipywidgets as widgets
 from ipywidgets.widgets.trait_types import Date, date_serialization
 

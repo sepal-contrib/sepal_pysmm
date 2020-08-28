@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 from os import cpu_count
 from glob import glob
@@ -183,7 +184,7 @@ def statistics_tile(w_selector, statistics_io):
     out = Output()
     date_selector = DateSelector(season=True, remove_method=['Single date']) 
 
-    field_widget = w_selector.children[1]
+    field_widget = w_selector.widget_field()
     field_widget.observe(partial(field_change, date_selector=date_selector, alert=alert), 'v_model')
 
 
