@@ -1,2 +1,2 @@
-# SEPAL pysmm Module
+# sepal_pysmm_vue
  

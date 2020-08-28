@@ -87,7 +87,8 @@ def run_pysmm(Aoi, Date, Alert):
 
 
     # Set the sufix and prefix names
-    aoi = Aoi.assetId
+
+    aoi = Aoi.asset_id
     field = Aoi.field
     column = Aoi.column
 
@@ -154,7 +155,7 @@ def run_pysmm(Aoi, Date, Alert):
     if tasks:
 
         #process = export_images(tasks_file_name, outpath) option to export automatically
-        Alert.add_msg(f'The images are being processed into your GEE account.\n\
-                            You can close your SEPAL session  and use the download tool', type_='success')
+        Alert.add_msg(f'Done: The images are being processed into your GEE account.\n\
+                        Now you can close your SEPAL session and use the download tool when the process is done.', type_='success')
 
     del tasks

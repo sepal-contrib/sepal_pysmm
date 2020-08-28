@@ -123,7 +123,6 @@ def run_process_tile(aoi, dates):
     process_alert = s.Alert()
 
     content = v.Layout(
-        _metadata={'mount_id': 'aoi_widget'},
         xs12=True,
         row=True,
         class_="ma-5 d-block",
@@ -137,8 +136,8 @@ def run_process_tile(aoi, dates):
 
 
 #create an aoi selector tile with all its bindings
-def TileAOI(io, remove_method=[]):
-    """render and bind all the variable to create an autonomous aoi selector. It will create a asset in you gee account with the name 'aoi_[aoi_name]'. The assetId will be added to io.assetId.
+def aoi_tile(io, remove_method=[]):
+    """render and bind all the variable to create an autonomous aoi selector. It will create a asset in you gee account with the name 'aoi_[aoi_name]'. The asset_id will be added to io.asset_id.
     
     Args: 
         io (Aoi_IO) : an Aoi_IO object that content all the IO of the aoi selector tile in your app
@@ -203,9 +202,9 @@ def TileAOI(io, remove_method=[]):
 
     aoi_asset_name = v.TextField(
         class_='pa-5 d-none mr-10', 
-        v_model=io.assetId
+        v_model=io.asset_id
     )
-    wb.bind(aoi_asset_name, io, 'assetId')
+    wb.bind(aoi_asset_name, io, 'asset_id')
 
     asset_btn = s.Btn(text = 'Use asset', visible=False, small=True)
     

@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
+
 from datetime import datetime
 from sepal_ui import mapping
+from traitlets import HasTraits, Unicode
 
 import ee
 ee.Initialize()
 
 
-class Aoi_IO:
+class Aoi_IO(HasTraits):
+
+    asset_id = Unicode('').tag(sync=True)
+
     
-    def __init__(self, alert_widget=None):
+    def __init__(self, asset_id=None):
         """Initiate the Aoi object.
 
         Args:
@@ -17,10 +22,13 @@ class Aoi_IO:
         """
 
         # GEE parameters
-        self.assetId = 'users/dafguerrerom/ReducedAreas_107PHU'
+        
         self.column = None
         self.field = None
         self.selected_feature = None
+
+        if asset_id:
+            self.asset_id = asset_id
 
         #set up your inputs
         self.file_input = None
@@ -28,7 +36,7 @@ class Aoi_IO:
         self.country_selection = None
         self.selection_method = None
         self.drawn_feat = None
-        self.alert = alert_widget
+
         
     def get_aoi_ee(self):
 
@@ -37,7 +45,7 @@ class Aoi_IO:
         return: ee.Object
 
         """
-        return ee.FeatureCollection(self.assetId)
+        return ee.FeatureCollection(self.asset_id)
     
     def get_columns(self):
 
@@ -121,7 +129,7 @@ class Aoi_IO:
 
         """
 
-        # Search if there is a selected feature, otherwise use all the assetId
+        # Search if there is a selected feature, otherwise use all the asset_id
 
 
         bounds = self.get_bounds(asset_ee, cardinal=True)

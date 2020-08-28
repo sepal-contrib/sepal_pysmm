@@ -8,8 +8,6 @@ import subprocess
 
 from ipywidgets import HTML
 from modules.stackcomposed.stack_composed import parse as ps
-from modules.itables import interactive_table
-from modules.itables import options as opt
 from sepal_ui import sepalwidgets as s
 
 def formatter(start, end, step):

@@ -5,7 +5,7 @@ from glob import glob
 from functools import partial 
 
 from traitlets import HasTraits, List, link, Unicode, Int
-from ipywidgets import Output
+from ipywidgets import Output, HTML
 import ipyvuetify as v
 
 
@@ -15,6 +15,35 @@ from .dateselector import DateSelector, date_picker_tile
 from sepal_ui import sepalwidgets as s
 
 from scripts.stackstat import stack_composed
+
+statistics_text = HTML("""
+<p>After the data is filtered, a time series analysis of the soil 
+moisture maps can be performed. Several statistics can be applied 
+whether to the entire time series or to a specified range, 
+statistics as median, mean, standard deviation or linear 
+trend (slope of the line) are available to process the selected data.</p>
+
+<p>This module uses the <a href='https://github.com/SMByC/StackComposed' target='_blank'>
+Stack Composed python module</a>, which was developed by the SMByC of Ideam (Colombia), 
+that computes a specific statistic for all valid pixel values across the time 
+series using a parallel process. </p>
+
+<p>There are three options for analyzing the data for 
+different time frames.</p>
+
+<ul>
+<li><b>All time series</b>: runs the analysis for all the 
+images in the given folder.</li>
+<li><b>Range</b>: runs the analysis for all the images within 
+the time frame selected.</li>
+<li><b>Season</b>: the user can define a season by selecting months or years.
+The analysis is run for only the years/months selected. 
+For example if January, February and 2016, 2017, 2018 are selected, 
+then the analysis would run for January 2016, 
+January 2017, January 2018,  February 2016, February 2017 and February 2018.
+If only a month is selected (without years), the analysis would run all the 
+years for the given month.</li>
+""")
 
 def get_months_years(path, alert):
     
@@ -204,19 +233,22 @@ def statistics_tile(w_selector, statistics_io):
         row=True,
         align_center=True, 
         children=[
-            v.Flex(xs12=True, children=[v.Subheader(children=['Area selection']),
-                                        v.Divider(),
-                                        w_selector,
-                                        v.Subheader(children=['Date selection']),
-                                        v.Divider(),
-                                        date_tile,
-                                        v.Divider(),
-                                        w_stats,
-                                        advanced_settings,
-                                        btn,
-                                        alert,
-                                        out
-                                       ]),
+            v.Flex(xs12=True, children=[
+                statistics_text,
+                v.Subheader(children=['Area selection']),
+                v.Divider(),
+                w_selector,
+                v.Subheader(children=['Date selection']),
+                v.Divider(),
+                date_tile,
+                v.Divider(),
+                w_stats,
+                advanced_settings,
+                btn,
+                alert,
+                out
+                ]
+            ),
         ]
     )
 

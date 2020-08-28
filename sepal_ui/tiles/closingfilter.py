@@ -4,13 +4,25 @@ import os
 from functools import partial
 
 from traitlets import HasTraits, Unicode, observe
-from ipywidgets import Output
+from ipywidgets import Output, HTML
 import ipyvuetify as v
 
 from sepal_ui import sepalwidgets as s
-from scripts.filter_closing_smm import run_filter
+from scripts.filter_closing_smm import run_filter 
 
-
+filter_text = HTML("""
+<p>Due to speckle in the Sentinel-1 imagery the soil moisture maps contain 
+some noise and no-data values which are corrected
+using grayscale morphological operation from ORFEO toolbox, a free 
+and open source image processing tool. To read more about the 
+parameterization of the Orfeo toolbox tool, read 
+<a href='https://www.orfeo-toolbox.org/CookBook/Applications/app_GrayScaleMorphologicalOperation.html' target="_blank">
+the docs</a> for more info.
+</br>
+This process is done by the SEPAL instance, the time will depend on 
+the number of images and the dimension, after finishing all the 
+images, the progress bar will be green colored.
+""")
 
 def close_filter_tile(w_selector):
 
@@ -51,6 +63,7 @@ def close_filter_tile(w_selector):
         row=True,
         class_="ma-5 d-block",
         children=[
+            filter_text,
             w_selector, 
             btn,
             alert,
