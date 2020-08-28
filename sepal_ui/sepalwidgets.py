@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import os
 import ipyvuetify as v
 from traitlets import HasTraits, Unicode, List, observe
@@ -87,21 +89,29 @@ class Btn(v.Btn, SepalWidget):
         self.loading = True
 
 
-class PathSelector(v.Layout, HasTraits):
+class PathSelector(v.Container, HasTraits):
+    """Display two select widgets and allows to select
+    a specific element from the list.
+    """
     
-    column = Unicode()
-    field = Unicode()
+    column = Unicode().tag(sync=True)
+    field = Unicode().tag(sync=True)
     
-    def __init__(self, raw_path='/home/', **kwargs):
+    def __init__(self, raw_path='/home/', file_type='.tif', **kwargs):
 
         self.raw_path = raw_path
         
         super().__init__(**kwargs)
 
-        self.class_="pa-5"
-        self.row=True
         self.align_center=True
-        self.children = [self._column_widget(), self._field_widget(),]
+        self.children = [v.Row(children=[
+            v.Col(
+                children=[self._column_widget()]
+            ),
+            v.Col(
+                children=[self._field_widget()]
+            ),
+        ])]
 
     def return_paths(self, column=""):
         
@@ -121,13 +131,12 @@ class PathSelector(v.Layout, HasTraits):
     @observe('column')
     def _on_column(self, change):
         options = self.return_paths(column=self.column)
-        self.children[1].items=options
+        self.children[0].children[1].children[0].items=options
 
     def _field_widget(self):
         
         w_field = v.Select(
             v_model=None,
-            class_='pa-5', 
             label='Select field...')
         
         def on_change(change):
@@ -141,8 +150,7 @@ class PathSelector(v.Layout, HasTraits):
 
         w_column = v.Select(
             v_model=None, 
-            class_='pa-5 ', 
-            label='Select column...',
+            label='Select column...', 
             items=self.return_paths(),
         )
 
