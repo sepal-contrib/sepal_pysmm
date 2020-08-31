@@ -19,7 +19,6 @@ from sepal_ui import sepalwidgets as s
 from sepal_ui import mapping
 
 from sepal_ui.utilities import utils
-from modules.ipyfilechooser import FileChooser
 
 
     
