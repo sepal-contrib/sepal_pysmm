@@ -1,4 +1,3 @@
-from markdown import markdown
 from datetime import datetime
 import traitlets
 import os
@@ -190,11 +189,6 @@ def App (tiles=[''], appBar=None, footer=None, navDrawer=None):
     content = v.Content(children=[v.Container(fluid=True,children = tiles)])
     app_children.append(content)
     
-    #create a false footer if necessary
-    if not footer:
-        footer = Footer()
-    app_children.append(footer)
-
     app.children = app_children
     
     return (app, toolBarButton)
@@ -250,74 +244,6 @@ def Tile(id_, title, inputs=[''], btn=None, output=None):
     
     return tile
 
-#create the about tile 
-def TileAbout(pathname):
-    """
-    create a about tile using a md file. This tile will have the "about_widget" id and "About" title.
-    
-    Args:
-        pathname (str) : the pathname to the .md file of the about section
-        
-    Returns:
-        tile (v.Layout) : a about tile
-    """
-    
-    #read the content and transform it into a html
-    f = open(pathname, 'r')
-    if f.mode == 'r':
-        about = f.read()
-    else :
-        about = '**No About File**'
-        
-    about = markdown(about, extensions=['fenced_code', 'sane_lists'])
-    
-    #need to be nested in a div to be displayed
-    about = '<div>\n' + about + '\n</div>'
-    
-    #create a Html widget
-    class MyHTML(v.VuetifyTemplate):
-        template = traitlets.Unicode(about).tag(sync=True)
-    
-    
-    content = MyHTML()
-    
-    #content = w.HTML(value=about)
-    
-    return Tile('about_widget', 'About', inputs=[content])
-
-#create the disclaimer tile 
-def TileDisclaimer():
-    """
-    create a about tile using a md file. This tile will have the "about_widget" id and "Disclaimer" title. It will be display at the same time as the about section
-        
-    Returns:
-        tile (v.Layout) : a about tile
-    """
-    
-    pathname = os.path.join(os.path.dirname(__file__), 'scripts', 'disclaimer.md')
-    
-    #read the content and transform it into a html
-    f = open(pathname, 'r')
-    if f.mode == 'r':
-        about = f.read()
-    else :
-        about = '**No Disclaimer File**'
-        
-    about = markdown(about, extensions=['fenced_code', 'sane_lists'])
-    
-    #need to be nested in a div to be displayed
-    about = '<div>\n' + about + '\n</div>'
-    
-    #create a Html widget
-    class MyHTML(v.VuetifyTemplate):
-        template = traitlets.Unicode(about).tag(sync=True)
-    
-    
-    content = MyHTML()
-    
-    #content = w.HTML(value=about)
-    
-    return Tile('about_widget', 'Disclaimer', inputs=[content])
 
 #create downloadable links button 
 def DownloadBtn(text, path="#"):
