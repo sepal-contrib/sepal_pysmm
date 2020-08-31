@@ -3,7 +3,7 @@
 
 import os
 from glob import glob
-from ipyvuetify import Container
+from ipyvuetify import Container, Row, Col, Select
 from traitlets import HasTraits, Unicode, observe
 
 class PathSelector(Container, HasTraits):
