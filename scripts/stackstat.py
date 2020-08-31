@@ -148,6 +148,11 @@ def stack_composed(path_selector, date_selector, statistic, alert):
 
         return
 
+    elif len(tifs) == 1:
+        alert.add_msg(f'There is only one image in the selected range, \
+            please try a wider range.', type_='error')
+
+        return
 
     if season:
 
