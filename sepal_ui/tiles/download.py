@@ -82,7 +82,7 @@ def download_tile(obj, w_selection):
     # Create an alert element for the process
     process_alert = s.Alert()
 
-    on_download(obj, btn, w_selection, out, process_alert)
+    on_download(obj, w_selection, btn, out, process_alert)
 
     html_header = """
     <style>
