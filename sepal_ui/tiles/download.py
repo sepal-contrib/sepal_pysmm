@@ -9,6 +9,7 @@ import ipyvuetify as v
 
 from sepal_ui import sepalwidgets as s
 from sepal_ui import widgetBinding as wb
+from scripts import download_to_sepal
 
 
 

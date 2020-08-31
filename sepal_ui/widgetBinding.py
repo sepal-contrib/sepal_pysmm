@@ -7,7 +7,6 @@ import geemap
 import ee
 
 from scripts import run_pysmm
-from scripts import download_to_sepal
 from sepal_ui import mapping
 
 ee.Initialize()
