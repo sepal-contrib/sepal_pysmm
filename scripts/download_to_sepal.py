@@ -93,6 +93,7 @@ def run(task_file, alert, overwrite=False, rmdrive=False):
             items_to_search = drive_handler.get_items()
             tasks  = list(filter(check_for_not_completed, tasks))
             if tasks:
+                alert.add_msg('Waiting...', type_='info')
                 pbar.set_description('Waiting...')
                 time.sleep(45)
         
