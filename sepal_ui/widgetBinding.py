@@ -387,46 +387,4 @@ def bin_pysmm_process(aoi, dates, btn, out, alert):
     ))
 
     
-def bin_download_process(obj, btn, out, alert):
-    """Starts the download process.
 
-    Args:
-        obj (Download): Download object
-        btn (Trigger Button): Button to trigger the callback
-        out (widgets.out): Widget area to capture outputs
-        process_alert (s.Alert): Alert to display useful messages
-    """
-
-    def on_click(widget, event, data, out, obj, alert):
-        
-        task_file_name = obj.tasks_file_name
-        overwrite = obj.overwrite
-        rmdrive = obj.rmdrive
-
-        # Clear output if there is something printed before
-        out.clear_output()
-
-        # Once the button is clicked, disable it
-        btn.disable()
-
-        # Clear old alert messages
-        alert.clear()
-
-        @out.capture()
-        def run_process(obj):
-            download_to_sepal.run(
-                task_file_name,
-                alert,
-                overwrite=overwrite,
-                rmdrive=overwrite,
-        )
-
-        run_process(obj)
-        btn.activate()
-
-    btn.on_event('click', partial(
-        on_click,
-        obj=obj,
-        out=out,
-        alert=alert, 
-    ))
