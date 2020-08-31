@@ -96,12 +96,13 @@ def run(task_file, alert, overwrite=False, rmdrive=False):
                 alert.add_msg('Waiting...', type_='info')
                 pbar.set_description('Waiting...')
                 time.sleep(45)
-        
 
-    global pbar
-    pbar = tqdm(total = len(tasks), desc="Starting...", ncols=700,  bar_format="{l_bar}{bar}{r_bar}")
-    download(tasks)
-    pbar.set_description('Done!')
-    pbar.close()
-
-    alert.add_msg(f'All the images were downloaded succesfully', type_='success')
+    if tasks:
+        global pbar
+        pbar = tqdm(total = len(tasks), desc="Starting...", ncols=700,  bar_format="{l_bar}{bar}{r_bar}")
+        download(tasks)
+        pbar.set_description('Done!')
+        pbar.close()
+        alert.add_msg(f'All the images were downloaded succesfully', type_='success')
+    else:
+        alert.add_msg(f'All the images were already downloaded.', type_='warning')
