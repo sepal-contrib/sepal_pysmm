@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from modules.ipyfilechooser import FileChooser
+
 import getpass
 from functools import partial 
 import ipywidgets as widgets
