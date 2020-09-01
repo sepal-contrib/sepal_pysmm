@@ -133,7 +133,7 @@ def aoi_tile(io, remove_method=[]):
     asset_btn = s.Btn(text = 'Use asset', visible=False, small=True)
     
     w_field = v.Select(
-        v_model=None, 
+        v_model="", 
         class_='pa-5 d-none', 
         label='Select field...')
 
@@ -141,7 +141,7 @@ def aoi_tile(io, remove_method=[]):
     # wb.bind(w_field, io, 'field')
 
     w_column = v.Select(
-        v_model=None, 
+        v_model="", 
         class_='pa-5 d-none', 
         label='Select variable...'
     )
