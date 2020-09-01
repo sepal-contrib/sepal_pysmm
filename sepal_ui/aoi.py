@@ -13,7 +13,6 @@ class Aoi_IO(HasTraits):
 
     asset_id = Unicode('').tag(sync=True)
     column = Unicode('').tag(sync=True)
-    field = Unicode('').tag(sync=True)
 
     
     def __init__(self, asset_id=None):
@@ -26,6 +25,7 @@ class Aoi_IO(HasTraits):
 
         # GEE parameters
         self.selected_feature = None
+        self.field = None
 
         if asset_id:
             self.asset_id = asset_id
@@ -88,7 +88,7 @@ class Aoi_IO(HasTraits):
 
         if not self.column or not self.field:
             self.alert.add_msg('error', f'You must first select a column and a field.')
-            raise 
+            raise ValueError
 
         ee_asset = self.get_aoi_ee()
         select_feature = ee_asset.filterMetadata(self.column, 'equals', self.field).geometry()
@@ -105,7 +105,7 @@ class Aoi_IO(HasTraits):
 
         # GEE parameters
         self.column = ""
-        self.field = ""
+        self.field = None
         self.selected_feature = None
 
         #set up your inputs

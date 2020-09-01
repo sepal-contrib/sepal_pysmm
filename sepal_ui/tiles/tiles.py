@@ -65,11 +65,13 @@ def aoi_tile(io, remove_method=[]):
    """
 
 
-    def on_column_change(widget, event, data, obj, widget1):
+    def on_column_change(change, obj, widget1):
         # Clear previous items
         widget1.items = []
+        widget1.v_model = None
         # Fill up the second widget
-        widget1.items = obj.get_fields()
+        if obj.column:
+            widget1.items = obj.get_fields()
 
 
 
@@ -133,11 +135,11 @@ def aoi_tile(io, remove_method=[]):
     asset_btn = s.Btn(text = 'Use asset', visible=False, small=True)
     
     w_field = v.Select(
-        v_model="", 
+        v_model=None, 
         class_='pa-5 d-none', 
         label='Select field...')
 
-    link((w_field, 'v_model'), (io, 'field'))
+    # link((w_field, 'v_model'), (io, 'field'))
     # wb.bind(w_field, io, 'field')
 
     w_column = v.Select(
