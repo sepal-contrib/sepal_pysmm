@@ -87,7 +87,8 @@ def mbind(widget, widget1, obj, attribute):
     
     
     def on_change(widget, event, data, obj, widget1, attribute):
-        
+        # Clear previous items
+        widget1.items = []
         setattr(obj, attribute, widget.v_model)
         widget1.items = obj.get_fields()
         
@@ -198,11 +199,13 @@ def bindAoiMethod(method_widget, list_input, obj, m, dc, selection_method, alert
         aoi_file_name = list_input[1]
         aoi_country_selection = list_input[2]
 
-
         aoi_asset_name = list_input[3]
         aoi_asset_btn = list_input[4]
         w_asset_column = list_input[5]
         w_asset_field = list_input[6]
+
+        w_asset_column.v_model=None
+        w_asset_field.v_model=None
 
         
         setattr(obj, 'selection_method', widget.v_model)
