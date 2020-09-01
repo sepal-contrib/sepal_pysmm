@@ -204,8 +204,8 @@ def bindAoiMethod(method_widget, list_input, obj, m, dc, selection_method, alert
         w_asset_column = list_input[5]
         w_asset_field = list_input[6]
 
-        w_asset_column.v_model=None
-        w_asset_field.v_model=None
+        w_asset_column.items=[]
+        w_asset_field.items=[]
 
         
         setattr(obj, 'selection_method', widget.v_model)
