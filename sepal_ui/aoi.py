@@ -104,8 +104,8 @@ class Aoi_IO(HasTraits):
     def clear_attributes(self):
 
         # GEE parameters
-        self.column = None
-        self.field = None
+        self.column = ""
+        self.field = ""
         self.selected_feature = None
 
         #set up your inputs
