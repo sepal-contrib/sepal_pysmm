@@ -142,17 +142,6 @@ def stack_composed(path_selector, date_selector, statistic, alert):
     # Create a list from all the images 
     tifs = glob.glob(f'{processed_ff_path}/close*.tif')
     # tifs = glob.glob(f'{processed_f_path}/*/close*.tif') # To compute all the folders
-    if not tifs:
-        alert.add_msg(f'There are no images for the selected dates, \
-            please try with a different range.', type_='error')
-
-        return
-
-    elif len(tifs) == 1:
-        alert.add_msg(f'There is only one image in the selected range, \
-            please try a wider range.', type_='error')
-
-        return
 
     if season:
 
@@ -195,7 +184,20 @@ def stack_composed(path_selector, date_selector, statistic, alert):
         processed_stat_name = os.path.join(processed_stat_path, 
                                        f'Stack_{selected_stat.upper()}_{feature}_{field}.tif')
 
-    alert.add_msg(f'Executing {selected_stat} for {len(tifs)} images...', type_='info')
+    # Verify if there are images after filtering with ranges.    
+    if not tifs:
+        alert.add_msg(f'There are no images for the selected dates, \
+            please try with a different range.', type_='error')
+        return
+
+    elif len(tifs) == 1:
+        alert.add_msg(f'There is only one image in the selected range, \
+            to calculate the statistics you need at least 2 images, \
+            please try a wider range.', type_='error')
+        return
+    else:
+        alert.add_msg(f'Executing {selected_stat} for {len(tifs)} images...', type_='info')
+    
     # Create a file with the selected images
     tmp_tif_file = [os.path.join(processed_stat_path, 'tmp_images.txt')]
 
