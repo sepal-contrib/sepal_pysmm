@@ -1,4 +1,7 @@
 # Byte-compiled / optimized / DLL files
+modules/stackcomposed/stack_composed/__pycache__/
+sepal_ui/tiles/__pycache__/
+sepal_ui/utilities/__pycache__/
 __pycache__/
 *.py[cod]
 *$py.class
