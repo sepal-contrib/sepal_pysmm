@@ -11,6 +11,8 @@ ee.Initialize()
 class Aoi_IO(HasTraits):
 
     asset_id = Unicode('').tag(sync=True)
+    column = Unicode('').tag(sync=True)
+    field = Unicode('').tag(sync=True)
 
     
     def __init__(self, asset_id=None):
@@ -22,9 +24,6 @@ class Aoi_IO(HasTraits):
         """
 
         # GEE parameters
-        
-        self.column = None
-        self.field = None
         self.selected_feature = None
 
         if asset_id:

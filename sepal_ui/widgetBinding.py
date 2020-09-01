@@ -81,25 +81,6 @@ def toggle_inputs(input_list, widget_list):
 
     return
 
-
-
-def mbind(widget, widget1, obj, attribute):
-    
-    
-    def on_change(widget, event, data, obj, widget1, attribute):
-        # Clear previous items
-        widget1.items = []
-        setattr(obj, attribute, widget.v_model)
-        widget1.items = obj.get_fields()
-        
-    widget.on_event('change', partial(
-        on_change,
-        obj=obj,
-        widget1 = widget1,
-        attribute=attribute,
-    ))
-
-
 def field_map_bind(widget, obj, attribute, m, dc):
     
 
@@ -203,10 +184,6 @@ def bindAoiMethod(method_widget, list_input, obj, m, dc, selection_method, alert
         aoi_asset_btn = list_input[4]
         w_asset_column = list_input[5]
         w_asset_field = list_input[6]
-
-        w_asset_column.items=[]
-        w_asset_field.items=[]
-
         
         setattr(obj, 'selection_method', widget.v_model)
         

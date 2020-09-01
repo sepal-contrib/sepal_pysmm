@@ -64,6 +64,15 @@ def aoi_tile(io, remove_method=[]):
        tile (v.Layout) : an autonomous tile for AOI selection binded with io
    """
 
+
+    def on_column_change(widget, event, data, obj, widget1, attribute):
+        # Clear previous items
+        widget1.items = []
+        # Fill up the second widget
+        widget1.items = obj.get_fields()
+
+
+
     AOI_MESSAGE='Select the AOI method'
     
     #create the output
@@ -124,19 +133,23 @@ def aoi_tile(io, remove_method=[]):
     asset_btn = s.Btn(text = 'Use asset', visible=False, small=True)
     
     w_field = v.Select(
-        v_model=io.field, 
+        v_model=None, 
         class_='pa-5 d-none', 
         label='Select field...')
 
-    wb.bind(w_field, io, 'field')
+    link((w_field, 'v_model'), (io, 'field'))
+    # wb.bind(w_field, io, 'field')
 
     w_column = v.Select(
-        v_model=io.column, 
+        v_model=None, 
         class_='pa-5 d-none', 
         label='Select variable...'
     )
-    # Bind the first widget with the object and create event on second widget
-    wb.mbind(w_column, w_field, io, 'column')
+    # Bind the first widget with the object 
+    link((w_column, 'v_model'), (io, 'column'))
+    # and create event on second widget
+    w_column.observe(partial(obj=obj, widget1=w_field), 'v_model')
+
 
     widget_list = [aoi_file_input, aoi_file_name, aoi_country_selection, 
                     aoi_asset_name, asset_btn, w_column, w_field]
