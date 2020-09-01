@@ -111,8 +111,9 @@ def run_filter(process_path, alert):
         print(f'The image dimension is {dimension[0]} x {dimension[1]} px')
 
     else:
-        alert.add_msg(f'Error: The folder: "{folder}" is empty.', type_='error')
-        return 1
+        alert.add_msg(f'Error: The folder: "{folder}" is empty, please \
+         make sure you have processed and downloaded the images.', type_='error')
+        return
 
     try:
         for i in trange(len(image_files)):
