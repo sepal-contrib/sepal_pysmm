@@ -148,7 +148,7 @@ def aoi_tile(io, remove_method=[]):
     # Bind the first widget with the object 
     link((w_column, 'v_model'), (io, 'column'))
     # and create event on second widget
-    w_column.observe(partial(obj=obj, widget1=w_field), 'v_model')
+    w_column.observe(partial(obj=io, widget1=w_field), 'v_model')
 
 
     widget_list = [aoi_file_input, aoi_file_name, aoi_country_selection, 
