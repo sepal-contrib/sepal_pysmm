@@ -173,8 +173,6 @@ def bind_dates(dates_widget, widget_list, obj):
         widget_list=widget_list,
         obj=obj,
     ))
- 
-
 
 def bindAoiMethod(method_widget, list_input, obj, m, dc, selection_method, alert_box):
     """
@@ -204,10 +202,6 @@ def bindAoiMethod(method_widget, list_input, obj, m, dc, selection_method, alert
         w_asset_column = list_input[5]
         w_asset_field = list_input[6]
 
-        w_asset_column.items=[]
-        w_asset_field.items=[]
-
-        
         setattr(obj, 'selection_method', widget.v_model)
         
         #remove the map 
@@ -241,6 +235,8 @@ def bindAoiMethod(method_widget, list_input, obj, m, dc, selection_method, alert
 
                 # Clear previous selected attributes
                 aoi.clear_attributes()
+                w_asset_column.items=[]
+                w_asset_field.items=[]
 
                 # Display column and field widgets
                 toggle_inputs([w_asset_column, w_asset_field], 
