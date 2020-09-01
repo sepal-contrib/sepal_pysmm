@@ -65,7 +65,7 @@ def aoi_tile(io, remove_method=[]):
    """
 
 
-    def on_column_change(widget, event, data, obj, widget1, attribute):
+    def on_column_change(widget, event, data, obj, widget1):
         # Clear previous items
         widget1.items = []
         # Fill up the second widget
