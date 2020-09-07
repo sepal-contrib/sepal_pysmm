@@ -34,6 +34,14 @@ def run_pysmm(Aoi, Date, Alert):
     # Get SEPAL user
     user = getpass.getuser()
 
+    if not Aoi or not Aoi.column or not Aoi.field:
+        Alert.add_msg('Please select an Area of Interest in step 2 "AOI selection", and be sure to choose a variable and a field.', type_='error')
+        return
+
+    if not Date or not Date.date_method:
+        Alert.add_msg('Please select a date method in step 3 "Date Selection".', type_='error')
+        return        
+
     download_to_sepal = os.path.join(os.getcwd(), 'scripts/download_to_sepal.py')
 
     def export_images(tasks_file_name, outpath):
