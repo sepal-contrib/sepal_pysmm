@@ -18,7 +18,7 @@ STYLES = """
 }
 </style>
 """
-HTML(STYLES)
+display(HTML(STYLES))
 
 class SepalWidget(v.VuetifyWidget):
     
