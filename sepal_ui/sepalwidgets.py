@@ -21,8 +21,6 @@ STYLES = """
 HTML(STYLES)
 
 class SepalWidget(v.VuetifyWidget):
-
-    default_style = InstanceDict(MapStyle).tag(sync=True, **widget_serialization)
     
     def __init__(self, **kwargs):
         
