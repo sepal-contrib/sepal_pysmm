@@ -6,6 +6,7 @@ from glob import glob
 from pathlib import Path
 import ipyvuetify as v
 from traitlets import HasTraits, Unicode, List, observe, link
+from ipywidgets import HTML
 
 STYLES = """
 <style>
