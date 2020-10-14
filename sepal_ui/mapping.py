@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 import os 
 if 'GDAL_DATA' in list(os.environ.keys()): del os.environ['GDAL_DATA']
 
@@ -37,7 +38,6 @@ ee.Initialize()
 
 class SepalMap(geemap.Map):
 
-    loaded_rasters = {}
 
     def __init__(self, **kwargs):
 
@@ -78,7 +78,7 @@ class SepalMap(geemap.Map):
         output_control_r = WidgetControl(widget=output_r, position='bottomright')
         self.add_control(output_control_r)
 
-
+        self.loaded_rasters = {}
         # Define a behavior when ispector checked and map clicked
         def raster_interaction(**kwargs):
 
@@ -198,7 +198,7 @@ class SepalMap(geemap.Map):
         self.zoom = zoom-zoom_out
 
     #copy of the geemap add_raster function to prevent a bug from sepal 
-    def add_raster(self, image, bands=None, layer_name=None, colormap=None, x_dim='x', y_dim='y', opacity=1.0):
+    def add_raster(self, image, bands=None, layer_name=None, colormap=None, x_dim='x', y_dim='y', opacity=1.0, center=False):
         """Adds a local raster dataset to the map.
         Args:
             image (str): The image file path.
@@ -230,6 +230,19 @@ class SepalMap(geemap.Map):
         local_raster = collections.namedtuple(
             'LocalRaster', ('name', 'left', 'bottom', 'right', 'top', 'x_res', 'y_res', 'data')
             )(layer_name, *da.rio.bounds(), *da.rio.resolution(), da.data[0])
+
+        if center:
+            lat = (local_raster.top-local_raster.bottom)/2 + local_raster.bottom
+            lon = (local_raster.right-local_raster.left)/2 + local_raster.left
+            
+
+            bounds = ((local_raster.top, local_raster.left),
+                      (local_raster.bottom, local_raster.left), 
+                      (local_raster.top, local_raster.right), 
+                      (local_raster.bottom, local_raster.right))
+
+            self.center = (lat,lon)
+            self.set_zoom(bounds)
 
         self.loaded_rasters[layer_name] = local_raster
 
