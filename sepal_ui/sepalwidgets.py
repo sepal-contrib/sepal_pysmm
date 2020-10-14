@@ -5,36 +5,19 @@ import os
 from glob import glob
 from pathlib import Path
 import ipyvuetify as v
-from traitlets import HasTraits, Unicode, List, observe, link, Enum
+from traitlets import HasTraits, Unicode, List, observe, link
 
-from ipywidgets import Style, Widget, widget_serialization
-from ipywidgets.widgets.trait_types import InstanceDict
-
-allowed_cursor = ['alias', 'cell', 'grab', 'move', 'crosshair', 'context-menu',
-                  'n-resize', 'ne-resize', 'e-resize', 'se-resize', 's-resize',
-                  'sw-resize', 'w-resize', 'nw-resize', 'nesw-resize',
-                  'nwse-resize', 'row-resize', 'col-resize', 'copy', 'default',
-                  'grabbing', 'help', 'no-drop', 'not-allowed', 'pointer',
-                  'progress', 'text', 'wait', 'zoom-in', 'zoom-out']
-
-class MapStyle(Style, Widget):
-    """Map Style Widget
-
-    Custom map style.
-
-    Attributes
-    ----------
-    cursor: str, default 'grab'
-        The cursor to use for the mouse when it's on the map. Should be a valid CSS
-        cursor value.
-    """
-
-    _model_name = Unicode('LeafletMapStyleModel').tag(sync=True)
-    _model_module = Unicode("jupyter-leaflet").tag(sync=True)
-
-    _model_module_version = Unicode('version').tag(sync=True)
-
-    cursor = Enum(values=allowed_cursor, default_value='crosshair').tag(sync=True)
+STYLES = """
+<style>
+.leaflet-pane {
+    z-index : 6 !important;
+}
+.leaflet-top, .leaflet-bottom {
+    z-index : 6 !important;
+}
+</style>
+"""
+HTML(STYLES)
 
 class SepalWidget(v.VuetifyWidget):
 
