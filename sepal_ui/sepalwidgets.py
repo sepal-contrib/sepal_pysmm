@@ -16,6 +16,9 @@ STYLES = """
 .leaflet-top, .leaflet-bottom {
     z-index : 6 !important;
 }
+.v-toolbar {
+    z-index: 7 !important;
+}
 </style>
 """
 display(HTML(STYLES))
@@ -102,10 +105,10 @@ class Btn(v.Btn, SepalWidget):
             'download' : 'mdi-download'
         }
         
-        if not icon in common_icons.keys():
-            icon = 'default'
+        if icon in common_icons.keys():
+            icon = common_icons[icon]
         
-        return v.Icon(left=True, children=[common_icons[icon]])    
+        return v.Icon(left=True, children=[icon])    
 
     def disable(self):
         self.disabled = True
@@ -196,7 +199,7 @@ class VueDataFrame(v.VuetifyTemplate):
         if title is not None:
             self.title = title
 
-class FileInput(v.Layout, SepalWidget, HasTraits):
+class FileInput(v.Flex, SepalWidget, HasTraits):
 
     
     file = Unicode('')
@@ -204,14 +207,15 @@ class FileInput(v.Layout, SepalWidget, HasTraits):
     def __init__(self, 
         extentions=['.txt'], 
         folder=os.path.expanduser('~'), 
-        label='select file', 
+        label='search file', 
         **kwargs):
 
         self.extentions = extentions
         self.folder = folder
         
         self.selected_file = v.TextField(
-            label='file', 
+            label='Selected file', 
+            class_='ml-5 mt-5',
             v_model=self.file
         )
         
@@ -235,16 +239,16 @@ class FileInput(v.Layout, SepalWidget, HasTraits):
             v_slots=[{
                 'name': 'activator',
                 'variable': 'x',
-                'children': v.Btn(v_model=False, v_on='x.on', children=[label])
+                'children': Btn(icon='mdi-file-search', v_model=False, v_on='x.on', text=label)
         }])
         
         super().__init__(
             row=True,
-            class_='pa-5',
+            class_='d-flex align-center mb-2',
             align_center=True,
             children=[
-                v.Flex(xs12=True, children=[self.selected_file]),
-                v.Flex(xs12=True, children=[self.file_menu])
+                self.file_menu,
+                self.selected_file,
             ],
             **kwargs
         )

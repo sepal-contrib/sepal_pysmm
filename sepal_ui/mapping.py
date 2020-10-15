@@ -8,7 +8,7 @@ import string
 import random
 import collections
 import geemap
-from ipyleaflet import basemap_to_tiles, ZoomControl, LayersControl, AttributionControl, ScaleControl, DrawControl
+from ipyleaflet import basemaps, basemap_to_tiles, ZoomControl, LayersControl, AttributionControl, ScaleControl, DrawControl
 import ee 
 from haversine import haversine
 
@@ -39,7 +39,7 @@ ee.Initialize()
 class SepalMap(geemap.Map):
 
 
-    def __init__(self, **kwargs):
+    def __init__(self, basemaps=[], add_google_map=None, **kwargs):
 
         """  Initialize Sepal Map.
 
@@ -49,7 +49,6 @@ class SepalMap(geemap.Map):
 
 
         """
-
         basemap = dict(
             url='http://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
             max_zoom=20,
@@ -61,8 +60,15 @@ class SepalMap(geemap.Map):
 
         basemap = basemap_to_tiles(basemap)
 
-        super().__init__(**kwargs, add_google_map=False, basemap=basemap)
-        
+        if not add_google_map:
+            add_google_map = False
+
+        super().__init__(**kwargs, add_google_map=add_google_map, basemap=basemap)
+
+        if basemaps:
+            for basemap in basemaps:
+                self.add_basemap(basemap)
+
         self.center = [0,0]
         self.zoom = 2
         
@@ -143,15 +149,34 @@ class SepalMap(geemap.Map):
         if local_layer.name in self.loaded_rasters.keys():
             self.loaded_rasters.pop(local_layer.name)
 
-    def remove_last_layer(self):
-        
-        if len(self.layers) > 1:
-            last_layer = self.layers[-1]
-            self.remove_layer(last_layer)
+    def remove_last_layer(self, local=False):
 
-            # If last layer is local_layer, remove it
-            if isinstance(last_layer, LocalTileLayer):
-                self.remove_local_layer(last_layer)
+        """Remove last layer from Map
+
+        Args:
+            local (boolean): Specify True to only remove local last layers,
+                                otherwise will remove every last layer.
+
+        """
+        if len(self.layers) > 1:
+
+            last_layer = self.layers[-1]
+
+            if local:
+                local_rasters = [lr for lr in self.layers if isinstance(lr, LocalTileLayer)]
+                if local_rasters:
+                    last_layer = local_rasters[-1]
+                    self.remove_layer(last_layer)
+
+                    # If last layer is local_layer, remove it from memory
+                    if isinstance(last_layer, LocalTileLayer):
+                        self.remove_local_layer(last_layer)
+            else:
+                self.remove_layer(last_layer)
+
+                # If last layer is local_layer, remove it from memory
+                if isinstance(last_layer, LocalTileLayer):
+                    self.remove_local_layer(last_layer)
 
     def update_map(self, assetId, bounds, remove_last=False):
         """Update the map with the asset overlay and removing the selected drawing controls
@@ -261,16 +286,3 @@ class SepalMap(geemap.Map):
 
         
         layer.opacity = opacity if abs(opacity) <= 1.0 else 1.0
-
-        if center:
-            lat = (local_raster.top-local_raster.bottom)/2 + local_raster.bottom
-            lon = (local_raster.right-local_raster.left)/2 + local_raster.left
-            
-
-            bounds = ((local_raster.top, local_raster.left),
-                      (local_raster.bottom, local_raster.left), 
-                      (local_raster.top, local_raster.right), 
-                      (local_raster.bottom, local_raster.right))
-
-            self.center = (lat,lon)
-            self.set_zoom(bounds)
