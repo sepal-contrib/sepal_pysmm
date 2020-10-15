@@ -231,18 +231,6 @@ class SepalMap(geemap.Map):
             'LocalRaster', ('name', 'left', 'bottom', 'right', 'top', 'x_res', 'y_res', 'data')
             )(layer_name, *da.rio.bounds(), *da.rio.resolution(), da.data[0])
 
-        if center:
-            lat = (local_raster.top-local_raster.bottom)/2 + local_raster.bottom
-            lon = (local_raster.right-local_raster.left)/2 + local_raster.left
-            
-
-            bounds = ((local_raster.top, local_raster.left),
-                      (local_raster.bottom, local_raster.left), 
-                      (local_raster.top, local_raster.right), 
-                      (local_raster.bottom, local_raster.right))
-
-            self.center = (lat,lon)
-            self.set_zoom(bounds)
 
         self.loaded_rasters[layer_name] = local_raster
 
@@ -268,7 +256,21 @@ class SepalMap(geemap.Map):
             layer = da.leaflet.plot(
                 self, x_dim=x_dim, y_dim=y_dim, colormap=colormap)
 
+
         layer.name = layer_name
 
         
         layer.opacity = opacity if abs(opacity) <= 1.0 else 1.0
+
+        if center:
+            lat = (local_raster.top-local_raster.bottom)/2 + local_raster.bottom
+            lon = (local_raster.right-local_raster.left)/2 + local_raster.left
+            
+
+            bounds = ((local_raster.top, local_raster.left),
+                      (local_raster.bottom, local_raster.left), 
+                      (local_raster.top, local_raster.right), 
+                      (local_raster.bottom, local_raster.right))
+
+            self.center = (lat,lon)
+            self.set_zoom(bounds)
