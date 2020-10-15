@@ -7,7 +7,7 @@ from pathlib import Path
 import ipyvuetify as v
 from traitlets import HasTraits, Unicode, List, observe, link
 from ipywidgets import HTML
-
+from functools import partial
 STYLES = """
 <style>
 .leaflet-pane {
@@ -21,7 +21,40 @@ STYLES = """
 }
 </style>
 """
+
 display(HTML(STYLES))
+
+ICON_TYPES = {
+    '.csv':{
+        'color':'green accent-4',
+        'icon':'mdi-border-all'
+    },
+    '.txt':{
+        'color':'green accent-4',
+        'icon':'mdi-border-all'
+    },
+    '.tif':{
+        'color':'deep-purple',
+        'icon':'mdi-image-outline'
+    },
+    '.tiff':{
+        'color':'deep-purple',
+        'icon':'mdi-image-outline'
+    },
+    # Used for folders
+    '':{ 
+        'color':'light-blue',
+        'icon':'mdi-folder-outline'
+    },
+    'DEFAULT':{
+        'color':'light-blue',
+        'icon':'mdi-file-outline'
+    },
+    'PARENT':{
+        'color':'black',
+        'icon':'mdi-folder-upload-outline'
+    }
+}
 
 class SepalWidget(v.VuetifyWidget):
     
@@ -231,7 +264,9 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
             ]
         )
         
+        self.action_btn = Btn(icon='mdi-file-search', v_model=False, v_on='x.on', text=label)
         self.file_menu = v.Menu(
+
             min_width=300,
             children=[self.file_list], 
             close_on_content_click=False,
@@ -239,7 +274,7 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
             v_slots=[{
                 'name': 'activator',
                 'variable': 'x',
-                'children': Btn(icon='mdi-file-search', v_model=False, v_on='x.on', text=label)
+                'children': self.action_btn
         }])
         
         super().__init__(
@@ -255,6 +290,13 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
         
         link((self.selected_file, 'v_model'), (self, 'file'))
 
+        def on_action_btn(change, file_list):
+            print('holi')
+            file_list.v_model = not file_list.v_model
+
+
+        self.action_btn.on_event('click', partial(on_action_btn, file_list=self.file_list))
+
         def on_file_select(change):
 
             new_value = change['new']
@@ -264,6 +306,7 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
                     self.change_folder()
                 
                 elif os.path.isfile(new_value):
+                    self.file_list.v_model = not self.file_list.v_model
                     self.file = new_value
 
         self.file_list.children[0].observe(on_file_select, 'v_model')
@@ -277,47 +320,46 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
     def get_items(self):
         """return the list of items inside the folder"""
         
-        list_dir = glob(os.path.join(self.folder, '*/'))
-    
-        for extention in self.extentions:
-            list_dir.extend(glob(os.path.join(self.folder, '*' + extention)))
-    
+        folder = Path(self.folder)
+
+        list_dir = [el for el in folder.glob('*/') 
+                        if el.suffix in [extentions] or el.is_dir 
+                        and not el.name.startswith('.')]
+
         folder_list = []
         file_list = []
 
         for el in list_dir:
-            extention = Path(el).suffix
-            if extention == '':
-                icon = 'mdi-folder-outline'
-                color = 'amber'
-            elif extention in ['.csv', '.txt']:
-                icon = 'mdi-border-all'
-                color = 'green accent-4'
-            elif extention in ['.tiff', '.tif']:
-                icon = "mdi-image-outline"
-                color = "deep-purple"
+            
+            if el.suffix in ICON_TYPES.keys():
+                icon = ICON_TYPES[el.suffix]['icon']
+                color = ICON_TYPES[el.suffix]['color']
             else:
-                icon = 'mdi-file-outline'
-                color = 'light-blue'
-        
+                icon = ICON_TYPES['DEFAULT']['icon']
+                color = ICON_TYPES['DEFAULT']['color']
+            
             children = [
                 v.ListItemAction(children=[v.Icon(color= color,children=[icon])]),
-                v.ListItemContent(children=[v.ListItemTitle(children=[Path(el).stem + Path(el).suffix])])
-            ]
+                v.ListItemContent(children=[v.ListItemTitle(children=[el.stem + el.suffix])]),
+            ] 
 
-            if os.path.isdir(el): 
-                folder_list.append(v.ListItem(value=el, children=children))
+            if el.is_dir:
+                folder_list.append(v.ListItem(value=el.name, children=children))
             else:
-                file_list.append(v.ListItem(value=el, children=children))
-            
+                file_size = str(round(Path(el).stat().st_size/(1024*1024),2)) + ' MB'
+                children.append(v.ListItemActionText(children=[file_size]))
+                file_list.append(v.ListItem(value=el.name, children=children))
 
         folder_list = sorted(folder_list, key=lambda x: x.value)
         file_list = sorted(file_list, key=lambda x: x.value)
 
-        parent_path = str(Path(self.folder).parent)
+        parent_path = str(folder.parent)
         parent_item = v.ListItem(value=parent_path, children=[
-                v.ListItemAction(children=[v.Icon(color='black',children=['mdi-folder-upload-outline'])]),
-                v.ListItemContent(children=[v.ListItemTitle(children=[f'..{parent_path}'])])
+                v.ListItemAction(children=[
+                    v.Icon(color=ICON_TYPES['DEFAULT']['color'],
+                           children=[ICON_TYPES['DEFAULT']['icon']])]),
+                v.ListItemContent(children=[v.ListItemTitle(children=[f'..{parent_path}'])]),
+
             ])
 
         folder_list.extend(file_list)
