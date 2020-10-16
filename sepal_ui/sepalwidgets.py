@@ -6,55 +6,10 @@ from glob import glob
 from pathlib import Path
 import ipyvuetify as v
 from traitlets import HasTraits, Unicode, List, observe, link
-from ipywidgets import HTML
+
 from functools import partial
-STYLES = """
-<style>
-.leaflet-pane {
-    z-index : 6 !important;
-}
-.leaflet-top, .leaflet-bottom {
-    z-index : 6 !important;
-}
-.v-toolbar {
-    z-index: 7 !important;
-}
-</style>
-"""
+from .styles.styles import *
 
-display(HTML(STYLES))
-
-ICON_TYPES = {
-    '.csv':{
-        'color':'green accent-4',
-        'icon':'mdi-border-all'
-    },
-    '.txt':{
-        'color':'green accent-4',
-        'icon':'mdi-border-all'
-    },
-    '.tif':{
-        'color':'deep-purple',
-        'icon':'mdi-image-outline'
-    },
-    '.tiff':{
-        'color':'deep-purple',
-        'icon':'mdi-image-outline'
-    },
-    # Used for folders
-    '':{ 
-        'color':'light-blue',
-        'icon':'mdi-folder-outline'
-    },
-    'DEFAULT':{
-        'color':'light-blue',
-        'icon':'mdi-file-outline'
-    },
-    'PARENT':{
-        'color':'black',
-        'icon':'mdi-folder-upload-outline'
-    }
-}
 
 class SepalWidget(v.VuetifyWidget):
     
@@ -234,7 +189,6 @@ class VueDataFrame(v.VuetifyTemplate):
 
 class FileInput(v.Flex, SepalWidget, HasTraits):
 
-    
     file = Unicode('')
     
     def __init__(self, 
@@ -251,20 +205,25 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
             class_='ml-5 mt-5',
             v_model=self.file
         )
+
+        self.loading = v.ProgressLinear(
+            indeterminate=False, 
+            color= COMPONENTS['PROGRESS_BAR']['color']
+            )
         
         self.file_list = v.List(
             dense=True, 
             color='grey lighten-4',
             flat=True,
             children=[
+                self.loading, 
                 v.ListItemGroup(
                     children=self.get_items(),
                     v_model=''
                 )
             ]
         )
-        
-        self.action_btn = Btn(icon='mdi-file-search', v_model=False, v_on='x.on', text=label)
+
         self.file_menu = v.Menu(
 
             min_width=300,
@@ -274,7 +233,7 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
             v_slots=[{
                 'name': 'activator',
                 'variable': 'x',
-                'children': self.action_btn
+                'children': Btn(icon='mdi-file-search', v_model=False, v_on='x.on', text=label)
         }])
         
         super().__init__(
@@ -290,15 +249,7 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
         
         link((self.selected_file, 'v_model'), (self, 'file'))
 
-        def on_action_btn(change, file_list):
-            print('holi')
-            file_list.v_model = not file_list.v_model
-
-
-        self.action_btn.on_event('click', partial(on_action_btn, file_list=self.file_list))
-
         def on_file_select(change):
-
             new_value = change['new']
             if new_value:
                 if os.path.isdir(new_value):
@@ -306,24 +257,25 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
                     self.change_folder()
                 
                 elif os.path.isfile(new_value):
-                    self.file_list.v_model = not self.file_list.v_model
                     self.file = new_value
 
-        self.file_list.children[0].observe(on_file_select, 'v_model')
+        self.file_list.children[1].observe(on_file_select, 'v_model')
                 
     def change_folder(self):
         """change the target folder"""
         #reset files 
-        self.file_list.children[0].children = self.get_items()
+        self.file_list.children[1].children = self.get_items()
     
 
     def get_items(self):
         """return the list of items inside the folder"""
+
+        self.loading.indeterminate = not self.loading.indeterminate
         
         folder = Path(self.folder)
 
         list_dir = [el for el in folder.glob('*/') 
-                        if el.suffix in [extentions] or el.is_dir 
+                        if el.suffix in self.extentions or el.is_dir() 
                         and not el.name.startswith('.')]
 
         folder_list = []
@@ -343,12 +295,12 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
                 v.ListItemContent(children=[v.ListItemTitle(children=[el.stem + el.suffix])]),
             ] 
 
-            if el.is_dir:
-                folder_list.append(v.ListItem(value=el.name, children=children))
+            if el.is_dir():
+                folder_list.append(v.ListItem(value=str(el), children=children))
             else:
                 file_size = str(round(Path(el).stat().st_size/(1024*1024),2)) + ' MB'
                 children.append(v.ListItemActionText(children=[file_size]))
-                file_list.append(v.ListItem(value=el.name, children=children))
+                file_list.append(v.ListItem(value=str(el), children=children))
 
         folder_list = sorted(folder_list, key=lambda x: x.value)
         file_list = sorted(file_list, key=lambda x: x.value)
@@ -356,8 +308,8 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
         parent_path = str(folder.parent)
         parent_item = v.ListItem(value=parent_path, children=[
                 v.ListItemAction(children=[
-                    v.Icon(color=ICON_TYPES['DEFAULT']['color'],
-                           children=[ICON_TYPES['DEFAULT']['icon']])]),
+                    v.Icon(color=ICON_TYPES['PARENT']['color'],
+                           children=[ICON_TYPES['PARENT']['icon']])]),
                 v.ListItemContent(children=[v.ListItemTitle(children=[f'..{parent_path}'])]),
 
             ])
@@ -365,6 +317,7 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
         folder_list.extend(file_list)
         folder_list.insert(0,parent_item)
 
+        self.loading.indeterminate = not self.loading.indeterminate
         return folder_list
     
     def get_parent_path(self):
