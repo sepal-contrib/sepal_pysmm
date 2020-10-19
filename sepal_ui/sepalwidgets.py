@@ -192,7 +192,7 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
     file = Unicode('')
     
     def __init__(self, 
-        extentions=['.txt'], 
+        extentions=[], 
         folder=os.path.expanduser('~'), 
         label='search file', 
         **kwargs):
@@ -275,8 +275,10 @@ class FileInput(v.Flex, SepalWidget, HasTraits):
         folder = Path(self.folder)
 
         list_dir = [el for el in folder.glob('*/') 
-                        if el.suffix in self.extentions or el.is_dir() 
-                        and not el.name.startswith('.')]
+                        if not el.name.startswith('.')]
+
+        if self.extentions:
+            list_dir = [el for el in list_dir if el.is_dir() or el.suffix in self.extentions]
 
         folder_list = []
         file_list = []
