@@ -1,2 +1,5 @@
 # SEPAL Soil Moisture Mapping
  
+Responding to Indonesia’s urgent need to monitor peatland areas, FAO has developed free, cloud-based modules for remotely monitoring moisture and restoration actions in peatlands. These tools are integrated into the online platforms SEPAL and Collect Earth Online (CEO), which allow free and open access to geospatial data and processing power. Using supercomputing and the latest satellite imagery, updated maps of peatland soil moisture levels, an important indicator of the health of the peatland, can be assessed on massive scales. Indonesian national institutions are already taking advantage of the tools to coordinate, assess, and demonstrate the results, and refine the restoration action. This user manual will guide the users through soil moisture content mapping tools. First, a brief overview of how to use the terminal in SEPAL is presented. Exercise 1 explains step by step how to create a soil moisture map for a given area of interest and run analytic tools to assess trends in soil moisture over time.
+
+To more info about the usage, go to the Wiki page: https://github.com/openforis/sepal_pysmm/wiki
