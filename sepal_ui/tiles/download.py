@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from modules.ipyfilechooser import FileChooser
+
 import getpass
 from functools import partial 
 import ipywidgets as widgets
@@ -9,6 +9,7 @@ import ipyvuetify as v
 
 from sepal_ui import sepalwidgets as s
 from sepal_ui import widgetBinding as wb
+from scripts import download_to_sepal
 
 
 
@@ -16,24 +17,59 @@ class Download:
 
     overwrite = True
     rmdrive = True
-    tasks_file_name = ''
+
+def on_download(obj, w_selector, btn, out, alert):
+    """Starts the download process.
+
+    Args:
+        obj (Download): Download object
+        w_selector (w_selector): Widget selector
+        btn (Trigger Button): Button to trigger the callback
+        out (widgets.out): Widget area to capture outputs
+        process_alert (s.Alert): Alert to display useful messages
+    """
+
+    def on_click(widget, event, data, out, obj, alert, w_selector):
+        
+        task_file_name = w_selector.get_file_path()
+        overwrite = obj.overwrite
+        rmdrive = obj.rmdrive
+
+        # Clear output if there is something printed before
+        out.clear_output()
+
+        # Once the button is clicked, disable it
+        btn.disable()
+
+        # Clear old alert messages
+        alert.clear()
+
+        @out.capture()
+        def run_process(obj):
+            download_to_sepal.run(
+                task_file_name,
+                alert,
+                overwrite=overwrite,
+                rmdrive=overwrite,
+        )
+
+        run_process(obj)
+        btn.activate()
+
+    btn.on_event('click', partial(
+        on_click,
+        obj=obj,
+        out=out,
+        alert=alert,
+        w_selector=w_selector, 
+    ))
 
 
-def download_tile(obj):
+def download_tile(obj, w_selection):
 
     def bind_change(change, obj, attr):
         setattr(obj, attr, change['new'])
 
-    def bind_fc(fc, obj, attr):
-        setattr(obj, attr, fc.selected)
-
-
-    #File chooser
-
-    user = getpass.getuser()
-
-    fc = FileChooser(f'/home/{user}/')
-    fc.register_callback(partial(bind_fc, fc=fc, obj=obj, attr='tasks_file_name'))
 
     w_overwrite = v.Switch(v_model=obj.overwrite, inset=True, label="Overwrite SEPAL images")
     w_overwrite.observe(partial(bind_change, obj=obj, attr='overwrite'), 'v_model')
@@ -47,7 +83,7 @@ def download_tile(obj):
     # Create an alert element for the process
     process_alert = s.Alert()
 
-    wb.bin_download_process(obj, btn, out, process_alert)
+    on_download(obj, w_selection, btn, out, process_alert)
 
     html_header = """
     <style>
@@ -74,7 +110,7 @@ def download_tile(obj):
                 v.Sheet(class_="pa-5",
                     children=[
                         widgets.HTML(html_header),
-                        fc,
+                        w_selection,
                         w_overwrite,
                         w_remove,
                         btn,

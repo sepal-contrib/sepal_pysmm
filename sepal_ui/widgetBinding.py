@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import sys
 
 from functools import partial
@@ -7,7 +9,6 @@ import geemap
 import ee
 
 from scripts import run_pysmm
-from scripts import download_to_sepal
 from sepal_ui import mapping
 
 ee.Initialize()
@@ -81,24 +82,6 @@ def toggle_inputs(input_list, widget_list):
             input_item.class_ = 'd-none'
 
     return
-
-
-
-def mbind(widget, widget1, obj, attribute):
-    
-    
-    def on_change(widget, event, data, obj, widget1, attribute):
-        
-        setattr(obj, attribute, widget.v_model)
-        widget1.items = obj.get_fields()
-        
-    widget.on_event('change', partial(
-        on_change,
-        obj=obj,
-        widget1 = widget1,
-        attribute=attribute,
-    ))
-
 
 def field_map_bind(widget, obj, attribute, m, dc):
     
@@ -199,12 +182,10 @@ def bindAoiMethod(method_widget, list_input, obj, m, dc, selection_method, alert
         aoi_file_name = list_input[1]
         aoi_country_selection = list_input[2]
 
-
         aoi_asset_name = list_input[3]
         aoi_asset_btn = list_input[4]
         w_asset_column = list_input[5]
         w_asset_field = list_input[6]
-
         
         setattr(obj, 'selection_method', widget.v_model)
         
@@ -384,49 +365,4 @@ def bin_pysmm_process(aoi, dates, btn, out, alert):
         dates=dates,
         out=out,
         btn=btn,
-    ))
-
-    
-def bin_download_process(obj, btn, out, alert):
-    """Starts the download process.
-
-    Args:
-        obj (Download): Download object
-        btn (Trigger Button): Button to trigger the callback
-        out (widgets.out): Widget area to capture outputs
-        process_alert (s.Alert): Alert to display useful messages
-    """
-
-    def on_click(widget, event, data, out, obj, alert):
-        
-        task_file_name = obj.tasks_file_name
-        overwrite = obj.overwrite
-        rmdrive = obj.rmdrive
-
-        # Clear output if there is something printed before
-        out.clear_output()
-
-        # Once the button is clicked, disable it
-        btn.disable()
-
-        # Clear old alert messages
-        alert.clear()
-
-        @out.capture()
-        def run_process(obj):
-            download_to_sepal.run(
-                task_file_name,
-                alert,
-                overwrite=overwrite,
-                rmdrive=overwrite,
-        )
-
-        run_process(obj)
-        btn.activate()
-
-    btn.on_event('click', partial(
-        on_click,
-        obj=obj,
-        out=out,
-        alert=alert, 
     ))

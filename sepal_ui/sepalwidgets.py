@@ -2,8 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import os
+from glob import glob
+from pathlib import Path
 import ipyvuetify as v
-from traitlets import HasTraits, Unicode, List, observe
+from traitlets import HasTraits, Unicode, List, observe, link
+
+from functools import partial
+from .styles.styles import *
 
 
 class SepalWidget(v.VuetifyWidget):
@@ -11,17 +16,32 @@ class SepalWidget(v.VuetifyWidget):
     def __init__(self, **kwargs):
         
         super().__init__(**kwargs)
-        self.class_ = "mt-5"
+        self.viz = True
+        
+    def toggle_viz(self):
+        """toogle the visibility of the widget"""
+        if self.viz:
+            self.hide()
+        else:
+            self.show()
+        
+        return self
     
     def hide(self):
+        """add the d-none html class to the widget"""
+        if not 'd-none' in str(self.class_):
+            self.class_ = str(self.class_).strip() + ' d-none'
+        self.viz = False
         
-        if not 'd-none' in self.class_:
-            self.class_ = self.class_.strip() + ' d-none'
+        return self
         
     def show(self):
+        """ remove the d-none html class to the widget"""
+        if 'd-none' in str(self.class_):
+            self.class_ = str(self.class_).replace('d-none', '')
+        self.viz = True
         
-        if 'd-none' in self.class_:
-            self.class_ = self.class_.replace('d-none', '')
+        return self
 
 class Alert(v.Alert, SepalWidget):
     
@@ -73,10 +93,10 @@ class Btn(v.Btn, SepalWidget):
             'download' : 'mdi-download'
         }
         
-        if not icon in common_icons.keys():
-            icon = 'default'
+        if icon in common_icons.keys():
+            icon = common_icons[icon]
         
-        return v.Icon(left=True, children=[common_icons[icon]])    
+        return v.Icon(left=True, children=[icon])    
 
     def disable(self):
         self.disabled = True
@@ -87,98 +107,6 @@ class Btn(v.Btn, SepalWidget):
         
     def on_loading(self):
         self.loading = True
-
-
-class PathSelector(v.Container, HasTraits):
-    """Display two select widgets and allows to select
-    a specific element from the list.
-    """
-    
-    column = Unicode().tag(sync=True)
-    field = Unicode().tag(sync=True)
-    
-    def __init__(self, raw_path='/home/', file_type='.tif', **kwargs):
-
-        self.raw_path = raw_path
-        
-        super().__init__(**kwargs)
-
-        self.align_center=True
-        self.children = [v.Row(children=[
-            v.Col(
-                children=[self._column_widget()]
-            ),
-            v.Col(
-                children=[self._field_widget()]
-            ),
-        ])]
-
-    def widget_field(self):
-        return self.children[0].children[1].children[0]
-
-    def widget_column(self):
-        return self.children[0].children[0].children[0]
-
-    def return_paths(self, column=""):
-        
-        """ Create a list of folders in a given path
-        skipping those with begin with '.' or are empty
-
-        """
-        search_path = os.path.join(self.raw_path, column)
-        paths = [folder for folder in os.listdir(search_path) 
-                 if os.path.isdir(os.path.join(search_path, folder)) and not folder.startswith('.') 
-                 and len(os.listdir(os.path.join(search_path, folder))) != 0
-        ]
-        paths.sort()
-
-        return paths
-    
-    @observe('column')
-    def _on_column(self, change):
-        options = self.return_paths(column=self.column)
-        self.widget_field().items=options
-
-    def _field_widget(self):
-        
-        w_field = v.Select(
-            v_model=None,
-            label='Select field...')
-        
-        def on_change(change):
-            self.field = change['new']
-
-        w_field.observe(on_change, 'v_model')
-        
-        return w_field
-
-    def _column_widget(self):
-
-        w_column = v.Select(
-            v_model=None, 
-            label='Select column...', 
-            items=self.return_paths(),
-        )
-
-        def on_change(change):
-            self.column = change['new']
-
-        w_column.observe(on_change, 'v_model')
-
-        return w_column
-    
-    def get_current_path(self):
-        
-        current_path = os.path.join(self.raw_path,
-                                    self.column, 
-                                   self.field)
-        return current_path
-
-    def get_column_path(self):
-        
-        column_path = os.path.join(self.raw_path,
-                                    self.column)
-        return column_path
 
 
 class VueDataFrame(v.VuetifyTemplate):
@@ -258,3 +186,149 @@ class VueDataFrame(v.VuetifyTemplate):
             data.to_json(orient='records'))
         if title is not None:
             self.title = title
+
+class FileInput(v.Flex, SepalWidget, HasTraits):
+
+    file = Unicode('')
+    
+    def __init__(self, 
+        extentions=[], 
+        folder=os.path.expanduser('~'), 
+        label='search file', 
+        **kwargs):
+
+        self.extentions = extentions
+        self.folder = folder
+        
+        self.selected_file = v.TextField(
+            label='Selected file', 
+            class_='ml-5 mt-5',
+            v_model=self.file
+        )
+
+        self.loading = v.ProgressLinear(
+            indeterminate=False, 
+            color= COMPONENTS['PROGRESS_BAR']['color']
+            )
+        
+        self.file_list = v.List(
+            dense=True, 
+            color='grey lighten-4',
+            flat=True,
+            children=[
+                self.loading, 
+                v.ListItemGroup(
+                    children=self.get_items(),
+                    v_model=''
+                )
+            ]
+        )
+
+        self.file_menu = v.Menu(
+
+            min_width=300,
+            children=[self.file_list], 
+            close_on_content_click=False,
+            max_height='300px', 
+            v_slots=[{
+                'name': 'activator',
+                'variable': 'x',
+                'children': Btn(icon='mdi-file-search', v_model=False, v_on='x.on', text=label)
+        }])
+        
+        super().__init__(
+            row=True,
+            class_='d-flex align-center mb-2',
+            align_center=True,
+            children=[
+                self.file_menu,
+                self.selected_file,
+            ],
+            **kwargs
+        )
+        
+        link((self.selected_file, 'v_model'), (self, 'file'))
+
+        def on_file_select(change):
+            new_value = change['new']
+            if new_value:
+                if os.path.isdir(new_value):
+                    self.folder = new_value
+                    self.change_folder()
+                
+                elif os.path.isfile(new_value):
+                    self.file = new_value
+
+        self.file_list.children[1].observe(on_file_select, 'v_model')
+                
+    def change_folder(self):
+        """change the target folder"""
+        #reset files 
+        self.file_list.children[1].children = self.get_items()
+    
+
+    def get_items(self):
+        """return the list of items inside the folder"""
+
+        self.loading.indeterminate = not self.loading.indeterminate
+        
+        folder = Path(self.folder)
+
+        list_dir = [el for el in folder.glob('*/') 
+                        if not el.name.startswith('.')]
+
+        if self.extentions:
+            list_dir = [el for el in list_dir if el.is_dir() or el.suffix in self.extentions]
+
+        folder_list = []
+        file_list = []
+
+        for el in list_dir:
+            
+            if el.suffix in ICON_TYPES.keys():
+                icon = ICON_TYPES[el.suffix]['icon']
+                color = ICON_TYPES[el.suffix]['color']
+            else:
+                icon = ICON_TYPES['DEFAULT']['icon']
+                color = ICON_TYPES['DEFAULT']['color']
+            
+            children = [
+                v.ListItemAction(children=[v.Icon(color= color,children=[icon])]),
+                v.ListItemContent(children=[v.ListItemTitle(children=[el.stem + el.suffix])]),
+            ] 
+
+            if el.is_dir():
+                folder_list.append(v.ListItem(value=str(el), children=children))
+            else:
+                file_size = str(round(Path(el).stat().st_size/(1024*1024),2)) + ' MB'
+                children.append(v.ListItemActionText(children=[file_size]))
+                file_list.append(v.ListItem(value=str(el), children=children))
+
+        folder_list = sorted(folder_list, key=lambda x: x.value)
+        file_list = sorted(file_list, key=lambda x: x.value)
+
+        parent_path = str(folder.parent)
+        parent_item = v.ListItem(value=parent_path, children=[
+                v.ListItemAction(children=[
+                    v.Icon(color=ICON_TYPES['PARENT']['color'],
+                           children=[ICON_TYPES['PARENT']['icon']])]),
+                v.ListItemContent(children=[v.ListItemTitle(children=[f'..{parent_path}'])]),
+
+            ])
+
+        folder_list.extend(file_list)
+        folder_list.insert(0,parent_item)
+
+        self.loading.indeterminate = not self.loading.indeterminate
+        return folder_list
+    
+    def get_parent_path(self):
+        """return the list of all the parents of a given path"""
+        path_list = [self.folder]
+        path = Path(self.folder)
+
+        while  str(path.parent) != path_list[-1]:
+            path = path.parent
+            path_list.append(str(path))
+        
+        return path_list

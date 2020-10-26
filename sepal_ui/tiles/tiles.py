@@ -19,93 +19,7 @@ from sepal_ui import sepalwidgets as s
 from sepal_ui import mapping
 
 from sepal_ui.utilities import utils
-from modules.ipyfilechooser import FileChooser
 
-
-def date_picker_tile(Dates):
-
-    import ipywidgets as widgets
-    
-    def bind_change(change, obj, attr):
-        setattr(obj, attr, change['new'])
-
-    # Date unique widget
-    w_unique_date = widgets.DatePicker(
-        description='Date',
-    )
-    w_unique_cont = v.Container(
-        class_='pa-5 d-none', 
-        children=[
-            w_unique_date
-        ]
-
-    )
-    # Create two-way-binding with Dates object
-    link((w_unique_date, 'value'), (Dates, 'single_date'))
-
-    # Date range widget
-    w_ini_date = widgets.DatePicker(
-        description='Start date',
-    )
-    w_ini_date_cont = v.Container(
-        class_='pa-5 d-none', 
-        children=[
-            w_ini_date
-        ]
-    )
-    link((w_ini_date, 'value'), (Dates, 'start_date'))
-
-
-    w_end_date = widgets.DatePicker(
-        description='End date',
-    )
-    w_end_date_cont = v.Container(
-        class_='pa-5 d-none', 
-        children=[
-            w_end_date
-        ]
-    )
-    link((w_end_date, 'value'), (Dates, 'end_date'))
-
-    # Selector date method
-
-    w_date_method = v.Select(
-        v_model=None,
-        label='Retrieve date method', 
-        items=['Single date', 'Range', 'All time series']
-    )
-    
-    # Bind the selected value to the object
-    w_date_method.observe(partial(bind_change, obj=Dates, attr='date_method'), 'v_model')
-
-
-    widgets = [w_unique_cont, w_ini_date_cont, w_end_date_cont]
-
-    # Create a behavior after change the clicked value of w_date_method
-    wb.bind_dates(w_date_method, widgets, Dates)
-
-    dates_content = v.Layout(
-        _metadata={'mount-id': 'data-input'},
-        class_="pa-5",
-        row=True,
-        align_center=True, 
-        children=[
-            v.Flex(xs12=True, children=[w_date_method]),
-            v.Flex(xs12=True, children=[w_unique_cont]),
-            v.Flex(xs12=True, children=[
-                v.Layout(class_='flex-column', children=[
-                    v.Flex(
-                        children=[
-                            w_ini_date_cont, 
-                            w_end_date_cont
-                        ])
-                    ]
-                )
-            ])
-        ]
-    )
-
-    return dates_content
 
     
 def run_process_tile(aoi, dates):
@@ -149,6 +63,17 @@ def aoi_tile(io, remove_method=[]):
    Returns:
        tile (v.Layout) : an autonomous tile for AOI selection binded with io
    """
+
+
+    def on_column_change(change, obj, widget1):
+        # Clear previous items
+        widget1.items = []
+        widget1.v_model = None
+        # Fill up the second widget
+        if obj.column:
+            widget1.items = obj.get_fields()
+
+
 
     AOI_MESSAGE='Select the AOI method'
     
@@ -210,19 +135,23 @@ def aoi_tile(io, remove_method=[]):
     asset_btn = s.Btn(text = 'Use asset', visible=False, small=True)
     
     w_field = v.Select(
-        v_model=io.field, 
+        v_model=None, 
         class_='pa-5 d-none', 
         label='Select field...')
 
-    wb.bind(w_field, io, 'field')
+    # link((w_field, 'v_model'), (io, 'field'))
+    # wb.bind(w_field, io, 'field')
 
     w_column = v.Select(
-        v_model=io.column, 
+        v_model="", 
         class_='pa-5 d-none', 
         label='Select variable...'
     )
-    # Bind the first widget with the object and create event on second widget
-    wb.mbind(w_column, w_field, io, 'column')
+    # Bind the first widget with the object 
+    link((w_column, 'v_model'), (io, 'column'))
+    # and create event on second widget
+    w_column.observe(partial(on_column_change, obj=io, widget1=w_field), 'v_model')
+
 
     widget_list = [aoi_file_input, aoi_file_name, aoi_country_selection, 
                     aoi_asset_name, asset_btn, w_column, w_field]
