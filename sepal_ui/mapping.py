@@ -8,7 +8,10 @@ import string
 import random
 import collections
 import geemap
-from ipyleaflet import basemaps, basemap_to_tiles, ZoomControl, LayersControl, AttributionControl, ScaleControl, DrawControl
+from ipyleaflet import (
+    basemaps, basemap_to_tiles, ZoomControl, LayersControl, 
+    AttributionControl, ScaleControl, DrawControl
+)
 import ee 
 from haversine import haversine
 
@@ -19,6 +22,7 @@ import rioxarray
 import xarray as xr
 import matplotlib.pyplot as plt
 import ipywidgets as widgets
+from traitlets import Bool, link, observe
 from ipyleaflet import WidgetControl, LocalTileLayer
 
 def random_string(string_length=3):
@@ -37,7 +41,8 @@ ee.Initialize()
 
 
 class SepalMap(geemap.Map):
-
+    
+    inspector = Bool(False).tag(sync=True)
 
     def __init__(self, basemaps=[], add_google_map=None, **kwargs):
 
@@ -78,56 +83,83 @@ class SepalMap(geemap.Map):
         self.add_control(LayersControl(position='topright'))
         self.add_control(AttributionControl(position='bottomleft'))
         self.add_control(ScaleControl(position='bottomleft', imperial=False))
+        
+        # Inspector control
+        
+        # Adds Inspector widget
+        inspector_checkbox = widgets.Checkbox(
+            value=False,
+            description='Use Inspector',
+            indent=False,
+            layout=widgets.Layout(width='18ex')
+        )
+
+        #vb = widgets.VBox(children=[inspector_checkbox])
+        self.inspector_control = WidgetControl(widget=inspector_checkbox, position='topright')
+        
+        # Use above line to add inspector control
+        #self.add_control(inspector_control)
+        
+        link((inspector_checkbox, 'value'),(self, 'inspector'))
+        
 
         # Create output space for raster interaction
-        output_r = widgets.Output(layout={'border': '1px solid black'})
-        output_control_r = WidgetControl(widget=output_r, position='bottomright')
+        self.output_r = widgets.Output(layout={'border': '1px solid black'})
+        output_control_r = WidgetControl(widget=self.output_r, position='bottomright')
         self.add_control(output_control_r)
 
         self.loaded_rasters = {}
+        self.on_interaction(self.raster_interaction)
         # Define a behavior when ispector checked and map clicked
-        def raster_interaction(**kwargs):
+    
+    @observe('inspector')
+    def change_cursor(self, change):
+        if self.inspector:
+            self.default_style = {'cursor': 'crosshair'}
+        else:
+            self.default_style = {'cursor': 'grab'}
+        
+    def raster_interaction(self, **kwargs):
 
-            if kwargs.get('type') == 'click' and self.inspector_checked:
-                latlon = kwargs.get('coordinates')
-                self.default_style = {'cursor': 'wait'}
+        if kwargs.get('type') == 'click' and self.inspector:
+            latlon = kwargs.get('coordinates')
+            self.default_style = {'cursor': 'wait'}
+            local_rasters = [lr.name for lr in self.layers if isinstance(lr, LocalTileLayer)]
 
-                local_rasters = [lr.name for lr in self.layers if isinstance(lr, LocalTileLayer)]
+            if local_rasters:
 
-                if local_rasters:
+                with self.output_r: 
+                    self.output_r.clear_output(wait=True)
 
-                    with output_r: 
-                        output_r.clear_output(wait=True)
-                    
-                        for lr_name in local_rasters:
+                    for lr_name in local_rasters:
 
-                            lr = self.loaded_rasters[lr_name]
-                            lat, lon = latlon
+                        lr = self.loaded_rasters[lr_name]
+                        lat, lon = latlon
 
-                            # Verify if the selected latlon is the image bounds
-                            if any([lat<lr.bottom, lat>lr.top, lon<lr.left, lon>lr.right]):
-                                print('Location out of raster bounds')
-                            else:
-                                #row in pixel coordinates
-                                y = int(((lr.top - lat) / abs(lr.y_res)))
+                        # Verify if the selected latlon is the image bounds
+                        if any([lat<lr.bottom, lat>lr.top, lon<lr.left, lon>lr.right]):
+                            print('Location out of raster bounds')
+                        else:
+                            #row in pixel coordinates
+                            y = int(((lr.top - lat) / abs(lr.y_res)))
 
-                                #column in pixel coordinates
-                                x = int(((lon - lr.left) / abs(lr.x_res)))
+                            #column in pixel coordinates
+                            x = int(((lon - lr.left) / abs(lr.x_res)))
 
-                                #get height and width
-                                h, w = lr.data.shape
-                                value = lr.data[y][x]
-                                print(f'{lr_name}')
-                                print(f'Lat: {round(lat,4)}, Lon: {round(lon,4)}')
-                                print(f'x:{x}, y:{y}')
-                                print(f'Pixel value: {value}')
-                else:
-                    with output_r:
-                        output_r.clear_output()
+                            #get height and width
+                            h, w = lr.data.shape
+                            value = lr.data[y][x]
+                            print(f'{lr_name}')
+                            print(f'Lat: {round(lat,4)}, Lon: {round(lon,4)}')
+                            print(f'x:{x}, y:{y}')
+                            print(f'Pixel value: {value}')
+            else:
+                with self.output_r:
+                    self.output_r.clear_output()
+            self.default_style = {'cursor': 'crosshair'}
+            
 
-                self.default_style = {'cursor': 'crosshair'}
-
-        self.on_interaction(raster_interaction)
+        
 
     def get_drawing_controls(self):
 

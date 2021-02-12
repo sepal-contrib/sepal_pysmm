@@ -8,14 +8,13 @@ from . import widgetBinding as wb
 from . import sepalwidgets as s
 from . import mapping
 from .utilities import utils
+from .styles.styles import *
 
 from haversine import haversine
 
 import ee
 ee.Initialize()
 
-sepal_main = '#2e7d32'
-sepal_darker = '#005005'
 
 #create a app bar 
 def AppBar(title='SEPAL module'):

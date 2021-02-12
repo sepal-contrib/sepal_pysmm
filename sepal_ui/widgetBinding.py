@@ -10,6 +10,7 @@ import ee
 
 from scripts import run_pysmm
 from sepal_ui import mapping
+from sepal_ui.styles.js import *
 
 ee.Initialize()
 
@@ -36,12 +37,17 @@ def display_tile(item, tiles):
         item (v.ListItem) : the item in the drawer that select the active tile
         tiles ([v.Layout]) : the list of all the available tiles in the app
     """
+
     def on_click(widget, event, data, tiles):
+        
         for tile in tiles:
             if widget._metadata['card_id'] == tile._metadata['mount_id']:
                 tile.class_="ma-5 d-inline"
             else:
                 tile.class_="ma-5 d-none"
+                
+        _=display(rt)
+        rt.resize += 1
     
     item.on_event('click', partial(on_click, tiles=tiles))
 

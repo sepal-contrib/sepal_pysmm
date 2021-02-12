@@ -16,13 +16,6 @@ from pytesmo.temporal_matching import df_match
 from sklearn.linear_model import LinearRegression
 from .utils import gdrive
 
-
-from sklearn.model_selection import RepeatedKFold, GridSearchCV
-import sklearn
-from sklearn.svm import SVR
-from numpy import array
-from sklearn.preprocessing import RobustScaler
-
 import logging
 logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
@@ -1221,44 +1214,24 @@ class GEE_extent(object):
 
     def estimate_SM(self):
         # load SVR model
+        modelpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SVRmodel.p')
 
         warnings.simplefilter(action='ignore', category=FutureWarning) # Hide the warnings
         warnings.simplefilter(action='ignore', category=UserWarning)
 
-# --------------------------------------------------------------------
-# OLD PART OF LOADING THE MODEL
-#         MLmodel_tuple = pickle.load(open(modelpath, 'rb'), encoding='latin1') # Changed line to open pickle file pickled in older version
+        MLmodel_tuple = pickle.load(open(modelpath, 'rb'), encoding='latin1') # Changed line to open pickle file pickled in older version
 
-
-#        MLmodel1 = {'SVRmodel': MLmodel_tuple[0], 'scaler': MLmodel_tuple[1]}
-#        MLmodel2 = {'SVRmodel': MLmodel_tuple[2], 'scaler': MLmodel_tuple[3]}
+        MLmodel1 = {'SVRmodel': MLmodel_tuple[0], 'scaler': MLmodel_tuple[1]}
+        MLmodel2 = {'SVRmodel': MLmodel_tuple[2], 'scaler': MLmodel_tuple[3]}
 
         # create parameter images
-#        alpha1 = [ee.Image(MLmodel1['SVRmodel'].best_estimator_.dual_coef_[0][i]) for i in
-#                 range(len(MLmodel1['SVRmodel'].best_estimator_.dual_coef_[0]))]
-#        gamma1 = ee.Image(-MLmodel1['SVRmodel'].best_estimator_.gamma)
-#        intercept1 = ee.Image(MLmodel1['SVRmodel'].best_estimator_.intercept_[0])
-# --------------------------------------------------------------------
+        alpha1 = [ee.Image(MLmodel1['SVRmodel'].best_estimator_.dual_coef_[0][i]) for i in
+                  range(len(MLmodel1['SVRmodel'].best_estimator_.dual_coef_[0]))]
+        gamma1 = ee.Image(-MLmodel1['SVRmodel'].best_estimator_.gamma)
+        intercept1 = ee.Image(MLmodel1['SVRmodel'].best_estimator_.intercept_[0])
 
-# --------------------------------------------------------------------
-# new part of loading the model
-
-        # load the numpy pickle file saved with np.save
-        new_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'model_dict.npy')
-        model_param = np.load(new_model_path, allow_pickle=True).item()
-    
-        # recunstruct the parameters used in classification
-        #alpha1 = [ee.Image(MLmodel1['SVRmodel'].best_estimator_.dual_coef_[0][i]) for i in
-        #         range(len(MLmodel1['SVRmodel'].best_estimator_.dual_coef_[0]))]
-        alpha1 = [ee.Image(model_param['model1']['alpha_array'][i]) for i in
-                 range(len(model_param['model1']['alpha_array']))]
-        gamma1 = ee.Image(-model_param['model1']['gamma'])
-        intercept1 = ee.Image(model_param['model1']['intercept'])
-        sup_vectors1 = model_param['model1']['support_vectors']
-# --------------------------------------------------------------------
-        
         # support vectors stack
-        # sup_vectors1 = MLmodel1['SVRmodel'].best_estimator_.support_vectors_
+        sup_vectors1 = MLmodel1['SVRmodel'].best_estimator_.support_vectors_
         n_vectors1 = sup_vectors1.shape[0]
         n_features1 = 8
 
@@ -1311,11 +1284,8 @@ class GEE_extent(object):
         input_image1 = input_image1.updateMask(ee.Image(combined_mask))
 
         # scale the estimation image
-        # replace
-        #scaling_std_img1 = ee.Image(
-        #    [ee.Image(MLmodel1['scaler'].scale_[i].astype(np.float)) for i in range(n_features1)])
         scaling_std_img1 = ee.Image(
-            [ee.Image(model_param['model1']['scaler_scale'][i].astype(np.float)) for i in range(n_features1)])
+            [ee.Image(MLmodel1['scaler'].scale_[i].astype(np.float)) for i in range(n_features1)])
 
         scaling_std_img1 = scaling_std_img1.select(['constant', 'constant_1', 'constant_2',
                                                     'constant_3', 'constant_4', 'constant_5',
@@ -1323,11 +1293,8 @@ class GEE_extent(object):
                                                    ['VVk1', 'VHk1', 'VVk2', 'VHk2',
                                                     'lc', 'lia', 'aspect', 'gldas_mean'])
 
-        #scaling_mean_img1 = ee.Image(
-        #    [ee.Image(MLmodel1['scaler'].center_[i].astype(np.float)) for i in range(n_features1)])
-        ### REPLACEMENT ###
         scaling_mean_img1 = ee.Image(
-            [ee.Image(model_param['model1']['scaler_center'][i].astype(np.float)) for i in range(n_features1)])
+            [ee.Image(MLmodel1['scaler'].center_[i].astype(np.float)) for i in range(n_features1)])
 
         scaling_mean_img1 = scaling_mean_img1.select(['constant', 'constant_1', 'constant_2',
                                                       'constant_3', 'constant_4', 'constant_5',
@@ -1359,20 +1326,13 @@ class GEE_extent(object):
         # estimate relative smc
 
         # create parameter images
-        #alpha2 = [ee.Image(MLmodel2['SVRmodel'].best_estimator_.dual_coef_[0][i]) for i in
-        #          range(len(MLmodel2['SVRmodel'].best_estimator_.dual_coef_[0]))]
-        #gamma2 = ee.Image(-MLmodel2['SVRmodel'].best_estimator_.gamma)
-        #intercept2 = ee.Image(MLmodel2['SVRmodel'].best_estimator_.intercept_[0])
-        
-        ### REPLACEMENT####
-        alpha2 = [ee.Image(model_param['model2']['alpha_array'][i]) for i in
-                  range(len(model_param['model2']['alpha_array']))]
-        gamma2 = ee.Image(-model_param['model2']['gamma'])
-        intercept2 = ee.Image(model_param['model2']['intercept'])
-        sup_vectors2 = model_param['model2']['support_vectors']
-        
+        alpha2 = [ee.Image(MLmodel2['SVRmodel'].best_estimator_.dual_coef_[0][i]) for i in
+                  range(len(MLmodel2['SVRmodel'].best_estimator_.dual_coef_[0]))]
+        gamma2 = ee.Image(-MLmodel2['SVRmodel'].best_estimator_.gamma)
+        intercept2 = ee.Image(MLmodel2['SVRmodel'].best_estimator_.intercept_[0])
+
         # support vectors stack
-        #sup_vectors2 = MLmodel2['SVRmodel'].best_estimator_.support_vectors_
+        sup_vectors2 = MLmodel2['SVRmodel'].best_estimator_.support_vectors_
         n_vectors2 = sup_vectors2.shape[0]
         n_features2 = 3
 
@@ -1412,13 +1372,13 @@ class GEE_extent(object):
 
         # scale the estimation image
         scaling_std_img2 = ee.Image(
-            [ee.Image(model_param['model2']['scaler_scale'][i].astype(np.float)) for i in range(n_features2)])
+            [ee.Image(MLmodel2['scaler'].scale_[i].astype(np.float)) for i in range(n_features2)])
 
         scaling_std_img2 = scaling_std_img2.select(['constant', 'constant_1', 'constant_2'],
                                                    ['relVV', 'relVH', 'gldas'])
 
         scaling_mean_img2 = ee.Image(
-            [ee.Image(model_param['model2']['scaler_center'][i].astype(np.float)) for i in range(n_features2)])
+            [ee.Image(MLmodel2['scaler'].center_[i].astype(np.float)) for i in range(n_features2)])
 
         scaling_mean_img2 = scaling_mean_img2.select(['constant', 'constant_1', 'constant_2'],
                                                      ['relVV', 'relVH', 'gldas'])

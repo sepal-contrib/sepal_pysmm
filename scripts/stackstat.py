@@ -140,8 +140,13 @@ def stack_composed(path_selector, date_selector, statistic, alert):
          os.makedirs(processed_stat_path)
 
     # Create a list from all the images 
-    tifs = glob.glob(f'{processed_ff_path}/close*.tif')
-    # tifs = glob.glob(f'{processed_f_path}/*/close*.tif') # To compute all the folders
+#     tifs = glob.glob(f'{processed_ff_path}/close*.tif')
+
+
+    tifs = glob.glob(f'{processed_f_path}/*/close*.tif') # To compute all the folders
+    print('there are', len(tifs), 'images')
+    processed_stat_path = '/home/dguerrero/pysmm_downloads/2_stats/'
+    
 
     if season:
 
@@ -229,6 +234,8 @@ def stack_composed(path_selector, date_selector, statistic, alert):
 
     # Once the process has ran remove the tmp_tif_file
     os.remove(tmp_tif_file[0])
+    
+    print(process)
                              
     if process.returncode == 0:
         toc = time.perf_counter()
