@@ -26,6 +26,7 @@ Part 2: Process Sentinel-1 time series data to generate maps of soil moisture
     
     .. figure:: https://raw.githubusercontent.com/openforis/sepal_pysmm/master/doc/img/wiki/2.1.1.PNG
         :width: 500
+        
     2.  The application will be launched and displayed over a new tab in the SEPAL panel.
     
     .. figure:: https://raw.githubusercontent.com/openforis/sepal_pysmm/master/doc/img/wiki/2.1.2.PNG
@@ -179,12 +180,12 @@ After the download is complete, we can apply a robust methodology for image filt
         5.  The ‘Valid pixels’ option will create a new image representing only the count of the valid pixels from the stack.
         6.  The Median, Mean, Geometric Mean, Max, Min, Standard Deviation and Valid pixels, are statistics that do not require much computing requirements, so the time to perform those task it’s relatively quick, depending on the extent of the image.
         7.  The advanced settings are intended to be used to improve the time and manage the system resources. Normally this is optimized automatically but can be modified by the user. This setting controls the number of processors you use for parallel processing, allowing you to optimize the time by processing a huge image by using several processors at the same time. Automatically all available processors will be used. Note that the more CPUs available in the instance you selected in the terminal, the faster the processing will be.
+        
+            1.  **Processors**: by default, the module will display the number of processors that are active in the current instance session and will perform the stack-composed with all of them, however, in order to test the best benchmark to the specific stack, this number could be changed within the advanced settings tab.
+            2.  **Chunks**: the number in the chunk specifies the shape of the array that will be processed in parallel over the different processors. i.e., if 180 is the specified number of chunks, then the stack-composed module will divide the input image into several small square pieces of 180 pixels with its shape, for more information about how to select the best chunk shape, follow the dask documentation.
 
         .. figure:: https://raw.githubusercontent.com/openforis/sepal_pysmm/master/doc/img/wiki/4.3.5.7.PNG
             :width: 600
- 
-            1.  **Processors**: by default, the module will display the number of processors that are active in the current instance session and will perform the stack-composed with all of them, however, in order to test the best benchmark to the specific stack, this number could be changed within the advanced settings tab.
-            2.  **Chunks**: the number in the chunk specifies the shape of the array that will be processed in parallel over the different processors. i.e., if 180 is the specified number of chunks, then the stack-composed module will divide the input image into several small square pieces of 180 pixels with its shape, for more information about how to select the best chunk shape, follow the dask documentation.
     
         8.  Once the settings are specified, click on the ‘Calculate statistics’ button.
         9.  After selecting the temporal range to run the analysis and parameter to calculate, the images that are processed are listed, along with the date of the imagery. 
