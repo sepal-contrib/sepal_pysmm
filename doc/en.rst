@@ -216,7 +216,7 @@ Part 5: Visualizing imagery
 4.  Wait until the image is rendered in the map and explore the general output.
 5.  Mark the “Inspector” checkbox and click over any coordinate inside the image to explore the pixel values, you will see an output box in the bottom right corner with the data.
 
-.. figure:: https://raw.githubusercontent.com/openforis/sepal_pysmm/master/doc/img/wiki/2.1.2.PNG
+.. figure:: https://raw.githubusercontent.com/openforis/sepal_pysmm/master/doc/img/wiki/5.4.PNG
     :width: 500
 
 Open-source data from Sentinel 1 operates using C-band synthetic aperture radar imaging. C-band type has a wavelength of 3.8 – 7.5 cm and thus it has limited penetration into dense forest canopies. Therefore, forested areas should be excluded from the analysis. L-band data should be used instead of such areas. 
