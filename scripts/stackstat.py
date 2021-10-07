@@ -145,7 +145,7 @@ def stack_composed(path_selector, date_selector, statistic, alert):
 
     tifs = glob.glob(f'{processed_f_path}/*/close*.tif') # To compute all the folders
     print('there are', len(tifs), 'images')
-    processed_stat_path = '/home/dguerrero/pysmm_downloads/2_stats/'
+    # processed_stat_path = '/home/dguerrero/pysmm_downloads/2_stats/'
     
 
     if season:
