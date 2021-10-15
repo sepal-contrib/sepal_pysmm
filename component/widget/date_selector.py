@@ -15,6 +15,7 @@ class DateSelector(v.Layout):
 
     years_items = List(allow_none=True).tag(sync=True)
     months_items = List(allow_none=True).tag(sync=True)
+    
     selected_years = List(allow_none=True).tag(sync=True)
     selected_months = List(allow_none=True).tag(sync=True)
 
@@ -104,8 +105,8 @@ class DateSelector(v.Layout):
         link((self.w_end_date, "v_model"), (self, "end_date"))
         link((self.w_ini_date, "v_model"), (self, "start_date"))
         link((self.w_unique_date, "v_model"), (self, "single_date"))
-        link((self.w_mmonths, "items"), (self, "selected_months"))
-        link((self.w_myears, "items"), (self, "selected_years"))
+        link((self.w_mmonths, "v_model"), (self, "selected_months"))
+        link((self.w_myears, "v_model"), (self, "selected_years"))
         link((self.w_mmonths, "items"), (self, "months_items"))
         link((self.w_myears, "items"), (self, "years_items"))
 
@@ -145,8 +146,9 @@ class DateSelector(v.Layout):
         parsed_months = [self.MONTHS_DICT[key].capitalize() for key in number_list]
 
         return parsed_months
-
-    def months_to_numbers(self):
+    
+    @staticmethod
+    def months_to_numbers(months):
 
         """From a given list of string months, the function will return a list of
         parsed integer months"""
