@@ -13,14 +13,14 @@ __all__ = ["FolderSelector", "FolderSelectorView"]
 
 class FolderSelectorView(v.Card):
     
-    def __init__(self, folder="/", max_depth=None, *args, **kwargs):
+    def __init__(self, folder="/", max_depth=None, max_selection=None, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
 
         self.alert_info = sw.Alert(
             children=["Please select a folder with .tif images"]
         ).show()
-        self.w_selector = FolderSelector(folder, max_depth)
+        self.w_selector = FolderSelector(folder, max_depth, max_selection)
         self.w_recursive = v.Switch(label="Search recursively", v_model=False)
 
         self.children = [
@@ -65,6 +65,7 @@ class FolderSelector(v.List):
     Args:
         folder (str, Path) (optional): Initial folder. Default : '/'
         max_depth (int): maximum depth levels allowed from the initial folder.
+        max_selection (int): set the maximum number of elements that can be selected.
 
     Traits:
         v_model: Will store the selected elements.
@@ -76,16 +77,19 @@ class FolderSelector(v.List):
         max_depth_folder (Path): Maximum depth folder. Given by max_depth arg.
         current_folder (Path): Folder in the current state of the widget.
         folders (list): Folders in the current folder.
+        max_selection (int): Maximum nunmber of folders that can be selected
     """
 
     v_model = List().tag(sync=True)
     loading = Bool().tag(sync=True)
 
-    def __init__(self, folder="/", max_depth=None, *args, **kwargs):
+    def __init__(self, folder="/", max_depth=None, max_selection=None, *args, **kwargs):
 
         self.folders = None
         self.max_depth = max_depth
+        self.max_selection = max_selection
         self.base_folder = Path("/") if not folder else Path(folder)
+        
 
         if self.max_depth is not None:
             if self.max_depth > len(self.base_folder.parents):
@@ -93,11 +97,12 @@ class FolderSelector(v.List):
                     f"The folder {self.base_folder} only has a {len(self.base_folder.parents)} "
                     f"depth. You've selected {self.max_depth} as max depth."
                 )
-        self.max_depth_folder = (
-            self.base_folder
-            if max_depth == 0
-            else self.base_folder.parents[max_depth - 1]
-        )
+                
+            self.max_depth_folder = (
+                self.base_folder
+                if max_depth == 0
+                else self.base_folder.parents[max_depth - 1]
+            )
 
         # Give an initial value. It will change over each change.
         self.current_folder = self.base_folder
@@ -115,6 +120,7 @@ class FolderSelector(v.List):
         )
 
         self.item_group = ListItemGroup(
+            max_selection = self.max_selection,
             children=self.get_folder_group(self.current_folder)
         )
 
@@ -144,11 +150,17 @@ class FolderSelector(v.List):
 
     @su.switch("loading")
     def on_folder(self, change):
-
+        
         if change["new"] is not None:
-
+            
             # Check if we can access to this path or if it's restricted by depth
-            if Path(self.folders[change["new"]]) != self.max_depth_folder.parent:
+            restricted = (
+                Path(self.folders[change["new"]]) == self.max_depth_folder.parent
+                if self.max_depth is not None
+                else False
+            )
+
+            if not restricted:
 
                 self.current_folder = Path(self.folders[change["new"]])
                 items = self.get_folder_group(self.current_folder)
@@ -168,16 +180,19 @@ class ListItem(v.Flex):
     # So, the item will be selected when the checkbox is checked.
 
     is_selected = Bool().tag(sync=True)
+    
 
     def __init__(self, value, position, multiple=True, *args, **kwargs):
 
         self.value = value
         self.class_ = "d-flex"
+        self.position = position
+        
         value = Path(value)
 
         super().__init__(*args, **kwargs)
 
-        selected = v.Checkbox(v_model=False)
+        self.w_selected = v.Checkbox(v_model=False)
 
         if position == 0:
             icon = ICON_TYPES["PARENT"]["icon"]
@@ -205,25 +220,28 @@ class ListItem(v.Flex):
             ]
         )
 
-        self.children = [self.item] if position == 0 else [self.item, selected]
+        self.children = [self.item] if position == 0 else [self.item, self.w_selected]
 
         if multiple:
-            selected.disabled = False
+            self.w_selected.disabled = False
             
-        link((selected, "v_model"), (self, "is_selected"))
+        link((self.w_selected, "v_model"), (self, "is_selected"))
 
 
 class ListItemGroup(v.ListItemGroup):
 
     selected = List([]).tag(sync=None)
 
-    def __init__(self, children, *args, **kwargs):
-
+    def __init__(self, children, max_selection=None, *args, **kwargs):
+    
         self.v_model = None
+        self.max_selection = max_selection
+        self.last_checked = 0
 
         super().__init__(*args, **kwargs)
 
         self.children = children
+        
 
     @observe("children")
     def update_observe(self, change):
@@ -236,10 +254,26 @@ class ListItemGroup(v.ListItemGroup):
 
     def set_selected(self, change):
         """Bind every item with the selected trait if it's checkbox is checkd"""
-
-        self.selected = [(chld.value) for chld in self.children if chld.is_selected]
+        
+        # Create an index to store the last selection.
+        # Will be used to un-select an element when the max_selection is given
+        self.last_checked+=1
+        change["owner"].last_checked = self.last_checked
+        
+        self.selected_widgets = sorted(
+            [chld for chld in self.children if chld.is_selected], 
+            key=lambda x: x.last_checked
+        )
+        
+        self.selected = [chld.value for chld in self.selected_widgets]
+        
+        # Deselect the first selected if there's a selected one>max_selection
+        if self.max_selection is not None:
+            if len(self.selected_widgets) > self.max_selection:
+                self.selected_widgets[0].w_selected.v_model = False
         
     def reset(self):
         """Clear selected elements"""
         
-        [setattr(chld, 'is_selected', False) for chld in self.children]
+        [setattr(chld, 'is_selected', False) for chld in self.children]                
+
