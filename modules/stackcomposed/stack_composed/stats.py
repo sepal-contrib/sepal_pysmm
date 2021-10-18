@@ -11,8 +11,9 @@
 #
 import dask.array as da
 import numpy as np
+import warnings
 
-from stack_composed.image import Image
+from .image import Image
 
 
 def statistic(stat, images, band, num_process, chunksize):
@@ -170,7 +171,10 @@ def statistic(stat, images, band, num_process, chunksize):
             metadata["jday"] = np.array([image.jday for image in images])[mask_none]
 
         stack_chunk = np.stack(chunks_list, axis=2)
-        return stat_func(stack_chunk, metadata)
+        
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=RuntimeWarning)
+            return stat_func(stack_chunk, metadata)
 
     # process
     map_blocks = da.map_blocks(calc, wrapper_array, chunks=wrapper_array.chunks, chunksize=chunksize, dtype=float)

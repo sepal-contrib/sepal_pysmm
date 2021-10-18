@@ -9,27 +9,26 @@ import ipyvuetify as v
 import sepal_ui.sepalwidgets as sw
 import sepal_ui.scripts.utils as su
 
+from component.model import Model
 import component.parameter as param
 import component.widget as cw
-
-from component.scripts import stackstat
 from component.message import cm
 import component.scripts as cs
 
-import modules.stackcomposed.stack_composed as stack
 
+__all__ = ['StatisticsTile']
 
 class StatisticsTile(v.Layout):
-    def __init__(self, model, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
 
         self.class_ = "d-block"
 
         super().__init__(*args, **kwargs)
 
-        self.model = model
+        self.model = Model()
 
-        self.inputs_view = StatsInputView(model=model)
-        self.statistics_view = StatisticsView(model=model)
+        self.inputs_view = StatsInputView(model=self.model)
+        self.statistics_view = StatisticsView(model=self.model)
 
         views = [self.inputs_view, self.statistics_view]
 
@@ -60,11 +59,12 @@ class StatsInputView(v.Layout):
         self.model = model
 
         self.w_selector_view = cw.FolderSelectorView(
-            folder=param.PROCESSED_DIR.parent, max_depth=0
+            folder=param.PROCESSED_DIR.parent, max_depth=0, wildcard="close*.tif"
         )
         self.w_selector = self.w_selector_view.w_selector
 
         self.date_selector = cw.DateSelector(season=True, remove_method=["single"])
+        self.date_selector.date_method='all'
 
         self.children = [
             v.Row(
@@ -109,7 +109,7 @@ class StatsInputView(v.Layout):
         month_items = [
             {"text":text,"value":value} 
             for value, text
-            in self.date_selector.MONTHS_DICT.items() if value in months
+            in param.MONTHS_DICT.items() if value in months
         ]
         
         self.date_selector.months_items = month_items
@@ -161,7 +161,7 @@ class StatisticsView(v.Layout):
     STATS_DICT = {
         "Median": "median",
         "Mean": "mean",
-        "Geometric mean": "Gmean",
+        "Geometric mean": "gmean",
         "Maximum": "max",
         "Minimum": "min",
         "Standard deviation": "std",
@@ -178,11 +178,14 @@ class StatisticsView(v.Layout):
         self.model = model
 
         self.alert = sw.Alert()
-        self.btn = sw.Btn("Get stack")
+        self.btn = sw.Btn("Get stack", class_='mr-2')
+        self.btn_view = sw.Btn("View list of images", disabled=True)
         self.output = Output()
         
         self.w_summary = v.Dialog(
-            value = False, 
+            max_width = 800,
+            min_height = 500,
+            v_model = False, 
             children=[]
         )
 
@@ -232,7 +235,7 @@ class StatisticsView(v.Layout):
             self.w_stats,
             advanced_settings,
             self.w_prefix,
-            self.btn,
+            v.Flex(class_='d-flex mb-2', children=[self.btn,self.btn_view]),
             self.alert,
             self.output,
         ]
@@ -242,7 +245,9 @@ class StatisticsView(v.Layout):
         ).bind(self.w_chunk, "chunks").bind(self.w_prefix, 'prefix')
 
         self.btn.on_event("click", self.on_click)
-
+        self.btn_view.on_event("click", lambda *args: setattr(self.w_summary,'v_model',True))
+    
+    @su.switch('disabled', on_widgets=['btn_view'], targets=[False])
     @su.loading_button(debug=True)
     def on_click(self, widget, event, data):
         
@@ -264,15 +269,8 @@ class StatisticsView(v.Layout):
         
         with self.output:
             self.output.clear_output()
+            self.model.stack_composed(str(tmp_tif_file), str(output_name))
             
-            stack.stack_composed.run(
-                self.selected_stat, 
-                bands=1,  
-                output=output_name, 
-                num_process=self.cores, 
-                chunksize=self.chunks, 
-                inputs=image_file
-            )
         
         # Once the process has ran remove the tmp_tif_file
         tmp_tif_file.unlink()

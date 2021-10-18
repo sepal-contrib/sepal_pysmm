@@ -12,7 +12,7 @@
 import datetime
 import os
 import re
-
+from pathlib import Path
 
 def calc_date(year, jday):
     return (datetime.datetime(year, 1, 1) + datetime.timedelta(jday - 1)).date()
@@ -97,7 +97,7 @@ def parse_other_files(file_path):
     Examples:
         close_SMCmap_2019_11_09_dguerrero_1111.tif
     """
-    filename = os.path.basename(file_path).split(".")[0]
+    filename = Path(file_path).stem
 
     match = re.search(r'\d{4}_\d{2}_\d{2}', filename) 
     date = datetime.datetime.strptime(match.group(), '%Y_%m_%d').date()

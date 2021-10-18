@@ -13,7 +13,7 @@ import os
 import numpy as np
 from osgeo import gdal
 
-from stack_composed.parse import parse_filename
+from .parse import parse_filename
 
 
 class Image:

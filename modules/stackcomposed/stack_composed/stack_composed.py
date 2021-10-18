@@ -30,37 +30,38 @@ from .image import Image
 from .stats import statistic
 
 IMAGES_TYPES = (".tif", ".TIF", ".img", ".IMG", ".hdr", ".HDR")
-
+STATS = [
+    "median",
+    "mean",
+    "gmean",
+    "max",
+    "min",
+    "std",
+    "valid_pixels",
+    "last_pixel",
+    "jday_last_pixel",
+    "jday_median",
+    "linear_trend",
+]
 
 def run(
     stat,
     bands,
-    nodata,
     output,
-    output_type,
-    num_process,
-    chunksize,
-    start_date,
-    end_date,
     inputs,
+    nodata=None,
+    output_type=None,
+    num_process=None,
+    chunksize=None,
+    start_date=None,
+    end_date=None,
+
 ):
     # ignore warnings
     warnings.filterwarnings("ignore")
 
     # check statistical option
-    if stat not in (
-        "median",
-        "mean",
-        "gmean",
-        "max",
-        "min",
-        "std",
-        "valid_pixels",
-        "last_pixel",
-        "jday_last_pixel",
-        "jday_median",
-        "linear_trend",
-    ) and not stat.startswith(("percentile_", "trim_mean_")):
+    if stat not in STATS and not stat.startswith(("percentile_", "trim_mean_")):
         print("\nError: argument '-stat' invalid choice: {}".format(stat))
         print(
             "choose from: median, mean, gmean, max, min, std, valid_pixels, last_pixel, "
@@ -84,49 +85,22 @@ def run(
                 "the trim_mean_LL_UL must ends with a valid limits, e.g. trim_mean_10_80"
             )
             return
-    print("\nLoading and prepare images in path(s):", flush=True)
-    # search all Image files in inputs recursively if the files are in directories
-
+        
+    # Read images from file
     images_files = []
-    for _input in inputs:
-        if os.path.isfile(_input):
-            # The input is a text file containing the images to be processed.
-            if _input.endswith(".txt"):
-                with open(_input, "r") as tf:
-                    for line in tf:
-                        images_files.append(line.strip())
-            if _input.endswith(IMAGES_TYPES):
-                images_files.append(os.path.abspath(_input))
-        elif os.path.isdir(_input):
-            for root, dirs, files in os.walk(_input):
-                if len(files) != 0:
-                    files = [
-                        os.path.join(root, x) for x in files if x.endswith(IMAGES_TYPES)
-                    ]
-                    [images_files.append(os.path.abspath(file)) for file in files]
+    with open(inputs, "r") as tf:
+        for line in tf:
+            images_files.append(line.strip())
+
     # load bands
     if isinstance(bands, int):
         bands = [bands]
     if not isinstance(bands, list):
         bands = [int(b) for b in bands.split(",")]
+        
     # load images
     images = [Image(landsat_file) for landsat_file in images_files]
 
-    # filter images based on the start date and/or end date, required filename as metadata
-    if start_date is not None or end_date is not None:
-        [image.set_metadata_from_filename() for image in images]
-        if start_date is not None:
-            images = [image for image in images if image.date >= start_date]
-        if end_date is not None:
-            images = [image for image in images if image.date <= end_date]
-    if len(images) <= 1:
-        print(
-            "\n\nAfter load (and filter images in range date if applicable) there are {} images to process.\n"
-            "StackComposed required at least 2 or more images to process.\n".format(
-                len(images)
-            )
-        )
-        exit(1)
     # save nodata set from arguments
     Image.nodata_from_arg = nodata
 
