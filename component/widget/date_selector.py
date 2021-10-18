@@ -19,20 +19,6 @@ class DateSelector(v.Layout):
     selected_years = List(allow_none=True).tag(sync=True)
     selected_months = List(allow_none=True).tag(sync=True)
 
-    MONTHS_DICT = {
-        1: "january",
-        2: "february",
-        3: "march",
-        4: "april",
-        5: "may",
-        6: "june",
-        7: "july",
-        8: "august",
-        9: "september",
-        10: "october",
-        11: "november",
-        12: "december",
-    }
 
     SELECTION_METHODS = [
         {"text": "Single date", "value": "single"},
@@ -137,25 +123,3 @@ class DateSelector(v.Layout):
         elif change["new"] == "season":
             su.show_component(self.w_mmonths)
             su.show_component(self.w_myears)
-
-    def numbers_to_months(self, number_list):
-
-        """From a given list of numbers, the function will return a list of
-        parsed months"""
-
-        parsed_months = [self.MONTHS_DICT[key].capitalize() for key in number_list]
-
-        return parsed_months
-    
-    @staticmethod
-    def months_to_numbers(months):
-
-        """From a given list of string months, the function will return a list of
-        parsed integer months"""
-
-        # Invert dictionary
-        inverted_dict = {v: k for k, v in self.MONTHS_DICT.items()}
-
-        parsed_numbers = [inverted_dict[key.lower()] for key in self.selected_months]
-
-        return parsed_numbers

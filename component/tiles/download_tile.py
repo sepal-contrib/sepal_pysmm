@@ -10,7 +10,30 @@ import component.widget as cw
 import component.parameter as param
 from component.message import cm
 
-__all__ = ['DownloadView']
+__all__ = ['DownloadTile']
+
+
+class DownloadTile(v.Layout, sw.SepalWidget):
+    def __init__(self, *args, **kwargs):
+
+        self.class_ = "d-block"
+        self._metadata={"mount_id":'download'}
+
+        super().__init__(*args, **kwargs)
+        
+        self.download_view = DownloadView()
+
+        self.children = [
+            v.Card(
+                class_='mb-2',
+                children=[
+                    v.CardTitle(children=[cm.download_tile.title]),
+                    v.CardText(children=[sw.Markdown(cm.download_tile.description)]),
+                ]
+            ),
+            self.download_view
+        ]
+    
 
 class DownloadView(v.Card):
     
@@ -36,8 +59,7 @@ class DownloadView(v.Card):
         self.btn = sw.Btn(text="Download", icon="mdi-download")
 
         self.children = [
-            v.CardTitle(children=[cm.download_tile.title]),
-            v.CardText(children=[sw.Markdown(cm.download_tile.description)]),
+
             self.w_selection,
             self.w_overwrite,
             self.w_remove,

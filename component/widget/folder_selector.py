@@ -12,10 +12,22 @@ __all__ = ["FolderSelector", "FolderSelectorView"]
 
 
 class FolderSelectorView(v.Card):
+    """
+    Folder selector view which contain the option to search the files ending with the
+    given wildcard with the recursive option. It will display the lenght of the found
+    items in an alert header.
     
-    def __init__(self, folder="/", max_depth=None, max_selection=None, *args, **kwargs):
+    Args:
+        wildcard (str): pattern to find files within the selected folders.
+        ** FolderSelector args.
+        
+    """
+    
+    def __init__(self, folder="/", max_depth=None, max_selection=None, wildcard='*', *args, **kwargs):
 
         super().__init__(*args, **kwargs)
+        
+        self.wildcard = wildcard
 
         self.alert_info = sw.Alert(
             children=["Please select a folder with .tif images"]
@@ -41,14 +53,14 @@ class FolderSelectorView(v.Card):
             if not self.w_recursive.v_model:
                 number_of_images = sum(
                     [
-                        len(list(Path(folder).glob("[!.]*.tif")))
+                        len(list(Path(folder).glob(self.wildcard)))
                         for folder in change["new"]
                     ]
                 )
             else:
                 number_of_images = sum(
                     [
-                        len(list(Path(folder).rglob("[!.]*.tif")))
+                        len(list(Path(folder).rglob(self.wildcard)))
                         for folder in change["new"]
                     ]
                 )
@@ -67,10 +79,6 @@ class FolderSelector(v.List):
         max_depth (int): maximum depth levels allowed from the initial folder.
         max_selection (int): set the maximum number of elements that can be selected.
 
-    Traits:
-        v_model: Will store the selected elements.
-        loading (bool): Whether the Folder Selector is loading or not.
-
     Params:
         max_depth (int): Maximum levels of depth that can be accessed.
         base_folder (Path): base folder, given from the folder arg.
@@ -78,6 +86,11 @@ class FolderSelector(v.List):
         current_folder (Path): Folder in the current state of the widget.
         folders (list): Folders in the current folder.
         max_selection (int): Maximum nunmber of folders that can be selected
+        
+        Traits:
+            v_model: Will store the selected elements.
+            loading (bool): Whether the Folder Selector is loading or not.
+            
     """
 
     v_model = List().tag(sync=True)

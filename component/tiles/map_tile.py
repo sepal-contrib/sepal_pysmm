@@ -11,6 +11,9 @@ class MapTile(v.Card):
     
     
     def __init__(self, *args, **kwargs):
+        
+        self._metadata={"mount_id":'map'}
+        
         super().__init__(*args, **kwargs)
         
         self.file_chooser = sw.FileInput(extentions=['.tif'])

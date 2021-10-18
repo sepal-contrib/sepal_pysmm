@@ -1,0 +1,32 @@
+{
+    "download_tile" : {
+        "title": "Download",
+        "description" : "With this module you can track and download the images processed into your Google Earth Engine account by providing the 'tasks' text file, the results will be stored directly into your SEPAL account.</br> <b>Note that if you check the overwrite and remove options, the result can't be undone.</b>"
+    },
+    "statistics_tile" : {
+        "title" : "Calculate statistics",
+        "desc" : "After the data is filtered, a time series analysis of the soil moisture maps can be performed. Several statistics can be applied whether to the entire time series or to a specified range, statistics as median, mean, standard deviation or linear trend (slope of the line) are available to process the selected data.</br>This module uses the <a href='https://github.com/SMByC/StackComposed' target='_blank'>Stack Composed python module</a>, which was developed by the SMByC of Ideam (Colombia), that computes a specific statistic for all valid pixel values across the time series using a parallel process.</br>There are three options for analyzing the data for different time frames.<ul><li><b>All time series</b>: runs the analysis for all the images in the given folder.</li><li><b>Range</b>: runs the analysis for all the images within the time frame selected.</li><li><b>Season</b>: the user can define a season by selecting months or years.The analysis is run for only the years/months selected. For example if January, February and 2016, 2017, 2018 are selected, then the analysis would run for January 2016, January 2017, January 2018,  February 2016, February 2017 and February 2018.If only a month is selected (without years), the analysis would run all the years for the given month.</li>"
+    },
+    "process_tile": {
+        "landing_tab" : {
+            "title" :  "Soil moisture mapping",
+            "desc" : "This module runs PYSMM, a python package for creating soil moisture maps. The module can be used to create a time series of soil moisture maps. The estimation of soil moisture is based on a Support-Vector-Regression machine learning approach, training the model based on in-situ data from the International Soil Moisture Network (ISMN) on cross-calibration between Sentinel-1 and Global Land Data Assimilation System (GLDAS). More information about PYSMM can be found on <a href='https://pysmm.readthedocs.io/en/latest/'> the docs</a>.</br>To start the process, go through the steps 2 to 4.</br></br>*The PYSMM package was developed by Felix Greifeneder with modification from the SEPAL team."
+        },
+        "date_tab" : {
+            "title" : "Date selector",
+            "desc" : "With the following menu you can select the date of the images that you want to run the algorithm, there are three options:<ul><li><b>All time series</b>: Will search all the avaiable images for the given area.</li><li><b>Single date</b>: Will search the closes image for the given date and area. </li><li><b>Range</b>: Will search all the images present in the given date range and area.</li></ul>"
+        },
+        "start_tab" : {
+            "title" : "Soil Moisture Process",
+            "desc" : "After clicking in the 'Start' button, the availability of Sentinel-1 data is assessed and the command is sent through SEPAL to Google Earth Engine (GEE) to run the classification of soil moisture. This process could take a long time depending on the dimensions of the feature and on the number of the images to be processed.<br>If the selected dates are not available, the system will display a message with the closest images to the input dates.The most recent image available depends on the GLDAS product, which has a delay of 1 to 2 months.<br>The green Processing bar shows the name of the task that is sent to GEE. When the processing reaches 100% all the tasks have been sent to GEE and the classification of soil moisture will continue there.<br>After all the tasks are sent to GEE the module can be closed. The processing will continue uninterrupted in GEE. In GEE the processing can take hours or days depending on the size of the AOI and the date range selected."
+        }
+    },
+    "filter_tile": {
+        "title":"Filtering",
+        "desc":"Due to speckle in the Sentinel-1 imagery the soil moisture maps contain some noise and no-data values which are corrected using grayscale morphological operation from ORFEO toolbox, a free and open source image processing tool. To read more about the parameterization of the Orfeo toolbox tool, read <a href='https://www.orfeo-toolbox.org/CookBook/Applications/app_GrayScaleMorphologicalOperation.html' target=\"_blank\">the docs</a> for more info. </br>This process is done by the SEPAL instance, the time will depend on the number of images and the dimension, after finishing all the images, the progress bar will be green colored."
+    },
+    "map_tile" : {
+        "title": "Map visualization",
+        "desc": "Use the <i>Search</i> button to search images stored in your SEPAL session. You can select the <i>inspector</i>checkbox inside the map to explore the image by clicking over the interest area."
+    }
+}

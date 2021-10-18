@@ -18,10 +18,11 @@ import component.scripts as cs
 
 __all__ = ['StatisticsTile']
 
-class StatisticsTile(v.Layout):
+class StatisticsTile(v.Layout, sw.SepalWidget):
     def __init__(self, *args, **kwargs):
 
         self.class_ = "d-block"
+        self._metadata={"mount_id":'statistics'}
 
         super().__init__(*args, **kwargs)
 
