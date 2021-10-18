@@ -28,17 +28,20 @@ def statistic(stat, images, band, num_process, chunksize):
     #
 
     # Compute the median
-    if stat == 'median':
+    if stat == "median":
+
         def stat_func(stack_chunk, metadata):
             return np.nanmedian(stack_chunk, axis=2)
 
     # Compute the arithmetic mean
-    if stat == 'mean':
+    if stat == "mean":
+
         def stat_func(stack_chunk, metadata):
             return np.nanmean(stack_chunk, axis=2)
 
     # Compute the geometric mean
-    if stat == 'gmean':
+    if stat == "gmean":
+
         def stat_func(stack_chunk, metadata):
             product = np.nanprod(stack_chunk, axis=2)
             count = np.count_nonzero(np.nan_to_num(stack_chunk), axis=2)
@@ -47,34 +50,40 @@ def statistic(stat, images, band, num_process, chunksize):
             return gmean
 
     # Compute the maximum value
-    if stat == 'max':
+    if stat == "max":
+
         def stat_func(stack_chunk, metadata):
             return np.nanmax(stack_chunk, axis=2)
 
     # Compute the minimum value
-    if stat == 'min':
+    if stat == "min":
+
         def stat_func(stack_chunk, metadata):
             return np.nanmin(stack_chunk, axis=2)
 
     # Compute the standard deviation
-    if stat == 'std':
+    if stat == "std":
+
         def stat_func(stack_chunk, metadata):
             return np.nanstd(stack_chunk, axis=2)
 
     # Compute the valid pixels
     # this count the valid data (no nans) across the z-axis
-    if stat == 'valid_pixels':
+    if stat == "valid_pixels":
+
         def stat_func(stack_chunk, metadata):
             return stack_chunk.shape[2] - np.isnan(stack_chunk).sum(axis=2)
 
     # Compute the percentile NN
-    if stat.startswith('percentile_'):
-        p = int(stat.split('_')[1])
+    if stat.startswith("percentile_"):
+        p = int(stat.split("_")[1])
+
         def stat_func(stack_chunk, metadata):
             return np.nanpercentile(stack_chunk, p, axis=2)
 
     # Compute the last valid pixel
-    if stat == 'last_pixel':
+    if stat == "last_pixel":
+
         def last_pixel(pixel_time_series, index_sort):
             if np.isnan(pixel_time_series).all():
                 return np.nan
@@ -83,11 +92,14 @@ def statistic(stat, images, band, num_process, chunksize):
                     return pixel_time_series[index]
 
         def stat_func(stack_chunk, metadata):
-            index_sort = np.argsort(metadata['date'])[::-1]  # from the most recent to the oldest
+            index_sort = np.argsort(metadata["date"])[
+                ::-1
+            ]  # from the most recent to the oldest
             return np.apply_along_axis(last_pixel, 2, stack_chunk, index_sort)
 
     # Compute the julian day of the last valid pixel
-    if stat == 'jday_last_pixel':
+    if stat == "jday_last_pixel":
+
         def jday_last_pixel(pixel_time_series, index_sort, jdays):
             if np.isnan(pixel_time_series).all():
                 return 0  # better np.nan but there is bug with multiprocessing with return nan value here
@@ -96,55 +108,81 @@ def statistic(stat, images, band, num_process, chunksize):
                     return jdays[index]
 
         def stat_func(stack_chunk, metadata):
-            index_sort = np.argsort(metadata['date'])[::-1]  # from the most recent to the oldest
-            return np.apply_along_axis(jday_last_pixel, 2, stack_chunk, index_sort, metadata['jday'])
+            index_sort = np.argsort(metadata["date"])[
+                ::-1
+            ]  # from the most recent to the oldest
+            return np.apply_along_axis(
+                jday_last_pixel, 2, stack_chunk, index_sort, metadata["jday"]
+            )
 
     # Compute the julian day of the median value
-    if stat == 'jday_median':
+    if stat == "jday_median":
+
         def jday_median(pixel_time_series, index_sort, jdays):
             if np.isnan(pixel_time_series).all():
                 return 0  # better np.nan but there is bug with multiprocessing with return nan value here
-            jdays = [jdays[index] for index in index_sort if not np.isnan(pixel_time_series[index])]
+            jdays = [
+                jdays[index]
+                for index in index_sort
+                if not np.isnan(pixel_time_series[index])
+            ]
             return np.ceil(np.median(jdays))
 
         def stat_func(stack_chunk, metadata):
-            index_sort = np.argsort(metadata['date'])  # from the oldest to most recent
-            return np.apply_along_axis(jday_median, 2, stack_chunk, index_sort, metadata['jday'])
+            index_sort = np.argsort(metadata["date"])  # from the oldest to most recent
+            return np.apply_along_axis(
+                jday_median, 2, stack_chunk, index_sort, metadata["jday"]
+            )
 
     # Compute the trimmed median with lower limit and upper limit
-    if stat.startswith('trim_mean_'):
+    if stat.startswith("trim_mean_"):
         # TODO: check this stats when the time series have few data
-        lower = int(stat.split('_')[2])
-        upper = int(stat.split('_')[3])
+        lower = int(stat.split("_")[2])
+        upper = int(stat.split("_")[3])
+
         def trim_mean(pixel_time_series):
             if np.isnan(pixel_time_series).all():
                 return 0  # better np.nan but there is bug with multiprocessing with return nan value here
             pts = pixel_time_series[~np.isnan(pixel_time_series)]
             if len(pts) <= 2:
-                return np.percentile(pts, (lower+upper)/2)
-            return np.mean(pts[(pts >= np.percentile(pts, lower)) & (pts <= np.percentile(pts, upper))])
+                return np.percentile(pts, (lower + upper) / 2)
+            return np.mean(
+                pts[
+                    (pts >= np.percentile(pts, lower))
+                    & (pts <= np.percentile(pts, upper))
+                ]
+            )
 
         def stat_func(stack_chunk, metadata):
             return np.apply_along_axis(trim_mean, 2, stack_chunk)
 
     # Compute the linear trend using least-squares method
-    if stat == 'linear_trend':
+    if stat == "linear_trend":
+
         def linear_trend(pixel_time_series, index_sort, date_list):
-            if np.isnan(pixel_time_series).all() or len(pixel_time_series[~np.isnan(pixel_time_series)]) == 1:
+            if (
+                np.isnan(pixel_time_series).all()
+                or len(pixel_time_series[~np.isnan(pixel_time_series)]) == 1
+            ):
                 return np.nan
             # Unix timestamp in days
-            x = [int(int(date_list[index].strftime("%s")) / 86400) for index in index_sort]
-            x = [i-x[0] for i in x]  # diff from minimum
+            x = [
+                int(int(date_list[index].strftime("%s")) / 86400)
+                for index in index_sort
+            ]
+            x = [i - x[0] for i in x]  # diff from minimum
             pts = np.array([pixel_time_series[index] for index in index_sort])
             y = np.ma.array(pts, mask=np.isnan(pts))
 
             ssxm, ssxym, ssyxm, ssym = np.ma.cov(x, y, bias=1).flat
             slope = ssxym / ssxm
-            return slope*1000000
+            return slope * 1000000
 
         def stat_func(stack_chunk, metadata):
-            index_sort = np.argsort(metadata['date'])  # from the oldest to most recent
-            return np.apply_along_axis(linear_trend, 2, stack_chunk, index_sort, metadata['date'])
+            index_sort = np.argsort(metadata["date"])  # from the oldest to most recent
+            return np.apply_along_axis(
+                linear_trend, 2, stack_chunk, index_sort, metadata["date"]
+            )
 
     # Compute the statistical for the respective chunk
     def calc(block, block_id=None, chunksize=None):
@@ -154,7 +192,10 @@ def statistic(stat, images, band, num_process, chunksize):
         xc_size = block.shape[1]
 
         # make stack reading all images only in specific chunk
-        chunks_list = [image.get_chunk_in_wrapper(band, xc, xc_size, yc, yc_size) for image in images]
+        chunks_list = [
+            image.get_chunk_in_wrapper(band, xc, xc_size, yc, yc_size)
+            for image in images
+        ]
         # delete empty chunks
         mask_none = [False if x is None else True for x in chunks_list]
         chunks_list = np.array([i for i in chunks_list if i is not None])
@@ -171,13 +212,19 @@ def statistic(stat, images, band, num_process, chunksize):
             metadata["jday"] = np.array([image.jday for image in images])[mask_none]
 
         stack_chunk = np.stack(chunks_list, axis=2)
-        
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=RuntimeWarning)
             return stat_func(stack_chunk, metadata)
 
     # process
-    map_blocks = da.map_blocks(calc, wrapper_array, chunks=wrapper_array.chunks, chunksize=chunksize, dtype=float)
+    map_blocks = da.map_blocks(
+        calc,
+        wrapper_array,
+        chunks=wrapper_array.chunks,
+        chunksize=chunksize,
+        dtype=float,
+    )
     result_array = map_blocks.compute(num_workers=num_process, scheduler="processes")
 
     return result_array

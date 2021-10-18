@@ -44,6 +44,7 @@ STATS = [
     "linear_trend",
 ]
 
+
 def run(
     stat,
     bands,
@@ -55,7 +56,6 @@ def run(
     chunksize=None,
     start_date=None,
     end_date=None,
-
 ):
     # ignore warnings
     warnings.filterwarnings("ignore")
@@ -85,7 +85,7 @@ def run(
                 "the trim_mean_LL_UL must ends with a valid limits, e.g. trim_mean_10_80"
             )
             return
-        
+
     # Read images from file
     images_files = []
     with open(inputs, "r") as tf:
@@ -97,7 +97,7 @@ def run(
         bands = [bands]
     if not isinstance(bands, list):
         bands = [int(b) for b in bands.split(",")]
-        
+
     # load images
     images = [Image(landsat_file) for landsat_file in images_files]
 
@@ -197,16 +197,20 @@ def run(
             exit(1)
         # choose the default data type based on the statistic
         if output_type is None:
-            if stat in [
-                "median",
-                "mean",
-                "gmean",
-                "max",
-                "min",
-                "last_pixel",
-                "jday_last_pixel",
-                "jday_median",
-            ] or stat.startswith(("percentile_", "trim_mean_")):
+            if (
+                stat
+                in [
+                    "median",
+                    "mean",
+                    "gmean",
+                    "max",
+                    "min",
+                    "last_pixel",
+                    "jday_last_pixel",
+                    "jday_median",
+                ]
+                or stat.startswith(("percentile_", "trim_mean_"))
+            ):
                 gdal_output_type = gdal.GDT_UInt16
             if stat in ["std", "snr"]:
                 gdal_output_type = gdal.GDT_Float32

@@ -3,7 +3,7 @@
 
 
 import getpass
-from functools import partial 
+from functools import partial
 import ipywidgets as widgets
 import ipyvuetify as v
 
@@ -12,11 +12,11 @@ from sepal_ui import widgetBinding as wb
 from scripts import download_to_sepal
 
 
-
 class Download:
 
     overwrite = True
     rmdrive = True
+
 
 def on_download(obj, w_selector, btn, out, alert):
     """Starts the download process.
@@ -30,7 +30,7 @@ def on_download(obj, w_selector, btn, out, alert):
     """
 
     def on_click(widget, event, data, out, obj, alert, w_selector):
-        
+
         task_file_name = w_selector.get_file_path()
         overwrite = obj.overwrite
         rmdrive = obj.rmdrive
@@ -51,34 +51,39 @@ def on_download(obj, w_selector, btn, out, alert):
                 alert,
                 overwrite=overwrite,
                 rmdrive=overwrite,
-        )
+            )
 
         run_process(obj)
         btn.activate()
 
-    btn.on_event('click', partial(
-        on_click,
-        obj=obj,
-        out=out,
-        alert=alert,
-        w_selector=w_selector, 
-    ))
+    btn.on_event(
+        "click",
+        partial(
+            on_click,
+            obj=obj,
+            out=out,
+            alert=alert,
+            w_selector=w_selector,
+        ),
+    )
 
 
 def download_tile(obj, w_selection):
-
     def bind_change(change, obj, attr):
-        setattr(obj, attr, change['new'])
+        setattr(obj, attr, change["new"])
 
+    w_overwrite = v.Switch(
+        v_model=obj.overwrite, inset=True, label="Overwrite SEPAL images"
+    )
+    w_overwrite.observe(partial(bind_change, obj=obj, attr="overwrite"), "v_model")
 
-    w_overwrite = v.Switch(v_model=obj.overwrite, inset=True, label="Overwrite SEPAL images")
-    w_overwrite.observe(partial(bind_change, obj=obj, attr='overwrite'), 'v_model')
-
-    w_remove = v.Switch(v_model=obj.rmdrive, inset=True, label="Remove Google Drive Images")
-    w_remove.observe(partial(bind_change, obj=obj, attr='rmdrive'), 'v_model')
+    w_remove = v.Switch(
+        v_model=obj.rmdrive, inset=True, label="Remove Google Drive Images"
+    )
+    w_remove.observe(partial(bind_change, obj=obj, attr="rmdrive"), "v_model")
 
     out = widgets.Output()
-    btn = s.Btn(text="Download", icon='download')
+    btn = s.Btn(text="Download", icon="download")
 
     # Create an alert element for the process
     process_alert = s.Alert()
@@ -101,25 +106,28 @@ def download_tile(obj, w_selection):
     """
 
     download_content = v.Layout(
-
         class_="pa-5",
         row=True,
-        align_center=True, 
+        align_center=True,
         children=[
-            v.Flex(xs12=True, children=[
-                v.Sheet(class_="pa-5",
-                    children=[
-                        widgets.HTML(html_header),
-                        w_selection,
-                        w_overwrite,
-                        w_remove,
-                        btn,
-                        process_alert,
-                        out,
-                    ]
-                )
-            ])
-        ]
+            v.Flex(
+                xs12=True,
+                children=[
+                    v.Sheet(
+                        class_="pa-5",
+                        children=[
+                            widgets.HTML(html_header),
+                            w_selection,
+                            w_overwrite,
+                            w_remove,
+                            btn,
+                            process_alert,
+                            out,
+                        ],
+                    )
+                ],
+            )
+        ],
     )
 
     return download_content

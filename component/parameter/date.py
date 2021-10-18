@@ -1,4 +1,4 @@
-__all__ = ['MONTHS_DICT']
+__all__ = ["MONTHS_DICT"]
 
 MONTHS_DICT = {
     1: "January",

@@ -14,6 +14,7 @@ import os
 import re
 from pathlib import Path
 
+
 def calc_date(year, jday):
     return (datetime.datetime(year, 1, 1) + datetime.timedelta(jday - 1)).date()
 
@@ -90,6 +91,7 @@ def parse_SMBYC_filename(file_path):
     sensor = filename.split("_")[4][1::]
     return landsat_version, sensor, path, row, date, jday
 
+
 def parse_other_files(file_path):
     """
     Parse the date structure of other files
@@ -99,8 +101,8 @@ def parse_other_files(file_path):
     """
     filename = Path(file_path).stem
 
-    match = re.search(r'\d{4}_\d{2}_\d{2}', filename) 
-    date = datetime.datetime.strptime(match.group(), '%Y_%m_%d').date()
+    match = re.search(r"\d{4}_\d{2}_\d{2}", filename)
+    date = datetime.datetime.strptime(match.group(), "%Y_%m_%d").date()
     jday = date.timetuple().tm_yday
 
     path = None
@@ -132,4 +134,3 @@ def parse_filename(file_path):
 
     except Exception as err:
         raise Exception("Cannot parse filename for: {}\n\n{}".format(file_path, err))
-

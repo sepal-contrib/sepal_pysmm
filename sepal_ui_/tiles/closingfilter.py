@@ -11,7 +11,6 @@ from sepal_ui import sepalwidgets as s
 
 
 def close_filter_tile(w_selector):
-
     def on_click(widget, event, data, out, obj, alert):
 
         # Get the current path
@@ -32,14 +31,13 @@ def close_filter_tile(w_selector):
             run_filter(
                 process_path,
                 alert,
-        )
+            )
 
         run_process(obj)
         btn.activate()
 
     out = Output()
     btn = s.Btn(text="Start")
-
 
     # Create an alert element for the process
     alert = s.Alert()
@@ -50,17 +48,21 @@ def close_filter_tile(w_selector):
         class_="ma-5 d-block",
         children=[
             filter_text,
-            w_selector, 
+            w_selector,
             btn,
             alert,
             out,
-        ])
-    
-    btn.on_event('click', partial(
-        on_click,
-        obj=w_selector,
-        out=out,
-        alert=alert, 
-    ))
+        ],
+    )
+
+    btn.on_event(
+        "click",
+        partial(
+            on_click,
+            obj=w_selector,
+            out=out,
+            alert=alert,
+        ),
+    )
 
     return content

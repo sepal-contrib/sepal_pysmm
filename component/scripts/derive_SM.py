@@ -102,7 +102,7 @@ def get_map(
 
     """
     print = alert.append_msg
-    
+
     if filename is not None:
         if not isinstance(filename, str):
             filename = str(filename)
@@ -206,7 +206,7 @@ def get_map(
         gldas_last_date = gldas_date()
         if not gldas_last_date:
             raise Exception("There is not ")
-        
+
         if start_date:
             # The user has selected a range
             dates = dates[start_date:stop_date]

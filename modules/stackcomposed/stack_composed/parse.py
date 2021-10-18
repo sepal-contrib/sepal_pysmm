@@ -100,8 +100,8 @@ def parse_other_files(file_path):
     """
     filename = os.path.basename(file_path).split(".")[0]
 
-    match = re.search(r'\d{4}_\d{2}_\d{2}', filename) 
-    date = datetime.datetime.strptime(match.group(), '%Y_%m_%d').date()
+    match = re.search(r"\d{4}_\d{2}_\d{2}", filename)
+    date = datetime.datetime.strptime(match.group(), "%Y_%m_%d").date()
     jday = date.timetuple().tm_yday
 
     path = None
@@ -133,5 +133,3 @@ def parse_filename(file_path):
 
     except Exception as err:
         raise Exception("Cannot parse filename for: {}\n\n{}".format(file_path, err))
-
-

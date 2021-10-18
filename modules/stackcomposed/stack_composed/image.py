@@ -54,8 +54,8 @@ class Image:
         path, ext = os.path.splitext(file_path)
         if ext.lower() == ".hdr":
             # search the dataset for ENVI files
-            dataset_exts = ['.dat', '.raw', '.sli', '.hyspex', '.img']
-            for test_ext in [''] + dataset_exts + [i.upper() for i in dataset_exts]:
+            dataset_exts = [".dat", ".raw", ".sli", ".hyspex", ".img"]
+            for test_ext in [""] + dataset_exts + [i.upper() for i in dataset_exts]:
                 test_dataset_path = path + test_ext
                 if os.path.isfile(test_dataset_path):
                     return test_dataset_path
@@ -65,20 +65,39 @@ class Image:
     def set_bounds(self):
         # bounds for image with respect to wrapper
         # the 0,0 is left-upper corner
-        self.xi_min = round((self.extent[0] - Image.wrapper_extent[0]) / Image.wrapper_x_res)
-        self.xi_max = round(Image.wrapper_shape[1] - (Image.wrapper_extent[2] - self.extent[2]) / Image.wrapper_x_res)
-        self.yi_min = round((Image.wrapper_extent[1] - self.extent[1]) / Image.wrapper_y_res)
-        self.yi_max = round(Image.wrapper_shape[0] - (self.extent[3] - Image.wrapper_extent[3]) / Image.wrapper_y_res)
+        self.xi_min = round(
+            (self.extent[0] - Image.wrapper_extent[0]) / Image.wrapper_x_res
+        )
+        self.xi_max = round(
+            Image.wrapper_shape[1]
+            - (Image.wrapper_extent[2] - self.extent[2]) / Image.wrapper_x_res
+        )
+        self.yi_min = round(
+            (Image.wrapper_extent[1] - self.extent[1]) / Image.wrapper_y_res
+        )
+        self.yi_max = round(
+            Image.wrapper_shape[0]
+            - (self.extent[3] - Image.wrapper_extent[3]) / Image.wrapper_y_res
+        )
 
     def set_metadata_from_filename(self):
-        self.landsat_version, self.sensor, self.path, self.row, self.date, self.jday = parse_filename(self.file_path)
+        (
+            self.landsat_version,
+            self.sensor,
+            self.path,
+            self.row,
+            self.date,
+            self.jday,
+        ) = parse_filename(self.file_path)
 
     def get_chunk(self, band, xoff, xsize, yoff, ysize):
         """
         Get the array of the band for the respective chunk
         """
         gdal_file = gdal.Open(self.file_path, gdal.GA_ReadOnly)
-        raster_band = gdal_file.GetRasterBand(band).ReadAsArray(xoff, yoff, xsize, ysize)
+        raster_band = gdal_file.GetRasterBand(band).ReadAsArray(
+            xoff, yoff, xsize, ysize
+        )
         raster_band = raster_band.astype(np.float32)
 
         # convert the no data values from file to NaN
@@ -87,7 +106,10 @@ class Image:
             raster_band[raster_band == nodata_from_file] = np.nan
 
         # convert the no data values set from arguments to NaN
-        if Image.nodata_from_arg is not None and Image.nodata_from_arg != nodata_from_file:
+        if (
+            Image.nodata_from_arg is not None
+            and Image.nodata_from_arg != nodata_from_file
+        ):
             if isinstance(Image.nodata_from_arg, (int, float)):
                 raster_band[raster_band == Image.nodata_from_arg] = np.nan
             else:
@@ -114,12 +136,17 @@ class Image:
         # bounds for chunk with respect to wrapper
         # the 0,0 is left-upper corner
         xc_min = xc
-        xc_max = xc+xc_size
+        xc_max = xc + xc_size
         yc_min = yc
-        yc_max = yc+yc_size
+        yc_max = yc + yc_size
 
         # check if the current chunk is outside of the image
-        if xc_min >= self.xi_max or xc_max <= self.xi_min or yc_min >= self.yi_max or yc_max <= self.yi_min:
+        if (
+            xc_min >= self.xi_max
+            or xc_max <= self.xi_min
+            or yc_min >= self.yi_max
+            or yc_max <= self.yi_min
+        ):
             return None
         else:
             # initialize the chunk with a nan matrix
@@ -127,15 +154,27 @@ class Image:
 
             # set bounds for get the array chunk in image
             xoff = 0 if xc_min <= self.xi_min else xc_min - self.xi_min
-            xsize = xc_max - self.xi_min if xc_min <= self.xi_min else self.xi_max - xc_min
+            xsize = (
+                xc_max - self.xi_min if xc_min <= self.xi_min else self.xi_max - xc_min
+            )
             yoff = 0 if yc_min <= self.yi_min else yc_min - self.yi_min
-            ysize = yc_max - self.yi_min if yc_min <= self.yi_min else self.yi_max - yc_min
+            ysize = (
+                yc_max - self.yi_min if yc_min <= self.yi_min else self.yi_max - yc_min
+            )
 
             # adjust to maximum size with respect to chunk or/and image
             xsize = xc_size if xsize > xc_size else xsize
-            xsize = self.xi_max - self.xi_min if xsize > self.xi_max - self.xi_min else xsize
+            xsize = (
+                self.xi_max - self.xi_min
+                if xsize > self.xi_max - self.xi_min
+                else xsize
+            )
             ysize = yc_size if ysize > yc_size else ysize
-            ysize = self.yi_max - self.yi_min if ysize > self.yi_max - self.yi_min else ysize
+            ysize = (
+                self.yi_max - self.yi_min
+                if ysize > self.yi_max - self.yi_min
+                else ysize
+            )
 
             # set bounds for fill in chunk matrix
             x_min = self.xi_min - xc_min if xc_min <= self.xi_min else 0
@@ -144,9 +183,8 @@ class Image:
             y_max = y_min + ysize if y_min + ysize < yc_max else yc_max
 
             # fill with the chunk data of the image in the corresponding position
-            chunk_matrix[y_min:y_max, x_min:x_max] = self.get_chunk(band, xoff, xsize, yoff, ysize)
+            chunk_matrix[y_min:y_max, x_min:x_max] = self.get_chunk(
+                band, xoff, xsize, yoff, ysize
+            )
 
             return chunk_matrix
-
-
-

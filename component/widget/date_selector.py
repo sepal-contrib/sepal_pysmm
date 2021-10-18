@@ -9,16 +9,15 @@ class DateSelector(v.Layout):
 
     date_method = Unicode(None, allow_none=True).tag(sync=True)
     single_date = Unicode(None, allow_none=True).tag(sync=True)
-    
+
     start_date = Unicode(None, allow_none=True).tag(sync=True)
     end_date = Unicode(None, allow_none=True).tag(sync=True)
 
     years_items = List(allow_none=True).tag(sync=True)
     months_items = List(allow_none=True).tag(sync=True)
-    
+
     selected_years = List(allow_none=True).tag(sync=True)
     selected_months = List(allow_none=True).tag(sync=True)
-
 
     SELECTION_METHODS = [
         {"text": "Single date", "value": "single"},
@@ -109,8 +108,6 @@ class DateSelector(v.Layout):
     def display_elements(self, change):
 
         widgets = ["w_unique_date", "w_ini_date", "w_end_date", "w_mmonths", "w_myears"]
-        
-        
 
         # Hide all
         for widget in widgets:

@@ -1,18 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os 
-if 'GDAL_DATA' in list(os.environ.keys()): del os.environ['GDAL_DATA']
+import os
+
+if "GDAL_DATA" in list(os.environ.keys()):
+    del os.environ["GDAL_DATA"]
 
 import string
 import random
 import collections
 import geemap
 from ipyleaflet import (
-    basemaps, basemap_to_tiles, ZoomControl, LayersControl, 
-    AttributionControl, ScaleControl, DrawControl
+    basemaps,
+    basemap_to_tiles,
+    ZoomControl,
+    LayersControl,
+    AttributionControl,
+    ScaleControl,
+    DrawControl,
 )
-import ee 
+import ee
 from haversine import haversine
 
 
@@ -25,8 +32,9 @@ import ipywidgets as widgets
 from traitlets import Bool, link, observe
 from ipyleaflet import WidgetControl, LocalTileLayer
 
+
 def random_string(string_length=3):
-    """Generates a random string of fixed length. 
+    """Generates a random string of fixed length.
     Args:
         string_length (int, optional): Fixed length. Defaults to 3.
     Returns:
@@ -34,19 +42,20 @@ def random_string(string_length=3):
     """
     # random.seed(1001)
     letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(string_length))
+    return "".join(random.choice(letters) for i in range(string_length))
 
-#initialize earth engine
+
+# initialize earth engine
 ee.Initialize()
 
 
 class SepalMap(geemap.Map):
-    
+
     inspector = Bool(False).tag(sync=True)
 
     def __init__(self, basemaps=[], add_google_map=None, **kwargs):
 
-        """  Initialize Sepal Map.
+        """Initialize Sepal Map.
 
         Args:
 
@@ -55,12 +64,12 @@ class SepalMap(geemap.Map):
 
         """
         basemap = dict(
-            url='http://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+            url="http://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
             max_zoom=20,
             attribution='&copy; <a href="http://www.openstreetmap.org/copyright">\
             OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">\
             CartoDB</a>',
-            name='CartoDB.DarkMatter'
+            name="CartoDB.DarkMatter",
         )
 
         basemap = basemap_to_tiles(basemap)
@@ -74,61 +83,64 @@ class SepalMap(geemap.Map):
             for basemap in basemaps:
                 self.add_basemap(basemap)
 
-        self.center = [0,0]
+        self.center = [0, 0]
         self.zoom = 2
-        
+
         super().clear_controls()
-        
-        self.add_control(ZoomControl(position='topright'))
-        self.add_control(LayersControl(position='topright'))
-        self.add_control(AttributionControl(position='bottomleft'))
-        self.add_control(ScaleControl(position='bottomleft', imperial=False))
-        
+
+        self.add_control(ZoomControl(position="topright"))
+        self.add_control(LayersControl(position="topright"))
+        self.add_control(AttributionControl(position="bottomleft"))
+        self.add_control(ScaleControl(position="bottomleft", imperial=False))
+
         # Inspector control
-        
+
         # Adds Inspector widget
         inspector_checkbox = widgets.Checkbox(
             value=False,
-            description='Use Inspector',
+            description="Use Inspector",
             indent=False,
-            layout=widgets.Layout(width='18ex')
+            layout=widgets.Layout(width="18ex"),
         )
 
-        #vb = widgets.VBox(children=[inspector_checkbox])
-        self.inspector_control = WidgetControl(widget=inspector_checkbox, position='topright')
-        
+        # vb = widgets.VBox(children=[inspector_checkbox])
+        self.inspector_control = WidgetControl(
+            widget=inspector_checkbox, position="topright"
+        )
+
         # Use above line to add inspector control
-        #self.add_control(inspector_control)
-        
-        link((inspector_checkbox, 'value'),(self, 'inspector'))
-        
+        # self.add_control(inspector_control)
+
+        link((inspector_checkbox, "value"), (self, "inspector"))
 
         # Create output space for raster interaction
-        self.output_r = widgets.Output(layout={'border': '1px solid black'})
-        output_control_r = WidgetControl(widget=self.output_r, position='bottomright')
+        self.output_r = widgets.Output(layout={"border": "1px solid black"})
+        output_control_r = WidgetControl(widget=self.output_r, position="bottomright")
         self.add_control(output_control_r)
 
         self.loaded_rasters = {}
         self.on_interaction(self.raster_interaction)
         # Define a behavior when ispector checked and map clicked
-    
-    @observe('inspector')
+
+    @observe("inspector")
     def change_cursor(self, change):
         if self.inspector:
-            self.default_style = {'cursor': 'crosshair'}
+            self.default_style = {"cursor": "crosshair"}
         else:
-            self.default_style = {'cursor': 'grab'}
-        
+            self.default_style = {"cursor": "grab"}
+
     def raster_interaction(self, **kwargs):
 
-        if kwargs.get('type') == 'click' and self.inspector:
-            latlon = kwargs.get('coordinates')
-            self.default_style = {'cursor': 'wait'}
-            local_rasters = [lr.name for lr in self.layers if isinstance(lr, LocalTileLayer)]
+        if kwargs.get("type") == "click" and self.inspector:
+            latlon = kwargs.get("coordinates")
+            self.default_style = {"cursor": "wait"}
+            local_rasters = [
+                lr.name for lr in self.layers if isinstance(lr, LocalTileLayer)
+            ]
 
             if local_rasters:
 
-                with self.output_r: 
+                with self.output_r:
                     self.output_r.clear_output(wait=True)
 
                     for lr_name in local_rasters:
@@ -137,29 +149,33 @@ class SepalMap(geemap.Map):
                         lat, lon = latlon
 
                         # Verify if the selected latlon is the image bounds
-                        if any([lat<lr.bottom, lat>lr.top, lon<lr.left, lon>lr.right]):
-                            print('Location out of raster bounds')
+                        if any(
+                            [
+                                lat < lr.bottom,
+                                lat > lr.top,
+                                lon < lr.left,
+                                lon > lr.right,
+                            ]
+                        ):
+                            print("Location out of raster bounds")
                         else:
-                            #row in pixel coordinates
+                            # row in pixel coordinates
                             y = int(((lr.top - lat) / abs(lr.y_res)))
 
-                            #column in pixel coordinates
+                            # column in pixel coordinates
                             x = int(((lon - lr.left) / abs(lr.x_res)))
 
-                            #get height and width
+                            # get height and width
                             h, w = lr.data.shape
                             value = lr.data[y][x]
-                            print(f'{lr_name}')
-                            print(f'Lat: {round(lat,4)}, Lon: {round(lon,4)}')
-                            print(f'x:{x}, y:{y}')
-                            print(f'Pixel value: {value}')
+                            print(f"{lr_name}")
+                            print(f"Lat: {round(lat,4)}, Lon: {round(lon,4)}")
+                            print(f"x:{x}, y:{y}")
+                            print(f"Pixel value: {value}")
             else:
                 with self.output_r:
                     self.output_r.clear_output()
-            self.default_style = {'cursor': 'crosshair'}
-            
-
-        
+            self.default_style = {"cursor": "crosshair"}
 
     def get_drawing_controls(self):
 
@@ -167,17 +183,16 @@ class SepalMap(geemap.Map):
             marker={},
             circlemarker={},
             polyline={},
-            rectangle={'shapeOptions': {'color': '#0000FF'}},
-            circle={'shapeOptions': {'color': '#0000FF'}},
-            polygon={'shapeOptions': {'color': '#0000FF'}},
-         )
+            rectangle={"shapeOptions": {"color": "#0000FF"}},
+            circle={"shapeOptions": {"color": "#0000FF"}},
+            polygon={"shapeOptions": {"color": "#0000FF"}},
+        )
 
         return dc
-        
+
     def remove_local_layer(self, local_layer):
 
-        """ Remove local layer from memory
-        """
+        """Remove local layer from memory"""
         if local_layer.name in self.loaded_rasters.keys():
             self.loaded_rasters.pop(local_layer.name)
 
@@ -195,7 +210,9 @@ class SepalMap(geemap.Map):
             last_layer = self.layers[-1]
 
             if local:
-                local_rasters = [lr for lr in self.layers if isinstance(lr, LocalTileLayer)]
+                local_rasters = [
+                    lr for lr in self.layers if isinstance(lr, LocalTileLayer)
+                ]
                 if local_rasters:
                     last_layer = local_rasters[-1]
                     self.remove_layer(last_layer)
@@ -212,23 +229,22 @@ class SepalMap(geemap.Map):
 
     def update_map(self, assetId, bounds, remove_last=False):
         """Update the map with the asset overlay and removing the selected drawing controls
-        
+
         Args:
             assetId (str): the asset ID in gee assets
             bounds (list of tuple(x,y)): coordinates of tl, bl, tr, br points
-            remove_last (boolean) (optional): Remove the last layer (if there is one) before 
+            remove_last (boolean) (optional): Remove the last layer (if there is one) before
                                                 updating the map
-        """  
+        """
         if remove_last:
             self.remove_last_layer()
 
         self.set_zoom(bounds, zoom_out=2)
         self.centerObject(ee.FeatureCollection(assetId), zoom=self.zoom)
-        self.addLayer(ee.FeatureCollection(assetId), {'color': 'green'}, name='aoi')
-
+        self.addLayer(ee.FeatureCollection(assetId), {"color": "green"}, name="aoi")
 
     def set_zoom(self, bounds, zoom_out=1):
-        """ Get the proper zoom to the given bounds.
+        """Get the proper zoom to the given bounds.
 
         Args:
 
@@ -241,9 +257,9 @@ class SepalMap(geemap.Map):
         """
 
         tl, bl, tr, br = bounds
-        
+
         maxsize = max(haversine(tl, br), haversine(bl, tr))
-        lg = 40075 #number of displayed km at zoom 1
+        lg = 40075  # number of displayed km at zoom 1
         zoom = 1
         while lg > maxsize:
             zoom += 1
@@ -252,10 +268,20 @@ class SepalMap(geemap.Map):
         if zoom_out > zoom:
             zoom_out = zoom - 1
 
-        self.zoom = zoom-zoom_out
+        self.zoom = zoom - zoom_out
 
-    #copy of the geemap add_raster function to prevent a bug from sepal 
-    def add_raster(self, image, bands=None, layer_name=None, colormap=None, x_dim='x', y_dim='y', opacity=1.0, center=False):
+    # copy of the geemap add_raster function to prevent a bug from sepal
+    def add_raster(
+        self,
+        image,
+        bands=None,
+        layer_name=None,
+        colormap=None,
+        x_dim="x",
+        y_dim="y",
+        opacity=1.0,
+        center=False,
+    ):
         """Adds a local raster dataset to the map.
         Args:
             image (str): The image file path.
@@ -266,17 +292,17 @@ class SepalMap(geemap.Map):
             y_dim (str, optional): The y dimension. Defaults to 'y'.
         """
         if not os.path.exists(image):
-            print('The image file does not exist.')
+            print("The image file does not exist.")
             return
 
         if colormap is None:
             colormap = plt.cm.inferno
 
         if layer_name is None:
-            layer_name = 'Layer_' + random_string()
+            layer_name = "Layer_" + random_string()
 
         if layer_name in self.loaded_rasters.keys():
-            layer_name = layer_name+random_string()
+            layer_name = layer_name + random_string()
 
         if isinstance(colormap, str):
             colormap = plt.cm.get_cmap(name=colormap)
@@ -285,12 +311,11 @@ class SepalMap(geemap.Map):
 
         # Create a named tuple with raster bounds and resolution
         local_raster = collections.namedtuple(
-            'LocalRaster', ('name', 'left', 'bottom', 'right', 'top', 'x_res', 'y_res', 'data')
-            )(layer_name, *da.rio.bounds(), *da.rio.resolution(), da.data[0])
-
+            "LocalRaster",
+            ("name", "left", "bottom", "right", "top", "x_res", "y_res", "data"),
+        )(layer_name, *da.rio.bounds(), *da.rio.resolution(), da.data[0])
 
         self.loaded_rasters[layer_name] = local_raster
-
 
         multi_band = False
         if len(da.band) > 1:
@@ -307,14 +332,10 @@ class SepalMap(geemap.Map):
         da = da.sel(band=bands)
 
         if multi_band:
-            layer = da.leaflet.plot(
-                self, x_dim=x_dim, y_dim=y_dim, rgb_dim='band')
+            layer = da.leaflet.plot(self, x_dim=x_dim, y_dim=y_dim, rgb_dim="band")
         else:
-            layer = da.leaflet.plot(
-                self, x_dim=x_dim, y_dim=y_dim, colormap=colormap)
-
+            layer = da.leaflet.plot(self, x_dim=x_dim, y_dim=y_dim, colormap=colormap)
 
         layer.name = layer_name
 
-        
         layer.opacity = opacity if abs(opacity) <= 1.0 else 1.0

@@ -95,7 +95,7 @@ def raw_to_processed(image, alert):
     else:
         message = f'Skipping: Image "{image_name}" already exists'
         alert.append_msg(message)
-    
+
     # this process is fast, so, let's wat some time after ach iteration
     sleep(0.5)
 
@@ -104,7 +104,7 @@ def run_filter(process_path, alert, output):
 
     if not process_path:
         raise Exception("Please select a folder containing .tif images.")
-        
+
     image_files = [
         str(image)
         for folder in process_path
@@ -133,7 +133,7 @@ def run_filter(process_path, alert, output):
             dynamic_ncols=True,
             bar_format="{l_bar}{bar}{n_fmt}/{total_fmt}",
         )
-        
+
     for image in image_files:
         raw_to_processed(image, alert)
         pbar.update(1)

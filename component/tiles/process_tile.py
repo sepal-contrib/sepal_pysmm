@@ -17,8 +17,8 @@ __all__ = ["ProcessTile"]
 
 class ProcessTile(v.Stepper, sw.SepalWidget):
     def __init__(self, *args, **kwargs):
-        
-        self._metadata={"mount_id":'process'}
+
+        self._metadata = {"mount_id": "process"}
 
         super().__init__(*args, **kwargs)
 
@@ -35,12 +35,9 @@ class ProcessTile(v.Stepper, sw.SepalWidget):
         )
 
         self.date_view = cw.DateSelector()
-        process_view = ProcessView(
-            self.aoi_tile.view.model,
-            self.date_view
-        )
+        process_view = ProcessView(self.aoi_tile.view.model, self.date_view)
 
-        content = ['', self.aoi_tile, self.date_view, process_view]
+        content = ["", self.aoi_tile, self.date_view, process_view]
 
         stepper_headers = [
             "Introduction",
@@ -68,25 +65,26 @@ class ProcessTile(v.Stepper, sw.SepalWidget):
         ]
         rt
         # Trigger resize event when AOI selection header button is clicked
-        stepper_header.children[1].on_event('click', lambda *args: rt.resize())
-        
+        stepper_header.children[1].on_event("click", lambda *args: rt.resize())
+
+
 class ProcessView(v.Card):
     def __init__(self, aoi_model, date_model, *args, **kwargs):
-        self.class_ = 'pa-2'
-        
+        self.class_ = "pa-2"
+
         super().__init__(*args, **kwargs)
 
         self.aoi_model = aoi_model
         self.date_model = date_model
 
         self.output = Output()
-        self.btn = sw.Btn("Start process", class_='mb-2')
+        self.btn = sw.Btn("Start process", class_="mb-2")
         self.alert = sw.Alert()
 
         self.children = [self.btn, self.alert, self.output]
 
         self.btn.on_event("click", self.run_process)
-    
+
     @su.loading_button(debug=True)
     def run_process(self, widget, event, data):
         run_pysmm.run_pysmm(self.aoi_model, self.date_model, self.alert, self.output)
@@ -97,15 +95,17 @@ class StepperContent(v.StepperContent):
 
         self.key = key
         self.step = key
-        
-        children = [
-            v.CardTitle(children=[sw.Markdown(title[0])]),
-            v.CardText(children=[sw.Markdown(title[1])]),
-        ] + [content] if title[0] else [content]
-        
-        self.children = [
-            v.Card(children=children)
-        ]
+
+        children = (
+            [
+                v.CardTitle(children=[sw.Markdown(title[0])]),
+                v.CardText(children=[sw.Markdown(title[1])]),
+            ]
+            + [content]
+            if title[0]
+            else [content]
+        )
+
+        self.children = [v.Card(children=children)]
 
         super().__init__(*args, **kwargs)
-

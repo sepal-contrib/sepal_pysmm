@@ -16,13 +16,14 @@ from component.message import cm
 import component.scripts as cs
 
 
-__all__ = ['StatisticsTile']
+__all__ = ["StatisticsTile"]
+
 
 class StatisticsTile(v.Layout, sw.SepalWidget):
     def __init__(self, *args, **kwargs):
 
         self.class_ = "d-block"
-        self._metadata={"mount_id":'statistics'}
+        self._metadata = {"mount_id": "statistics"}
 
         super().__init__(*args, **kwargs)
 
@@ -50,13 +51,12 @@ class StatisticsTile(v.Layout, sw.SepalWidget):
 
 
 class StatsInputView(v.Layout):
-    
     def __init__(self, model, *args, **kwargs):
 
         self.class_ = "d-flex"
 
         super().__init__(*args, **kwargs)
-        
+
         self.model = model
 
         self.w_selector_view = cw.FolderSelectorView(
@@ -65,7 +65,7 @@ class StatsInputView(v.Layout):
         self.w_selector = self.w_selector_view.w_selector
 
         self.date_selector = cw.DateSelector(season=True, remove_method=["single"])
-        self.date_selector.date_method='all'
+        self.date_selector.date_method = "all"
 
         self.children = [
             v.Row(
@@ -88,17 +88,17 @@ class StatsInputView(v.Layout):
                 ]
             ),
         ]
-        
-        self.model.bind(
-            self.w_selector_view.w_recursive, 'recursive'
-        ).bind(self.w_selector, 'folders')
-        
-        dlink((self.date_selector, 'date_method'), (self.model, 'date_method'))
-        dlink((self.date_selector, 'start_date'), (self.model, 'start_date'))
-        dlink((self.date_selector, 'end_date'), (self.model, 'end_date'))
-        dlink((self.date_selector, 'selected_years'), (self.model, 'selected_years'))
-        dlink((self.date_selector, 'selected_months'), (self.model, 'selected_months'))
-        
+
+        self.model.bind(self.w_selector_view.w_recursive, "recursive").bind(
+            self.w_selector, "folders"
+        )
+
+        dlink((self.date_selector, "date_method"), (self.model, "date_method"))
+        dlink((self.date_selector, "start_date"), (self.model, "start_date"))
+        dlink((self.date_selector, "end_date"), (self.model, "end_date"))
+        dlink((self.date_selector, "selected_years"), (self.model, "selected_years"))
+        dlink((self.date_selector, "selected_months"), (self.model, "selected_months"))
+
         self.w_selector.observe(self.fill_season, "v_model")
         self.w_selector.v_model
 
@@ -106,13 +106,13 @@ class StatsInputView(v.Layout):
         """Fill years and months when Season is Selected, receive a list of paths"""
 
         months, years = self.get_months_years(change["new"])
-        
+
         month_items = [
-            {"text":text,"value":value} 
-            for value, text
-            in param.MONTHS_DICT.items() if value in months
+            {"text": text, "value": value}
+            for value, text in param.MONTHS_DICT.items()
+            if value in months
         ]
-        
+
         self.date_selector.months_items = month_items
         self.date_selector.years_items = years
 
@@ -130,7 +130,7 @@ class StatsInputView(v.Layout):
             tifs = [tif for folder in path for tif in Path(folder).rglob("[!.]*.tif")]
         else:
             tifs = [tif for folder in path for tif in Path(folder).glob("[!.]*.tif")]
-            
+
         dates = [date for date in [self.get_date(image) for image in tifs] if date]
 
         years = sorted(list(set(date.year for date in dates)))
@@ -179,15 +179,12 @@ class StatisticsView(v.Layout):
         self.model = model
 
         self.alert = sw.Alert()
-        self.btn = sw.Btn("Get stack", class_='mr-2')
+        self.btn = sw.Btn("Get stack", class_="mr-2")
         self.btn_view = sw.Btn("View list of images", disabled=True)
         self.output = Output()
-        
+
         self.w_summary = v.Dialog(
-            max_width = 800,
-            min_height = 500,
-            v_model = False, 
-            children=[]
+            max_width=800, min_height=500, v_model=False, children=[]
         )
 
         self.w_stats = v.Select(
@@ -195,7 +192,7 @@ class StatisticsView(v.Layout):
             items=[{"text": k, "value": v} for k, v in self.STATS_DICT.items()],
             v_model="mean",
         )
-        
+
         self.w_prefix = v.TextField(
             label="Create a suffix for the output",
             v_model=self.model.prefix,
@@ -236,45 +233,43 @@ class StatisticsView(v.Layout):
             self.w_stats,
             advanced_settings,
             self.w_prefix,
-            v.Flex(class_='d-flex mb-2', children=[self.btn,self.btn_view]),
+            v.Flex(class_="d-flex mb-2", children=[self.btn, self.btn_view]),
             self.alert,
             self.output,
         ]
 
         self.model.bind(self.w_stats, "items").bind(self.w_stats, "selected_stat").bind(
             self.w_cores, "cores"
-        ).bind(self.w_chunk, "chunks").bind(self.w_prefix, 'prefix')
+        ).bind(self.w_chunk, "chunks").bind(self.w_prefix, "prefix")
 
         self.btn.on_event("click", self.on_click)
-        self.btn_view.on_event("click", lambda *args: setattr(self.w_summary,'v_model',True))
-    
-    @su.switch('disabled', on_widgets=['btn_view'], targets=[False])
+        self.btn_view.on_event(
+            "click", lambda *args: setattr(self.w_summary, "v_model", True)
+        )
+
+    @su.switch("disabled", on_widgets=["btn_view"], targets=[False])
     @su.loading_button(debug=True)
     def on_click(self, widget, event, data):
-        
+
         filter_images, output_name = self.model.get_inputs()
-        
+
         self.alert.add_msg(
             f"Executing {self.model.selected_stat} for {len(filter_images)} images..."
         )
-        
+
         # Create a file with the selected images
-        tmp_tif_file = (param.STACK_DIR / "tmp_images.txt")
+        tmp_tif_file = param.STACK_DIR / "tmp_images.txt"
         tmp_tif_file.write_text("\n".join(filter_images))
 
         summary = cs.images_summary(filter_images)
-        
-        self.w_summary.children=[
+
+        self.w_summary.children = [
             cw.VueDataFrame(data=summary, title="Selected Images")
         ]
-        
+
         with self.output:
             self.output.clear_output()
             self.model.stack_composed(str(tmp_tif_file), str(output_name))
-            
-        
+
         # Once the process has ran remove the tmp_tif_file
         tmp_tif_file.unlink()
-        
-
-
