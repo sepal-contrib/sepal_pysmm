@@ -64,7 +64,7 @@ def run_pysmm(aoi_model, date_model, alert, output):
     # Create a subfolder when is a filter selection
     if aoi_model.method in ["SHAPE", "ASSET"]:
 
-        if aoi_model.asset_name["value"] or vector_json.vector_json["value"]:
+        if aoi_model.asset_name["pathname"] or aoi_model.vector_json["pathname"]:
             # Create a folder to download pysmm images
 
             json = (
@@ -72,14 +72,14 @@ def run_pysmm(aoi_model, date_model, alert, output):
                 if aoi_model.method == "ASSET"
                 else aoi_model.vector_json
             )
-
-            outpath = Path(
-                param.RAW_DIR,
-                str(Path(json["pathname"]).name),
-                str(json["column"]),
-                str(json["value"]),
-            )
-            file_sufix = f"{user}_{json['value']}"
+            
+            name = str(Path(json["pathname"]).name)
+            column = json["column"]
+            value = json["value"] if json["value"] else ''
+            
+            outpath = Path(param.RAW_DIR, name, column, value)
+            
+            file_sufix = f"{user}_{name}_{column}_{value}"
     else:
         # For all the other types of selections
         outpath = Path(param.RAW_DIR, aoi_model.name)
