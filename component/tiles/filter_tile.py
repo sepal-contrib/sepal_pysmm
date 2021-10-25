@@ -49,7 +49,7 @@ class FilterView(v.Card):
         self.alert = sw.Alert()
 
         w_selector_view = cw.FolderSelectorView(
-            folder=param.RAW_DIR, max_depth=0, wildcard="[!.]*.tif"
+            folder=param.RAW_DIR, wildcard="[!.]*.tif"
         )
         self.w_selector = w_selector_view.w_selector
 

@@ -60,7 +60,7 @@ class StatsInputView(v.Layout):
         self.model = model
 
         self.w_selector_view = cw.FolderSelectorView(
-            folder=param.PROCESSED_DIR.parent, max_depth=0, wildcard="close*.tif"
+            folder=param.PROCESSED_DIR.parent, wildcard="close*.tif"
         )
         self.w_selector = self.w_selector_view.w_selector
 
