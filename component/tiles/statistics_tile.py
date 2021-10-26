@@ -9,7 +9,6 @@ import ipyvuetify as v
 import sepal_ui.sepalwidgets as sw
 import sepal_ui.scripts.utils as su
 
-from component.model import Model
 import component.parameter as param
 import component.widget as cw
 from component.message import cm
@@ -20,14 +19,14 @@ __all__ = ["StatisticsTile"]
 
 
 class StatisticsTile(v.Layout, sw.SepalWidget):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, model, *args, **kwargs):
 
         self.class_ = "d-block"
         self._metadata = {"mount_id": "statistics"}
 
         super().__init__(*args, **kwargs)
-
-        self.model = Model()
+        
+        self.model = model
 
         self.inputs_view = StatsInputView(model=self.model)
         self.statistics_view = StatisticsView(model=self.model)

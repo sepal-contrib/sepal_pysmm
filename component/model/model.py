@@ -10,14 +10,13 @@ import modules.stackcomposed.stack_composed.stack_composed as stack
 
 
 class Model(model.Model):
-
-    # If changed, propagate the status to all the tiles that are listening.
-    rmdrive = Bool(False).tag(sync=True)
-    overwrite = Bool(False).tag(sync=True)
+    
+    # model - for process tile
+    ascending = Bool().tag(sync=True)
 
     items = List().tag(sync=True)
 
-    # Statistics
+    # Statistics - used for statistic tile
     selected_stat = Unicode().tag(sync=True)
     cores = CInt().tag(sync=True)
     chunks = CInt(200).tag(sync=True)
@@ -46,26 +45,14 @@ class Model(model.Model):
     def get_inputs(self):
         """Return filtered images by date_method and the output composed stack name"""
 
-        if self.recursive:
-            images = list(
-                set(
-                    [
-                        str(image)
-                        for folder in self.folders
-                        for image in Path(folder).rglob("close*.tif")
-                    ]
-                )
+        images = list(set([
+            str(image)
+            for folder in self.folders
+            for image in (
+                Path(folder).rglob("close*.tif") if self.recursive 
+                else Path(folder).glob("close*.tif")
             )
-        else:
-            images = list(
-                set(
-                    [
-                        str(image)
-                        for folder in self.folders
-                        for image in Path(folder).glob("close*.tif")
-                    ]
-                )
-            )
+        ]))            
 
         if self.date_method == "season":
 

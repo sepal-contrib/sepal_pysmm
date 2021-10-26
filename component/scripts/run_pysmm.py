@@ -6,8 +6,6 @@ import subprocess
 import ee
 
 from component.scripts.derive_SM import get_map
-from component.scripts.GEE_wrappers import GEE_extent
-from component.scripts.GEE_wrappers import GEE_pt
 from component.scripts.utils import gdrive
 import component.scripts.scripts as cs
 import component.parameter as param
@@ -17,7 +15,7 @@ import logging
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 
-def run_pysmm(aoi_model, date_model, alert, output):
+def run_pysmm(aoi_model, date_model, model, alert, output):
     """Process the input variables to start the "derive_sm" module.
 
     Args:
@@ -103,6 +101,7 @@ def run_pysmm(aoi_model, date_model, alert, output):
         "day": None,
         "start_date": False,
         "stop_date": False,
+        "ascending": model.ascending
     }
 
     # To process single date or non row dates.

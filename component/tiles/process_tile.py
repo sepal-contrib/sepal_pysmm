@@ -16,11 +16,13 @@ __all__ = ["ProcessTile"]
 
 
 class ProcessTile(v.Stepper, sw.SepalWidget):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, model, *args, **kwargs):
 
         self._metadata = {"mount_id": "process"}
 
         super().__init__(*args, **kwargs)
+        
+        self.model = model
 
         titles = [
             [cm.process_tile.landing_tab.title, cm.process_tile.landing_tab.desc],
@@ -35,7 +37,11 @@ class ProcessTile(v.Stepper, sw.SepalWidget):
         )
 
         self.date_view = cw.DateSelector()
-        process_view = ProcessView(self.aoi_tile.view.model, self.date_view)
+        process_view = ProcessView(
+            self.model,
+            self.aoi_tile.view.model, 
+            self.date_view
+        )
 
         content = ["", self.aoi_tile, self.date_view, process_view]
 
@@ -69,25 +75,39 @@ class ProcessTile(v.Stepper, sw.SepalWidget):
 
 
 class ProcessView(v.Card):
-    def __init__(self, aoi_model, date_model, *args, **kwargs):
+    def __init__(self, model, aoi_model, date_model, *args, **kwargs):
         self.class_ = "pa-2"
 
         super().__init__(*args, **kwargs)
-
+        
+        self.model = model
         self.aoi_model = aoi_model
         self.date_model = date_model
-
+        self.w_ascending = v.RadioGroup(
+            label='Select an orbit:',
+            row=True,
+            v_model=False,
+            children=[
+                v.Radio(label="Ascending", value=True),
+                v.Radio(label="Descending", value=False),
+            ],
+        )
+        
         self.output = Output()
         self.btn = sw.Btn("Start process", class_="mb-2")
         self.alert = sw.Alert()
+        
+        self.model.bind(self.w_ascending, "ascending")
 
-        self.children = [self.btn, self.alert, self.output]
+        self.children = [self.w_ascending, self.btn, self.alert, self.output]
 
         self.btn.on_event("click", self.run_process)
 
     @su.loading_button(debug=True)
     def run_process(self, widget, event, data):
-        run_pysmm.run_pysmm(self.aoi_model, self.date_model, self.alert, self.output)
+        run_pysmm.run_pysmm(
+            self.aoi_model, self.date_model, self.model, self.alert, self.output
+        )
 
 
 class StepperContent(v.StepperContent):
