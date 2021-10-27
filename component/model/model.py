@@ -43,7 +43,15 @@ class Model(model.Model):
         )
 
     def get_inputs(self):
-        """Return filtered images by date_method and the output composed stack name"""
+        """Return filtered images by date_method and the output composed stack name
+        
+        Params:
+            folders (list): Will use the bind folders from the statistics_tile folder
+                            selector widget.
+        """
+        
+        if not self.folders:
+            raise Exception("You have not selected any folder to process.")
 
         images = list(set([
             str(image)
@@ -56,7 +64,7 @@ class Model(model.Model):
 
         if self.date_method == "season":
 
-            months = self.selected_months
+            months = [month["value"] for month in self.selected_months]
             years = self.selected_years
 
             if not months and not years:
@@ -105,8 +113,8 @@ class Model(model.Model):
 
         if not filter_images:
             raise Exception(
-                f"There are no images for the selected dates, please try with a"
-                " different range."
+                f"There are no images in the selected folders/dates, please try with a"
+                " different date/folder."
             )
 
         elif len(filter_images) == 1:

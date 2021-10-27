@@ -20,9 +20,9 @@ class DateSelector(v.Layout):
     selected_months = List(allow_none=True).tag(sync=True)
 
     SELECTION_METHODS = [
-        {"text": "Single date", "value": "single"},
-        {"text": "Range", "value": "range"},
         {"text": "All time series", "value": "all"},
+        {"text": "Range", "value": "range"},
+        {"text": "Single date", "value": "single"},
     ]
 
     def __init__(

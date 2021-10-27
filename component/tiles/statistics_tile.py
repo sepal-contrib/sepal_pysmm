@@ -216,6 +216,7 @@ class StatisticsView(v.Layout):
         )
 
         advanced_settings = v.ExpansionPanels(
+            class_="mb-3",
             flat=False,
             children=[
                 v.ExpansionPanel(
@@ -230,8 +231,8 @@ class StatisticsView(v.Layout):
         self.children = [
             self.w_summary,
             self.w_stats,
-            advanced_settings,
             self.w_prefix,
+            advanced_settings,
             v.Flex(class_="d-flex mb-2", children=[self.btn, self.btn_view]),
             self.alert,
             self.output,
