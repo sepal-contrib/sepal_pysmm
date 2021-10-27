@@ -48,17 +48,17 @@ class FilterView(v.Card):
         self.btn = sw.Btn("Apply morphological filter", class_="mb-2")
         self.alert = sw.Alert()
 
-        w_selector_view = cw.FolderSelectorView(
+        self.w_selector_view = cw.FolderSelectorView(
             folder=param.RAW_DIR, wildcard="[!.]*.tif"
         )
-        self.w_selector = w_selector_view.w_selector
+        self.w_selector = self.w_selector_view.w_selector
 
         self.children = [
             v.Row(
                 children=[
                     v.Col(
                         children=[
-                            w_selector_view,
+                            self.w_selector_view,
                         ]
                     ),
                     v.Col(
@@ -81,7 +81,8 @@ class FilterView(v.Card):
 
     @su.loading_button()
     def on_click(self, widget, event, data):
-
-        run_filter(self.w_selector.v_model, self.alert, self.output)
+        """Run filter script"""
+        recursive = self.w_selector_view.w_recursive.v_model
+        run_filter(self.w_selector.v_model, recursive, self.alert, self.output)
 
         self.alert.add_msg(f"All the images were correctly processed.", type_="success")

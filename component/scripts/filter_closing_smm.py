@@ -100,7 +100,7 @@ def raw_to_processed(image, alert):
     sleep(0.5)
 
 
-def run_filter(process_path, alert, output):
+def run_filter(process_path, recursive, alert, output):
 
     if not process_path:
         raise Exception("Please select a folder containing .tif images.")
@@ -108,7 +108,11 @@ def run_filter(process_path, alert, output):
     image_files = [
         str(image)
         for folder in process_path
-        for image in list(Path(folder).glob("[!.]*.tif"))
+        for image in (
+            list(Path(folder).glob("[!.]*.tif"))
+            if not recursive
+            else list(Path(folder).rglob("[!.]*.tif"))
+        )
     ]
 
     if not image_files:
