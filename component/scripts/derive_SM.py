@@ -55,7 +55,7 @@ def export_sm(image, file_name):
         fileNamePrefix=file_name,
         scale=image.sampling,
         region=image.roi.getInfo()["coordinates"],
-        maxPixels=1000000000000,
+        maxPixels=1e13,
     )
     task.start()
     return task, file_name
