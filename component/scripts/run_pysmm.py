@@ -72,8 +72,8 @@ def run_pysmm(aoi_model, date_model, model, alert, output):
             )
             
             name = str(Path(json["pathname"]).name)
-            column = json["column"]
-            value = json["value"] if json["value"] else ''
+            column = str(json["column"])
+            value = str(json["value"]) if json["value"] else ''
             
             outpath = Path(param.RAW_DIR, name, column, value)
             
