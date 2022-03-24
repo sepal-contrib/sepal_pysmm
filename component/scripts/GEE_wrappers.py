@@ -1,27 +1,16 @@
 #!/usr/bin/env python3
 
 import datetime as dt
-import timeit
 import math
 import os
-import pickle
 import time
 import ee
 import numpy as np
-import pandas as pd
-import pytesmo.time_series.anomaly as anomaly
 import warnings
 
-from pytesmo.temporal_matching import df_match
-from sklearn.linear_model import LinearRegression
 from .utils import gdrive
 
 
-from sklearn.model_selection import RepeatedKFold, GridSearchCV
-import sklearn
-from sklearn.svm import SVR
-from numpy import array
-from sklearn.preprocessing import RobustScaler
 
 import logging
 
