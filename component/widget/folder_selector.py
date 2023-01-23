@@ -1,9 +1,10 @@
+import json
+from sepal_ui.frontend import styles as ss
 import ipyvuetify as v
 from traitlets import Bool, link, List, observe, dlink
 from pathlib import Path
 from natsort import humansorted
 import sepal_ui.scripts.utils as su
-from sepal_ui.frontend.styles import *
 import sepal_ui.sepalwidgets as sw
 
 import component.parameter as param
@@ -30,9 +31,9 @@ class FolderSelectorView(v.Card):
         max_selection=None,
         wildcard="*",
         *args,
-        **kwargs,
+        **kwargs
     ):
-
+        self.style_="overflow-x:none"
         super().__init__(*args, **kwargs)
 
         self.wildcard = wildcard
@@ -105,7 +106,9 @@ class FolderSelector(v.List):
     loading = Bool().tag(sync=True)
 
     def __init__(self, folder="/", max_depth=None, max_selection=None, *args, **kwargs):
-
+        p_style = json.loads((ss.JSON_DIR / "progress_bar.json").read_text())
+        
+        self.style_="overflow-x:none"
         self.folders = None
         self.max_depth = max_depth
         self.max_selection = max_selection
@@ -136,7 +139,7 @@ class FolderSelector(v.List):
         self.w_loading = v.ProgressLinear(
             indeterminate=False,
             background_color="grey darken-3",
-            color=COMPONENTS["PROGRESS_BAR"]["color"],
+            color=p_style["color"][v.theme.dark]
         )
 
         self.item_group = ListItemGroup(
@@ -212,16 +215,18 @@ class ListItem(v.Flex):
         super().__init__(*args, **kwargs)
 
         self.w_selected = v.Checkbox(v_model=False)
+        
+        ICON_TYPES = json.loads((ss.JSON_DIR / "file_icons.json").read_text())
 
         if position == 0:
             icon = ICON_TYPES["PARENT"]["icon"]
-            color = ICON_TYPES["PARENT"]["color"]
+            color = ICON_TYPES["PARENT"]["color"][v.theme.dark]
         elif value.suffix in ICON_TYPES.keys():
             icon = ICON_TYPES[value.suffix]["icon"]
-            color = ICON_TYPES[value.suffix]["color"]
+            color = ICON_TYPES[value.suffix]["color"][v.theme.dark]
         else:
             icon = ICON_TYPES["DEFAULT"]["icon"]
-            color = ICON_TYPES["DEFAULT"]["color"]
+            color = ICON_TYPES["DEFAULT"]["color"][v.theme.dark]
         self.item = v.ListItem(
             children=[
                 v.ListItemAction(children=[v.Icon(color=color, children=[icon])]),
