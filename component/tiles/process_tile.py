@@ -2,7 +2,6 @@ from traitlets import observe, link
 from ipywidgets import Output
 import ipyvuetify as v
 
-from sepal_ui.frontend.js import rt
 import sepal_ui.sepalwidgets as sw
 import sepal_ui.scripts.utils as su
 from sepal_ui.aoi import AoiTile
@@ -10,7 +9,7 @@ from sepal_ui.aoi import AoiTile
 import component.widget as cw
 from component.scripts import run_pysmm
 from component.message import cm
-
+from component.scripts.resize import rt
 
 __all__ = ["ProcessTile"]
 
@@ -63,20 +62,21 @@ class ProcessTile(v.Stepper, sw.SepalWidget):
         self.children = [
             stepper_header,
             v.StepperItems(
+                style_="background:#1e1e1e;",
                 children=[
                     StepperContent(key, content[0], content[1])
                     for key, content in enumerate(zip(titles, content), 1)
                 ]
             ),
         ]
-        rt
+        display(rt)
         # Trigger resize event when AOI selection header button is clicked
         stepper_header.children[1].on_event("click", lambda *args: rt.resize())
 
 
-class ProcessView(v.Card):
+class ProcessView(v.Layout):
     def __init__(self, model, aoi_model, date_model, *args, **kwargs):
-        self.class_ = "pa-2"
+        self.class_ = "pa-2 d-block"
 
         super().__init__(*args, **kwargs)
         

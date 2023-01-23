@@ -2,10 +2,10 @@ from traitlets import Unicode, List, link
 from ipywidgets.widgets.trait_types import Date, date_serialization
 import ipyvuetify as v
 import sepal_ui.sepalwidgets as sw
-import sepal_ui.scripts.utils as su
+from component.widget.date_picker import DatePicker
 
 
-class DateSelector(v.Layout):
+class DateSelector(sw.Layout):
 
     date_method = Unicode(None, allow_none=True).tag(sync=True)
     single_date = Unicode(None, allow_none=True).tag(sync=True)
@@ -32,7 +32,7 @@ class DateSelector(v.Layout):
         remove_method=[],
         years_items=[],
         months_items=[],
-        **kwargs,
+        **kwargs
     ):
 
         self.align_center = True
@@ -59,16 +59,16 @@ class DateSelector(v.Layout):
             if not new_items:
                 raise ValueError(f"The selected method does not exist")
             self.w_date_method.items = new_items
+            
         if season:
             self.w_date_method.items = list(
                 self.w_date_method.items + [{"text": "Season", "value": "season"}]
             )[:]
-        self.w_unique_date = sw.DatePicker(
-            label="Date",
-        ).hide()
-
-        self.w_ini_date = sw.DatePicker(label="Start date").hide()
-        self.w_end_date = sw.DatePicker(label="End date").hide()
+            
+        self.w_unique_date = DatePicker(label="Date", attributes={"id":"unique_date"}).hide()
+        self.w_ini_date = DatePicker(label="Start date", attributes={"id":"ini_date"}).hide()
+        self.w_end_date = DatePicker(label="End date", attributes={"id":"end_date"}).hide()
+        
         self.w_mmonths = v.Select(
             multiple=True,
             chips=True,
@@ -111,12 +111,15 @@ class DateSelector(v.Layout):
 
         # Hide all
         for widget in widgets:
-            su.hide_component(getattr(self, widget))
+            getattr(self, widget).hide()
+
         if change["new"] == "single":
-            su.show_component(self.w_unique_date)
+            self.w_unique_date.show()
+            
         elif change["new"] == "range":
-            su.show_component(self.w_end_date)
-            su.show_component(self.w_ini_date)
+            self.w_end_date.show()
+            self.w_ini_date.show()
+            
         elif change["new"] == "season":
-            su.show_component(self.w_mmonths)
-            su.show_component(self.w_myears)
+            self.w_mmonths.show()
+            self.w_myears.show()
