@@ -690,7 +690,7 @@ class GEE_extent(object):
         #    [ee.Image(MLmodel1['scaler'].scale_[i].astype(np.float)) for i in range(n_features1)])
         scaling_std_img1 = ee.Image(
             [
-                ee.Image(model_param["model1"]["scaler_scale"][i].astype(np.float))
+                ee.Image(model_param["model1"]["scaler_scale"][i].astype(float))
                 for i in range(n_features1)
             ]
         )
@@ -714,7 +714,7 @@ class GEE_extent(object):
         ### REPLACEMENT ###
         scaling_mean_img1 = ee.Image(
             [
-                ee.Image(model_param["model1"]["scaler_center"][i].astype(np.float))
+                ee.Image(model_param["model1"]["scaler_center"][i].astype(float))
                 for i in range(n_features1)
             ]
         )
@@ -829,7 +829,7 @@ class GEE_extent(object):
         # scale the estimation image
         scaling_std_img2 = ee.Image(
             [
-                ee.Image(model_param["model2"]["scaler_scale"][i].astype(np.float))
+                ee.Image(model_param["model2"]["scaler_scale"][i].astype(float))
                 for i in range(n_features2)
             ]
         )
@@ -840,7 +840,7 @@ class GEE_extent(object):
 
         scaling_mean_img2 = ee.Image(
             [
-                ee.Image(model_param["model2"]["scaler_center"][i].astype(np.float))
+                ee.Image(model_param["model2"]["scaler_center"][i].astype(float))
                 for i in range(n_features2)
             ]
         )
