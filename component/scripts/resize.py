@@ -11,6 +11,7 @@ class ResizeTrigger(v.VuetifyTemplate):
             <script>
                 {methods: {
                     jupyter_resize(){
+                        console.log("Resizing");
                         window.dispatchEvent(new Event('resize'));
                     }
                 }}
