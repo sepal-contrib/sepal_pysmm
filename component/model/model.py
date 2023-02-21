@@ -4,7 +4,6 @@ from traitlets import Bool, Unicode, List, Int, CUnicode, CInt
 from sepal_ui import model
 from sepal_ui.scripts.warning import SepalWarning
 import warnings
-import subprocess
 import component.parameter as param
 import component.scripts as cs
 import modules.stackcomposed.stack_composed.stack_composed as stack
@@ -65,7 +64,7 @@ class Model(model.Model):
 
         if self.date_method == "season":
 
-            months = [month["value"] for month in self.selected_months]
+            months = self.selected_months
             years = self.selected_years
 
             if not months and not years:

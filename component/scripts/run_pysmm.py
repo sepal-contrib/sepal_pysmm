@@ -1,12 +1,7 @@
 from pathlib import Path
 import datetime as dt
 
-import os
-import subprocess
-import ee
-
 from component.scripts.derive_SM import get_map
-from component.scripts.utils import gdrive
 import component.scripts.scripts as cs
 import component.parameter as param
 

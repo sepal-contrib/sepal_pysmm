@@ -115,7 +115,9 @@ class StatsInputView(v.Layout):
         self.date_selector.months_items = month_items
         self.date_selector.years_items = years
 
-        self.date_selector.selected_months = month_items
+        selected_months = [month["value"] for month in month_items]
+
+        self.date_selector.selected_months = selected_months
         self.date_selector.selected_years = years
 
     def get_months_years(self, path):

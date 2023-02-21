@@ -6,7 +6,7 @@ import ee
 import time
 import os
 import sys
-from component.scripts.utils import gdrive
+from component.scripts.utils import GDrive
 from tqdm.auto import tqdm
 
 FAILED = "FAILED"
@@ -43,7 +43,7 @@ def run(
     except Exception as e:
         raise Exception(e)
 
-    drive_handler = gdrive()
+    drive_handler = GDrive()
 
     def remove_from_list(task_to_remove):
         with open(task_file, "r") as f:

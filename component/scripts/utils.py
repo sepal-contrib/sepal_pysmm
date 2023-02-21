@@ -1,26 +1,28 @@
-#!/usr/bin/env python3
-
 import ee
 import io
 import numpy as np
 from googleapiclient.http import MediaIoBaseDownload
+from google.oauth2.credentials import Credentials
 from apiclient import discovery
-
+from pathlib import Path
+import json
 import logging
 
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 
-class gdrive(object):
+class GDrive():
+
     def __init__(self):
 
         self.initialize = ee.Initialize()
-        self.credentials = ee.Credentials()
+        # Access to sepal access token
+        self.access_token = json.loads((Path.home()/'.config/earthengine/credentials').read_text()).get('access_token')
         self.service = discovery.build(
-            serviceName="drive",
-            version="v3",
-            cache_discovery=False,
-            credentials=self.credentials,
+            serviceName="drive", 
+            version="v3", 
+            cache_discovery=False, 
+            credentials=Credentials(self.access_token)
         )
 
     def print_file_list(self):
