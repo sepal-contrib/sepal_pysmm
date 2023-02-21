@@ -3,15 +3,9 @@
 import datetime as dt
 import math
 import os
-import time
 import ee
 import numpy as np
 import warnings
-
-from .utils import gdrive
-
-
-
 import logging
 
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
@@ -993,45 +987,5 @@ class GEE_extent(object):
         slop = (
             ee.Terrain.slope(ee.Image("CGIAR/SRTM90_V4")).select("slope").clip(self.roi)
         )
+        
         self.TERRAIN = (elev, aspe, slop)
-
-    def GEE_2_disk(self, outdir=None, raster="ESTIMATED_SM", name="SM", timeout=True):
-        # Download GEE rasters - specify raster as string
-
-        geds = self.__getattribute__(raster)
-
-        if outdir is None:
-            outdir = self.workdir
-        success = 1
-        file_exp = ee.batch.Export.image.toDrive(
-            image=geds,
-            description="fileexp" + name,
-            fileNamePrefix=name,
-            scale=self.sampling,
-            region=self.roi.getInfo()["coordinates"],
-            maxPixels=1000000000000,
-        )
-
-        file_exp.start()
-
-        start = time.time()
-        success = 1
-
-        while file_exp.active() == True:
-            time.sleep(2)
-            if timeout == True and (time.time() - start) > 4800:
-                success = 0
-                break
-        else:
-            print("Export completed")
-        print(name + ".tif")
-        print(outdir + name + ".tif")
-        if success == 1:
-            # initialise Google Drive
-            drive_handler = gdrive()
-            print("Downloading files ...")
-            print(name)
-            drive_handler.download_file(name + ".tif", outdir + name + ".tif")
-            drive_handler.delete_file(name + ".tif")
-        else:
-            file_exp.cancel()
