@@ -1,5 +1,5 @@
 ignore-init-module-imports = true
-fix = true
+fix = false
 select = ["E", "F", "W", "I", "D", "RUF"]
 ignore = [
     "E501",  # line too long | Black take care of it
@@ -12,7 +12,10 @@ ignore = [
     "D102", # I have to fix it some day (documentation to public method)
     "D107", # I have to fix it some day (documentation to classes)
     "D104", # I have to fix it some day (documentation to packages)
+    "D103", # I have to fix it some day (Missing docstring in public function)
 ]
 exclude = [
-    "stackcomposed"
+    "stackcomposed",
+    "GEE_wrappers.py",
+    "__init__.py"
 ]

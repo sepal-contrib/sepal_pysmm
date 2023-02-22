@@ -1,8 +1,8 @@
 """
-Custom alert widget. The unique difference with the sepal_ui.sepalwidgets.Alert 
-is that instead of adding thee progress bar to the end, it will be added to the
-beginning of the alert.
+Custom alert widget. The unique difference with the sepal_ui.sepalwidgets.
 
+Alert is that instead of adding thee progress bar to the end, it will be added to the
+beginning of the alert.
 """
 
 from datetime import datetime
@@ -32,7 +32,7 @@ class Divider(v.Divider, SepalWidget):
 
     def __init__(self, class_: str = "", **kwargs) -> None:
         r"""
-        A custom Divider with the ability to dynamically change color.
+        Divider with the ability to dynamically change color.
 
         Whenever the type\_ trait is modified, the divider class will change accordingly.
 
@@ -71,7 +71,7 @@ class Alert(v.Alert, SepalWidget):
 
     def __init__(self, type_: str = "info", **kwargs) -> None:
         r"""
-        A custom Alert widget.
+        Get a custom Alert widget.
 
         It is used as the output of all processes in the framework.
         In the voila interfaces, print statement will not be displayed.

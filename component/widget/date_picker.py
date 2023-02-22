@@ -21,7 +21,8 @@ class DatePicker(sw.Layout):
 
     def __init__(self, label: str = "Date", layout_kwargs: dict = {}, **kwargs) -> None:
         """
-        Custom input widget to provide a reusable DatePicker.
+        Input widget to provide a reusable DatePicker.
+
         It allows to choose date as a string in the following format YYYY-MM-DD.
 
         Args:
@@ -77,6 +78,7 @@ class DatePicker(sw.Layout):
     def check_date(self, change: dict) -> None:
         """
         Check if the data is formatted date.
+
         A method to check if the value of the set v_model is a correctly formated date
         Reset the widget and display an error if it's not the case.
         """
@@ -95,7 +97,7 @@ class DatePicker(sw.Layout):
 
     @observe("v_model")
     def close_menu(self, change: dict) -> None:
-        """A method to close the menu of the datepicker programatically."""
+        """Close the menu of the datepicker programatically."""
         # set the visibility
         self.menu.v_model = False
 
@@ -103,7 +105,7 @@ class DatePicker(sw.Layout):
 
     @observe("disabled")
     def disable(self, change: dict) -> None:
-        """A method to disabled the appropriate components in the datipkcer object."""
+        """Disable the appropriate components in the datipkcer object."""
         self.menu.v_slots[0]["children"].disabled = self.disabled
 
         return

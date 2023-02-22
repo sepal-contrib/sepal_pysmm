@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import ipyvuetify as v
@@ -34,7 +35,8 @@ class MapTile(v.Card):
 
     @su.loading_button()
     def display_image(self, widget, event, data):
-        image = file_chooser.file
+
+        image = self.file_chooser.file
         image_path = Path(image)
         layer_name = image_path.stem
 

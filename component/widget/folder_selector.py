@@ -13,7 +13,9 @@ __all__ = ["FolderSelector", "FolderSelectorView"]
 
 class FolderSelectorView(v.Card):
     """
-    Folder selector view which contain the option to search the files ending with the
+    Folder selector view.
+    
+    Contains the option to search the files ending with the
     given wildcard with the recursive option. It will display the lenght of the found
     items in an alert header.
 
@@ -156,9 +158,9 @@ class FolderSelector(v.List):
 
     def get_folder_group(self, path):
         """
-        Get the folders in the given path. Will be stored in folders class
-        variable.
-
+        Get the folders in the given path. 
+        
+        Will be stored in folders class variable.
         """
         folders = humansorted(
             [str(folder) for folder in Path(path).glob("[!.]*/") if folder.is_dir()]

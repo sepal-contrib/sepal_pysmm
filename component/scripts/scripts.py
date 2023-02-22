@@ -15,7 +15,7 @@ __all__ = [
 @su.need_ee
 def get_bounds(ee_asset, cardinal=False):
     """
-    Returns the min(lon,lat) and max(lon, lat) from the given asset.
+    Return the min(lon,lat) and max(lon, lat) from the given asset.
 
     Args:
         ee_asset (ee.object): GEE asset (FeatureCollection, Geometry)
@@ -77,14 +77,11 @@ def re_range(lst):
         result.append(",".join(map(str, lst[scan:])))
 
     return ",".join(result)
-    pd.DataFrame._repr_javascript_ = _repr_datatable_
+    pd.DataFrame._repr_javascript_ = _repr_datatable_ # noqa
 
 
 def filter_images_by_date(tifs, months=None, years=None, ini_date=None, end_date=None):
-    """
-    Return a list of images filtered by months and
-    years.
-    """
+    """Return a list of images filtered by months and years."""
     # Get a list of tuples (date, image_name)
 
     list_ = [(pd.Timestamp(ps.parse_other_files(image)[4]), image) for image in tifs]

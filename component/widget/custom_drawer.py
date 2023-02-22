@@ -99,6 +99,7 @@ class DrawerItem(sw.ListItem):
     def display_tile(self, tiles):
         """
         Display the apropriate tiles when the item is clicked.
+        
         The tile to display will be all tile in the list with the mount_id as the current object.
 
         Args:

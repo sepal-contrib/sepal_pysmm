@@ -1,4 +1,4 @@
-
+import logging
 import os
 import time
 
@@ -18,7 +18,7 @@ CANCELLED = "CANCELLED"
 COMPLETED = "COMPLETED"
 UNKNOWN = "UNKNOWN"
 
-import logging
+
 
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
@@ -89,8 +89,11 @@ class DownloadView(v.Card):
     @su.loading_button(debug=True)
     def download_to_sepal(self, *args):
         """
-        Download images from Google Drive to SEPAL. It will loop over the task file
-        and download the images if they have a status of COMPLETED.
+        Download images from Google Drive to SEPAL.
+
+        It will loop over the task file and download the images 
+        if they have a status of COMPLETED.
+        
         """
         task_file = self.w_selection.v_model
         alerts = [self.alert, self.result_alert]

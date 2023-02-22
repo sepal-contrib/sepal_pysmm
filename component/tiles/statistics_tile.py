@@ -163,6 +163,8 @@ class StatsInputView(sw.Layout):
 
     def get_months_years(self, path):
         """
+        Return the months and years present in the path.
+
         From a given path of images, the function will return a list
         of the months/years present in the folder.
 
