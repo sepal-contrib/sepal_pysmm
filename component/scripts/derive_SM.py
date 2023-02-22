@@ -171,7 +171,7 @@ def get_map(
             with open(tasks_file_name, "a") as tasks_file:
                 tasks_file.write(f"{task.id}, {f_name}\n")
 
-            alert.update_progress(1, total=1)
+            # alert.update_progress(1, total=1)
 
             return tasks
         else:
@@ -219,7 +219,7 @@ def get_map(
             last = dates.tail(1).index.to_list()[0]
 
             alert.append_msg("Processing all available images in the time series...")
-            alert.update_progress(0, total=len(dates))
+            # alert.update_progress(0, total=len(dates))
             alert.append_msg(f"There are {len(dates)} unique images.\n")
             alert.append_msg(
                 f"The first available date is {first} and the last is {last}.\n"
@@ -273,7 +273,7 @@ def get_map(
                 # Finish time count
 
             counter += 1
-            alert.update_progress(counter, total=len(dates))
+            # alert.update_progress(counter, total=len(dates))
 
         GEE_interface = None
 

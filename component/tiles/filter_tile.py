@@ -115,7 +115,7 @@ class FilterView(v.Card):
         for image in image_files:
             cls_filter.raw_to_processed(image, self.alert)
             self.counter += 1
-            self.alert.update_progress(self.counter, total=len(image_files))
+            # self.alert.update_progress(self.counter, total=len(image_files))
 
         self.alert.append_msg(
             "All the images were correctly processed.", type_="success"

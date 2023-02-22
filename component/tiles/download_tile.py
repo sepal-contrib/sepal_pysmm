@@ -104,6 +104,9 @@ class DownloadView(v.Card):
         state_alert = alerts[0]
         result_alert = alerts[1]
 
+        state_alert.reset()
+        result_alert.reset()
+
         out_path = os.path.split(task_file)[0]
 
         ee.Initialize()
@@ -136,7 +139,7 @@ class DownloadView(v.Card):
                     output_file = os.path.join(out_path, f"{file_name}.tif")
 
                     self.counter += 1
-                    result_alert.update_progress(self.counter, total=len(tasks))
+                    # result_alert.update_progress(self.counter, total=len(tasks))
 
                     if not overwrite:
                         if not os.path.exists(output_file):
