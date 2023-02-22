@@ -99,6 +99,7 @@ class DownloadView(v.Card):
         alerts = [self.alert, self.result_alert]
         overwrite = self.w_overwrite.v_model
         rmdrive = self.w_remove.v_model
+        self.counter = 0
 
         state_alert = alerts[0]
         result_alert = alerts[1]
