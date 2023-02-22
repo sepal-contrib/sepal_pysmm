@@ -9,9 +9,10 @@
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
+import warnings
+
 import dask.array as da
 import numpy as np
-import warnings
 
 from .image import Image
 

@@ -1,12 +1,11 @@
 import ipyvuetify as v
-
-import sepal_ui.sepalwidgets as sw
 import sepal_ui.scripts.utils as su
+import sepal_ui.sepalwidgets as sw
 from sepal_ui.aoi import AoiTile
 
 import component.widget as cw
-from component.scripts import run_pysmm
 from component.message import cm
+from component.scripts import run_pysmm
 from component.scripts.resize import rt
 
 __all__ = ["ProcessTile"]
@@ -14,11 +13,10 @@ __all__ = ["ProcessTile"]
 
 class ProcessTile(sw.Stepper):
     def __init__(self, model, *args, **kwargs):
-
         self._metadata = {"mount_id": "process"}
 
         super().__init__(*args, **kwargs)
-        
+
         self.model = model
 
         titles = [
@@ -36,9 +34,9 @@ class ProcessTile(sw.Stepper):
         self.date_view = cw.DateSelector()
         process_view = ProcessView(
             self.model,
-            self.aoi_tile.view.model, 
+            self.aoi_tile.view.model,
             self.date_view,
-            attributes = {"id": "process_view"},
+            attributes={"id": "process_view"},
         )
 
         content = ["", self.aoi_tile, self.date_view, process_view]
@@ -65,7 +63,7 @@ class ProcessTile(sw.Stepper):
                 children=[
                     StepperContent(key, content[0], content[1])
                     for key, content in enumerate(zip(titles, content), 1)
-                ]
+                ],
             ),
         ]
         display(rt)
@@ -74,7 +72,6 @@ class ProcessTile(sw.Stepper):
 
 
 class ProcessView(v.Layout):
-
     counter = 0
     "int: counter to keep track of the number of images already processed by run_pysmm function."
 
@@ -82,13 +79,13 @@ class ProcessView(v.Layout):
         self.class_ = "pa-2 d-block"
 
         super().__init__(*args, **kwargs)
-        
+
         self.model = model
         self.aoi_model = aoi_model
         self.date_model = date_model
         self.counter = 0
         self.w_ascending = v.RadioGroup(
-            label='Select an orbit:',
+            label="Select an orbit:",
             row=True,
             v_model=False,
             children=[
@@ -96,10 +93,10 @@ class ProcessView(v.Layout):
                 v.Radio(label="Descending", value=False),
             ],
         )
-        
+
         self.btn = sw.Btn("Start process", class_="mb-2")
         self.alert = cw.Alert()
-        
+
         self.model.bind(self.w_ascending, "ascending")
 
         self.children = [self.w_ascending, self.btn, self.alert]
@@ -108,7 +105,6 @@ class ProcessView(v.Layout):
 
     @su.loading_button(debug=True)
     def run_process(self, widget, event, data):
-        
         # Restart counter everytime the process is run
         self.counter = 0
         run_pysmm.run_pysmm(
@@ -118,7 +114,6 @@ class ProcessView(v.Layout):
 
 class StepperContent(v.StepperContent):
     def __init__(self, key, title, content, *args, **kwargs):
-
         self.key = key
         self.step = key
 

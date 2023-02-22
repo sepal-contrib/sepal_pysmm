@@ -1,10 +1,8 @@
-from traitlets import Unicode, List, default
-from IPython.display import display
 import ipyvuetify as v
+from traitlets import default
 
 
 class ResizeTrigger(v.VuetifyTemplate):
-    
     @default("template")
     def _template(self):
         return """

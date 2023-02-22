@@ -11,19 +11,18 @@ from typing import Any, Optional
 import ipyvuetify as v
 import traitlets as t
 from deprecated.sphinx import deprecated
-from ipywidgets import Output, jslink
-from tqdm.notebook import tqdm
-from traitlets import directional_link, observe
-from typing_extensions import Self
-
+from ipywidgets import Output
 from sepal_ui import color
 from sepal_ui.frontend.styles import TYPES
 from sepal_ui.message import ms
 from sepal_ui.scripts import utils as su
 from sepal_ui.scripts.utils import set_type
 from sepal_ui.sepalwidgets.sepalwidget import SepalWidget
+from tqdm.notebook import tqdm
+from traitlets import directional_link, observe
+from typing_extensions import Self
 
-__all__ = ["Divider", "Alert", "StateBar", "Banner"]
+__all__ = ["Divider", "Alert"]
 
 
 class Divider(v.Divider, SepalWidget):
@@ -38,6 +37,7 @@ class Divider(v.Divider, SepalWidget):
         Whenever the type\_ trait is modified, the divider class will change accordingly.
 
         Args:
+        ----
             class\_: the initial color of the divider
             kwargs (optional): any parameter from a v.Divider. if set, 'class\_' will be overwritten.
         """
@@ -52,6 +52,7 @@ class Divider(v.Divider, SepalWidget):
         It is binded to the type\_ traitlet but can also be called manually.
 
         Args:
+        ----
             change: the only useful key is 'new' which is the new required color
         """
         self.class_list.remove(*TYPES)
@@ -78,6 +79,7 @@ class Alert(v.Alert, SepalWidget):
         It's hidden by default.
 
         Args:
+        ----
             type\_: The color of the Alert
             kwargs (optional): any parameter from a v.Alert. If set, 'type' will be overwritten.
         """
@@ -104,6 +106,7 @@ class Alert(v.Alert, SepalWidget):
             set the ``total`` argumentent of tqdm to use differnet values than [0, 1]
 
         Args:
+        ----
             progress: the progress status in float
             msg: The message to use before the progress bar
             tqdm_args (optional): any arguments supported by a tqdm progress bar
@@ -151,6 +154,7 @@ class Alert(v.Alert, SepalWidget):
         The color can also be changed dynamically.
 
         Args:
+        ----
             msg: the message to display
             type\_: the color to use in the widget
         """
@@ -167,6 +171,7 @@ class Alert(v.Alert, SepalWidget):
         Also add the timestamp of the display. The color can also be changed dynamically.
 
         Args:
+        ----
             msg: the message to display
             type\_: the color to use in the widget
         """
@@ -186,6 +191,7 @@ class Alert(v.Alert, SepalWidget):
         Append a message in a new parragraph, with or without divider.
 
         Args:
+        ----
             msg: the message to display
             section: add a Divider before the added message
             type\_: the color to use in the widget
@@ -245,7 +251,8 @@ class Alert(v.Alert, SepalWidget):
             input\_: the input to check
             msg: the message to display if the input is not set
 
-        Returns:
+        Returns
+        -------
             check if the value is initialized
         """
         msg = msg or ms.utils.check_input.error

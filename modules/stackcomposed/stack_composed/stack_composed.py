@@ -19,12 +19,13 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-import os
 import gc
+import os
 import warnings
+
 import numpy as np
-from osgeo import gdal, osr
 from dask.diagnostics import ProgressBar
+from osgeo import gdal, osr
 
 from .image import Image
 from .stats import statistic
@@ -197,20 +198,16 @@ def run(
             exit(1)
         # choose the default data type based on the statistic
         if output_type is None:
-            if (
-                stat
-                in [
-                    "median",
-                    "mean",
-                    "gmean",
-                    "max",
-                    "min",
-                    "last_pixel",
-                    "jday_last_pixel",
-                    "jday_median",
-                ]
-                or stat.startswith(("percentile_", "trim_mean_"))
-            ):
+            if stat in [
+                "median",
+                "mean",
+                "gmean",
+                "max",
+                "min",
+                "last_pixel",
+                "jday_last_pixel",
+                "jday_median",
+            ] or stat.startswith(("percentile_", "trim_mean_")):
                 gdal_output_type = gdal.GDT_UInt16
             if stat in ["std", "snr"]:
                 gdal_output_type = gdal.GDT_Float32

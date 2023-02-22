@@ -10,6 +10,7 @@
 #  (at your option) any later version.
 #
 import os
+
 import numpy as np
 from osgeo import gdal
 
@@ -55,7 +56,7 @@ class Image:
         if ext.lower() == ".hdr":
             # search the dataset for ENVI files
             dataset_exts = [".dat", ".raw", ".sli", ".hyspex", ".img"]
-            for test_ext in [""] + dataset_exts + [i.upper() for i in dataset_exts]:
+            for test_ext in ["", *dataset_exts] + [i.upper() for i in dataset_exts]:
                 test_dataset_path = path + test_ext
                 if os.path.isfile(test_dataset_path):
                     return test_dataset_path
@@ -92,7 +93,7 @@ class Image:
 
     def get_chunk(self, band, xoff, xsize, yoff, ysize):
         """
-        Get the array of the band for the respective chunk
+        Get the array of the band for the respective chunk.
         """
         gdal_file = gdal.Open(self.file_path, gdal.GA_ReadOnly)
         raster_band = gdal_file.GetRasterBand(band).ReadAsArray(
@@ -131,7 +132,7 @@ class Image:
 
     def get_chunk_in_wrapper(self, band, xc, xc_size, yc, yc_size):
         """
-        Get the array of the band adjusted into the wrapper matrix for the respective chunk
+        Get the array of the band adjusted into the wrapper matrix for the respective chunk.
         """
         # bounds for chunk with respect to wrapper
         # the 0,0 is left-upper corner

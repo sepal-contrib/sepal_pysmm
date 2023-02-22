@@ -1,17 +1,15 @@
-from ipywidgets import Output
 
-import ipyvuetify as v
-
-import sepal_ui.sepalwidgets as sw
-import sepal_ui.scripts.utils as su
-
-import component.parameter as param
-from component.message import cm
-import component.widget as cw
+import os
+import time
 
 import ee
-import time
-import os
+import ipyvuetify as v
+import sepal_ui.scripts.utils as su
+import sepal_ui.sepalwidgets as sw
+
+import component.parameter as param
+import component.widget as cw
+from component.message import cm
 from component.scripts.utils import GDrive
 
 FAILED = "FAILED"
@@ -29,7 +27,6 @@ __all__ = ["DownloadTile"]
 
 class DownloadTile(v.Layout, sw.SepalWidget):
     def __init__(self, *args, **kwargs):
-
         self.class_ = "d-block"
         self._metadata = {"mount_id": "download"}
 
@@ -50,13 +47,10 @@ class DownloadTile(v.Layout, sw.SepalWidget):
 
 
 class DownloadView(v.Card):
-
-
     counter = 0
     "int: counter to keep track of the number of images downloaded"
 
     def __init__(self, *args, **kwargs):
-
         self.class_ = "pa-2"
 
         super().__init__(*args, **kwargs)
@@ -65,8 +59,7 @@ class DownloadView(v.Card):
         self.result_alert = cw.Alert()
 
         self.w_overwrite = v.Switch(
-            v_model=True, label="Overwrite SEPAL images", small=True,
-            class_="mr-4"
+            v_model=True, label="Overwrite SEPAL images", small=True, class_="mr-4"
         )
 
         self.w_remove = v.Switch(
@@ -84,25 +77,25 @@ class DownloadView(v.Card):
                 children=[
                     self.w_overwrite,
                     self.w_remove,
-                ]
+                ],
             ),
             self.btn,
             self.alert,
-            self.result_alert
+            self.result_alert,
         ]
 
         self.btn.on_event("click", self.download_to_sepal)
 
     @su.loading_button(debug=True)
-    def download_to_sepal(self, *args): 
-        """Download images from Google Drive to SEPAL. It will loop over the task file 
+    def download_to_sepal(self, *args):
+        """
+        Download images from Google Drive to SEPAL. It will loop over the task file
         and download the images if they have a status of COMPLETED.
         """
-
-        task_file=self.w_selection.v_model
-        alerts=[self.alert, self.result_alert]
-        overwrite=self.w_overwrite.v_model
-        rmdrive=self.w_remove.v_model
+        task_file = self.w_selection.v_model
+        alerts = [self.alert, self.result_alert]
+        overwrite = self.w_overwrite.v_model
+        rmdrive = self.w_remove.v_model
 
         state_alert = alerts[0]
         result_alert = alerts[1]
@@ -131,7 +124,6 @@ class DownloadView(v.Card):
                         f.write(line)
 
         def check_for_not_completed(task):
-
             state = ee.data.getTaskStatus(task[0])[0]["state"]
             file_name = task[1]
 
@@ -160,9 +152,11 @@ class DownloadView(v.Card):
                         remove_from_list(task[0])
                         drive_handler.delete_file(items_to_search, f"{file_name}.tif")
                 elif state in [UNKNOWN, FAILED]:
-                    result_alert.add_msg(f"There was an error task, state", type_="error")
+                    result_alert.add_msg(
+                        "There was an error task, state", type_="error"
+                    )
                 return False
-            
+
             return True
 
         def download(tasks):
@@ -178,8 +172,11 @@ class DownloadView(v.Card):
         if tasks:
             download(tasks)
             state_alert.reset()
-            result_alert.append_msg(f"All the images were downloaded succesfully", type_="success")
+            result_alert.append_msg(
+                "All the images were downloaded succesfully", type_="success"
+            )
         else:
             state_alert.reset()
-            result_alert.append_msg(f"All the images were already downloaded.", type_="warning")
-
+            result_alert.append_msg(
+                "All the images were already downloaded.", type_="warning"
+            )

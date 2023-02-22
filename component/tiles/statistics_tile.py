@@ -1,31 +1,29 @@
+import datetime
+import re
 from os import cpu_count
 from pathlib import Path
-import re
-import datetime
 
-from traitlets import link, dlink
-from ipywidgets import Output
 import ipyvuetify as v
-import sepal_ui.sepalwidgets as sw
 import sepal_ui.scripts.utils as su
+import sepal_ui.sepalwidgets as sw
+from ipywidgets import Output
+from traitlets import dlink
 
 import component.parameter as param
+import component.scripts as cs
 import component.widget as cw
 from component.message import cm
-import component.scripts as cs
-
 
 __all__ = ["StatisticsTile"]
 
 
 class StatisticsTile(v.Layout, sw.SepalWidget):
     def __init__(self, model, *args, **kwargs):
-
         self.class_ = "d-block"
         self._metadata = {"mount_id": "statistics"}
 
         super().__init__(*args, **kwargs)
-        
+
         self.model = model
 
         self.inputs_view = StatsInputView(model=self.model)
@@ -51,7 +49,6 @@ class StatisticsTile(v.Layout, sw.SepalWidget):
 
 class StatsInputView(sw.Layout):
     def __init__(self, model, *args, **kwargs):
-
         self.class_ = "d-flex"
 
         super().__init__(*args, **kwargs)
@@ -70,10 +67,10 @@ class StatsInputView(sw.Layout):
 
         self.close = v.Icon(children=["mdi-close"], small=True)
         self.w_summary = v.Dialog(
-            max_width=800, 
-            min_width=800, 
+            max_width=800,
+            min_width=800,
             min_height=450,
-            max_height=450, 
+            max_height=450,
             v_model=False,
             style_="overflow: hidden;",
             close_on_back=True,
@@ -83,13 +80,12 @@ class StatsInputView(sw.Layout):
                     style_="overflow: hidden;",
                     children=[
                         sw.CardTitle(
-                            class_="pa-0 ma-0", 
-                            children=[v.Spacer(), self.close]
+                            class_="pa-0 ma-0", children=[v.Spacer(), self.close]
                         ),
-                        sw.CardText(children=[], attributes={"id":"summary_card"}),
-                    ]
+                        sw.CardText(children=[], attributes={"id": "summary_card"}),
+                    ],
                 )
-            ]
+            ],
         )
 
         self.children = [
@@ -108,7 +104,7 @@ class StatsInputView(sw.Layout):
                                     self.date_selector,
                                     self.btn,
                                     self.w_summary,
-                                    self.alert
+                                    self.alert,
                                 ]
                             )
                         ]
@@ -121,7 +117,6 @@ class StatsInputView(sw.Layout):
             self.w_selector, "folders"
         )
 
-
         dlink((self.date_selector, "date_method"), (self.model, "date_method"))
         dlink((self.date_selector, "start_date"), (self.model, "start_date"))
         dlink((self.date_selector, "end_date"), (self.model, "end_date"))
@@ -132,12 +127,13 @@ class StatsInputView(sw.Layout):
         self.w_selector.v_model
 
         self.btn.on_event("click", self.get_list_of_images)
-        self.close.on_event("click", lambda *args: setattr(self.w_summary, "v_model", False))
+        self.close.on_event(
+            "click", lambda *args: setattr(self.w_summary, "v_model", False)
+        )
 
     @su.loading_button(debug=True)
     def get_list_of_images(self, *args):
-        """Display the list of images filtered by the date selector on a dialog"""
-            
+        """Display the list of images filtered by the date selector on a dialog."""
         filter_images, _ = self.model.get_inputs()
         summary = cs.images_summary(filter_images)
 
@@ -147,10 +143,8 @@ class StatsInputView(sw.Layout):
 
         setattr(self.w_summary, "v_model", True)
 
-
     def fill_season(self, change):
-        """Fill years and months when Season is Selected, receive a list of paths"""
-
+        """Fill years and months when Season is Selected, receive a list of paths."""
         months, years = self.get_months_years(change["new"])
 
         month_items = [
@@ -168,12 +162,11 @@ class StatsInputView(sw.Layout):
         self.date_selector.selected_years = years
 
     def get_months_years(self, path):
-
-        """From a given path of images, the function will return a list
-        of the months/years present in the folder
+        """
+        From a given path of images, the function will return a list
+        of the months/years present in the folder.
 
         """
-
         if self.w_selector_view.w_recursive.v_model:
             tifs = [tif for folder in path for tif in Path(folder).rglob("[!.]*.tif")]
         else:
@@ -189,24 +182,23 @@ class StatsInputView(sw.Layout):
     @staticmethod
     def get_date(image_path):
         """
-        Parse the date of the images
+        Parse the date of the images.
 
-        Examples:
+        Examples
+        --------
             close_SMCmap_2019_11_09_dguerrero_1111.tif
         """
         filename = Path(image_path).stem
 
         match = re.search(r"\d{4}_\d{2}_\d{2}", filename)
         if match:
-
             date = datetime.datetime.strptime(match.group(), "%Y_%m_%d").date()
-            jday = date.timetuple().tm_yday
+            date.timetuple().tm_yday
 
             return date
 
 
 class StatisticsView(v.Layout):
-
     STATS_DICT = {
         "Median": "median",
         "Mean": "mean",
@@ -219,7 +211,6 @@ class StatisticsView(v.Layout):
     }
 
     def __init__(self, model, *args, **kwargs):
-
         self.class_ = "d-block"
 
         super().__init__(*args, **kwargs)
@@ -229,7 +220,6 @@ class StatisticsView(v.Layout):
         self.alert = sw.Alert()
         self.btn = sw.Btn("Get stack", class_="mr-2")
         self.output = Output()
-
 
         self.w_stats = v.Select(
             label="Statistic",
@@ -290,7 +280,6 @@ class StatisticsView(v.Layout):
 
     @su.loading_button(debug=True)
     def on_click(self, *args):
-
         filter_images, output_name = self.model.get_inputs()
 
         self.alert.add_msg(
@@ -308,6 +297,4 @@ class StatisticsView(v.Layout):
         # Once the process has ran remove the tmp_tif_file
         tmp_tif_file.unlink()
 
-        self.alert.add_msg(
-            f"Done! results saved in {output_name.parent}"
-        )
+        self.alert.add_msg(f"Done! results saved in {output_name.parent}")

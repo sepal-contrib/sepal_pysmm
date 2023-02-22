@@ -1,23 +1,21 @@
 #!/usr/bin/env python3
 
-import os
-import numpy as np
-import pandas as pd
-import time
-import ee
 import datetime
+import logging
+import os
+import time
 from copy import deepcopy
 
+import ee
+import numpy as np
+import pandas as pd
 
 from .GEE_wrappers import GEE_extent
-
-import logging
 
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 
 def create_out_name(year, month, day, file_sufix):
-
     year = str(year)
     month = str(month)
     day = str(day)
@@ -42,7 +40,6 @@ def gldas_date():
 
 
 def export_sm(image, file_name):
-
     description = f"fileexp_{file_name}"
 
     task = ee.batch.Export.image.toDrive(
@@ -77,10 +74,10 @@ def get_map(
     start_date=False,
     stop_date=False,
     counter=0,
-    **model_kwargs
+    **model_kwargs,
 ):
-
-    """Get S1 soil moisture map
+    """
+    Get S1 soil moisture map.
 
     Atributes:
     minlon, minlat, maxlon, maxlat: (float) extent of soil moisture map
@@ -97,7 +94,6 @@ def get_map(
     filename: (string) add to file name
 
     """
-    
     if "ascending" in model_kwargs:
         ascending = model_kwargs["ascending"]
 
@@ -123,12 +119,11 @@ def get_map(
         asked_date = datetime.datetime(year, month, day).date()
         gldas_last_date = gldas_date()
         if asked_date <= gldas_last_date:
-
             alert.add_msg(f"Processing the closest image to {year}-{month}-{day}...")
 
             tasks = []
 
-            start = time.perf_counter()
+            time.perf_counter()
 
             GEE_interface = GEE_extent(
                 minlon, minlat, maxlon, maxlat, outpath, sampling=sampling
@@ -166,7 +161,7 @@ def get_map(
             # Estimate soil moisture
             GEE_interface.estimate_SM()
 
-            finish = time.perf_counter()
+            time.perf_counter()
             alert.append_msg(f"Image {outname}.tif processed")
 
             task, f_name = export_sm(GEE_interface, outname)
@@ -186,7 +181,6 @@ def get_map(
                 type_="warning",
             )
     else:
-
         # if no specific date was specified extract entire time series or a range
         GEE_interface = GEE_extent(
             minlon, minlat, maxlon, maxlat, outpath, sampling=sampling
@@ -205,9 +199,8 @@ def get_map(
             dates = dates[start_date:stop_date]
             dates = dates[:gldas_last_date]
             if len(dates) == 0:
-                raise Exception(
-                    f"No images available for the selected range.")
-            
+                raise Exception("No images available for the selected range.")
+
             first = dates.index.to_list()[0]
             last = dates.tail(1).index.to_list()[0]
 
@@ -215,7 +208,9 @@ def get_map(
                 f"Processing all images available between {start_date} and {stop_date}..."
             )
             alert.append_msg(f"There are {len(dates)} unique images.")
-            alert.append_msg(f"The first available date is {first} and the last is {last}.\n")
+            alert.append_msg(
+                f"The first available date is {first} and the last is {last}.\n"
+            )
         else:
             # The user has selected the entire series
             first = dates.index.to_list()[0]
@@ -223,15 +218,15 @@ def get_map(
 
             last = dates.tail(1).index.to_list()[0]
 
-            alert.append_msg(f"Processing all available images in the time series...")
+            alert.append_msg("Processing all available images in the time series...")
             alert.update_progress(0, total=len(dates))
             alert.append_msg(f"There are {len(dates)} unique images.\n")
-            alert.append_msg(f"The first available date is {first} and the last is {last}.\n")
+            alert.append_msg(
+                f"The first available date is {first} and the last is {last}.\n"
+            )
         tasks = []
-        i = 0
 
         for dateI, _ in dates.iterrows():
-
             GEE_interface2 = deepcopy(GEE_interface)
             GEE_interface2.get_S1(
                 dateI.year,
@@ -247,7 +242,6 @@ def get_map(
             # retrieve GLDAS
             GEE_interface2.get_gldas()
             if GEE_interface2.GLDAS_IMG is not None:
-
                 outname = create_out_name(
                     GEE_interface2.S1_DATE.year,
                     GEE_interface2.S1_DATE.month,
@@ -280,7 +274,7 @@ def get_map(
 
             counter += 1
             alert.update_progress(counter, total=len(dates))
-            
+
         GEE_interface = None
 
         return tasks

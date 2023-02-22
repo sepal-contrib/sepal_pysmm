@@ -1,24 +1,23 @@
-from pathlib import Path
 import datetime as dt
-
-from component.scripts.derive_SM import get_map
-import component.scripts.scripts as cs
-import component.parameter as param
-
 import logging
+from pathlib import Path
+
+import component.parameter as param
+import component.scripts.scripts as cs
+from component.scripts.derive_SM import get_map
 
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 
 def run_pysmm(aoi_model, date_model, model, alert, counter):
-    """Process the input variables to start the "derive_sm" module.
+    """
+    Process the input variables to start the "derive_sm" module.
 
     Args:
-
+    ----
         Aoi (AoiModel): Aoi Model which stores the inputs from the user
         Date (DateSelector): Date selector custom widget which stores the input data from the user
     """
-
     # Get SEPAL user
     user = Path("~").expanduser().parts[-1]
 
@@ -56,7 +55,6 @@ def run_pysmm(aoi_model, date_model, model, alert, counter):
 
     # Create a subfolder when is a filter selection
     if aoi_model.method in ["SHAPE", "ASSET"]:
-
         if aoi_model.asset_name["pathname"] or aoi_model.vector_json["pathname"]:
             # Create a folder to download pysmm images
 
@@ -65,13 +63,13 @@ def run_pysmm(aoi_model, date_model, model, alert, counter):
                 if aoi_model.method == "ASSET"
                 else aoi_model.vector_json
             )
-            
+
             name = str(Path(json["pathname"]).name)
             column = str(json["column"])
-            value = str(json["value"]) if json["value"] else ''
-            
+            value = str(json["value"]) if json["value"] else ""
+
             outpath = Path(param.RAW_DIR, name, column, value)
-            
+
             file_sufix = f"{user}_{name}_{column}_{value}"
     else:
         # For all the other types of selections
@@ -102,14 +100,12 @@ def run_pysmm(aoi_model, date_model, model, alert, counter):
     # To process single date or non row dates.
 
     if single_date:
-
         kwargs["year"] = year
         kwargs["month"] = month
         kwargs["day"] = day
         tasks = get_map(*args, **kwargs)
     # To get the the series map in row
     else:
-
         # To get the series map in a specified range
         if start_date:
             kwargs["start_date"] = start_date
@@ -119,7 +115,6 @@ def run_pysmm(aoi_model, date_model, model, alert, counter):
         else:
             tasks = get_map(*args, **kwargs)
     if tasks:
-
         alert.append_msg(
             (
                 "Done: The images are being processed into your GEE account."

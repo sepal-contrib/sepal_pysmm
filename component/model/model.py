@@ -1,16 +1,17 @@
 import datetime as dt
+import warnings
 from pathlib import Path
-from traitlets import Bool, Unicode, List, Int, CUnicode, CInt
+
 from sepal_ui import model
 from sepal_ui.scripts.warning import SepalWarning
-import warnings
+from traitlets import Bool, CInt, CUnicode, List, Unicode
+
 import component.parameter as param
 import component.scripts as cs
 import modules.stackcomposed.stack_composed.stack_composed as stack
 
 
 class Model(model.Model):
-    
     # model - for process tile
     ascending = Bool().tag(sync=True)
 
@@ -31,8 +32,7 @@ class Model(model.Model):
     selected_months = List().tag(sync=True)
 
     def stack_composed(self, image_file, output_name):
-        """Run stack composed algorithm"""
-
+        """Run stack composed algorithm."""
         stack.run(
             self.selected_stat,
             bands=1,
@@ -43,27 +43,31 @@ class Model(model.Model):
         )
 
     def get_inputs(self):
-        """Return filtered images by date_method and the output composed stack name
-        
+        """
+        Return filtered images by date_method and the output composed stack name.
+
         Params:
             folders (list): Will use the bind folders from the statistics_tile folder
                             selector widget.
         """
-        
         if not self.folders:
             raise Exception("You have not selected any folder to process.")
 
-        images = list(set([
-            str(image)
-            for folder in self.folders
-            for image in (
-                Path(folder).rglob("close*.tif") if self.recursive 
-                else Path(folder).glob("close*.tif")
+        images = list(
+            set(
+                [
+                    str(image)
+                    for folder in self.folders
+                    for image in (
+                        Path(folder).rglob("close*.tif")
+                        if self.recursive
+                        else Path(folder).glob("close*.tif")
+                    )
+                ]
             )
-        ]))            
+        )
 
         if self.date_method == "season":
-
             months = self.selected_months
             years = self.selected_years
 
@@ -93,10 +97,9 @@ class Model(model.Model):
             )
 
         elif self.date_method == "range":
-
             if not self.start_date or not self.end_date:
                 raise Exception("Please select a start and end date.")
-            
+
             ini_date = dt.datetime.strptime(self.start_date, "%Y-%m-%d")
             end_date = dt.datetime.strptime(self.end_date, "%Y-%m-%d")
 
@@ -116,13 +119,13 @@ class Model(model.Model):
 
         if not filter_images:
             raise Exception(
-                f"There are no images in the selected folders/dates, please try with a"
+                "There are no images in the selected folders/dates, please try with a"
                 " different date/folder."
             )
 
         elif len(filter_images) == 1:
             raise Exception(
-                f"There is only one image in the selected range, to calculate "
+                "There is only one image in the selected range, to calculate "
                 "statistics you need at least 2 images, please try a wider range."
             )
 

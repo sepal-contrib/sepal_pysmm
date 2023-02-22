@@ -1,15 +1,15 @@
-from traitlets import List, Unicode
 import ipyvuetify as v
-
+from traitlets import List, Unicode
 
 __all__ = ["VueDataFrame"]
 
 
 class VueDataFrame(v.VuetifyTemplate):
     """
-    Vuetify DataTable rendering of a pandas DataFrame
+    Vuetify DataTable rendering of a pandas DataFrame.
 
     Args:
+    ----
         data (DataFrame) - the data to render
         title (str) - optional title
     """
