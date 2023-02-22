@@ -33,7 +33,7 @@ class FolderSelectorView(v.Card):
         *args,
         **kwargs
     ):
-        self.style_="overflow-x:none"
+        self.style_="overflow-x:hidden;"
         super().__init__(*args, **kwargs)
 
         self.wildcard = wildcard

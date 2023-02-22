@@ -94,11 +94,14 @@ class Model(model.Model):
 
         elif self.date_method == "range":
 
+            if not self.start_date or not self.end_date:
+                raise Exception("Please select a start and end date.")
+            
             ini_date = dt.datetime.strptime(self.start_date, "%Y-%m-%d")
             end_date = dt.datetime.strptime(self.end_date, "%Y-%m-%d")
 
             filter_images = cs.filter_images_by_date(
-                tifs, ini_date=ini_date, end_date=end_date
+                images, ini_date=ini_date, end_date=end_date
             )
 
             output_name = param.STACK_DIR / (

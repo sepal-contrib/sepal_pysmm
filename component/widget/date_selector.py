@@ -98,7 +98,7 @@ class DateSelector(sw.Layout):
         self.children = [
             self.w_date_method,
             self.w_unique_date,
-            v.Flex(children=[self.w_ini_date, self.w_end_date]),
+            v.Flex(class_="d-flex", children=[self.w_ini_date, self.w_end_date]),
             self.w_myears,
             self.w_mmonths,
         ]
