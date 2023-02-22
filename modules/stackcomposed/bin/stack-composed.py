@@ -9,8 +9,9 @@
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-import os, sys
 import argparse
+import os
+import sys
 from datetime import datetime
 from multiprocessing import cpu_count
 
@@ -19,14 +20,13 @@ project_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 if project_dir not in sys.path:
     sys.path.append(project_dir)
 
-from stack_composed import stack_composed, epilog
+from stack_composed import epilog, stack_composed
 
 
 def script():
     """
-    Run as a script with arguments
+    Run as a script with arguments.
     """
-
     # Create parser arguments
     parser = argparse.ArgumentParser(
         prog="stack-composed",

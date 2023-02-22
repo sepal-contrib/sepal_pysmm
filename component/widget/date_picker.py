@@ -1,18 +1,15 @@
-from typing import Any, List, Optional, Union
-import traitlets as t
-
-
 from datetime import datetime
+from typing import Optional
 
 import ipyvuetify as v
 import sepal_ui.sepalwidgets as sw
-from traitlets import Bool, link, observe
+import traitlets as t
+from traitlets import link, observe
 
 __all__ = ["DatePicker"]
 
 
 class DatePicker(sw.Layout):
-
     menu: Optional[v.Menu] = None
     "the menu widget to display the datepicker"
 
@@ -24,9 +21,12 @@ class DatePicker(sw.Layout):
 
     def __init__(self, label: str = "Date", layout_kwargs: dict = {}, **kwargs) -> None:
         """
-        Custom input widget to provide a reusable DatePicker.
+        Input widget to provide a reusable DatePicker.
+
         It allows to choose date as a string in the following format YYYY-MM-DD.
+
         Args:
+        ----
             label: the label of the datepicker field
             layout_kwargs: any parameter for the wrapper v.Layout
             kwargs: any parameter from a v.DatePicker object.
@@ -62,7 +62,7 @@ class DatePicker(sw.Layout):
         )
 
         # set the default parameter
-        layout_kwargs={}
+        layout_kwargs = {}
         layout_kwargs.setdefault("row", True)
         layout_kwargs.setdefault("class_", "pa-5")
         layout_kwargs.setdefault("align_center", True)
@@ -78,6 +78,7 @@ class DatePicker(sw.Layout):
     def check_date(self, change: dict) -> None:
         """
         Check if the data is formatted date.
+
         A method to check if the value of the set v_model is a correctly formated date
         Reset the widget and display an error if it's not the case.
         """
@@ -96,7 +97,7 @@ class DatePicker(sw.Layout):
 
     @observe("v_model")
     def close_menu(self, change: dict) -> None:
-        """A method to close the menu of the datepicker programatically."""
+        """Close the menu of the datepicker programatically."""
         # set the visibility
         self.menu.v_model = False
 
@@ -104,7 +105,7 @@ class DatePicker(sw.Layout):
 
     @observe("disabled")
     def disable(self, change: dict) -> None:
-        """A method to disabled the appropriate components in the datipkcer object."""
+        """Disable the appropriate components in the datipkcer object."""
         self.menu.v_slots[0]["children"].disabled = self.disabled
 
         return
@@ -113,10 +114,12 @@ class DatePicker(sw.Layout):
     def is_valid_date(date: str) -> bool:
         """
         Check if the date is provided using the date format required for the widget.
+
         Args:
+        ----
             date: the date to test in YYYY-MM-DD format
         Returns:
-            the date to test
+            the date to test.
         """
         try:
             datetime.strptime(date, "%Y-%m-%d")

@@ -24,9 +24,10 @@ def calc_date(year, jday):
 
 def parse_landsat_ID_oldFilename(file_path):
     """
-    Parse the original structure of old Landsat filename
+    Parse the original structure of old Landsat filename.
 
-    Examples:
+    Examples
+    --------
         LC80070592016320LGN00_band1.tif
     """
     filename = os.path.basename(file_path).split("_")[0].split(".")[0]
@@ -48,9 +49,10 @@ def parse_landsat_ID_oldFilename(file_path):
 
 def parse_landsat_ID_newFilename(file_path):
     """
-    Parse the original structure of new Landsat filename
+    Parse the original structure of new Landsat filename.
 
-    Examples:
+    Examples
+    --------
         LC08_L1TP_007059_20161115_20170318_01_T2_b1.tif
     """
     filename = os.path.basename(file_path).split("_")[0:4]
@@ -77,9 +79,10 @@ def parse_landsat_ID_newFilename(file_path):
 
 def parse_SMBYC_filename(file_path):
     """
-    Parse the SMBYC structure of Landsat filename
+    Parse the SMBYC structure of Landsat filename.
 
-    Examples:
+    Examples
+    --------
         Landsat_8_53_020601_7ETM_Reflec_SR_Enmask.tif
     """
     filename = os.path.basename(file_path).split(".")[0]
@@ -94,9 +97,10 @@ def parse_SMBYC_filename(file_path):
 
 def parse_other_files(file_path):
     """
-    Parse the date structure of other files
+    Parse the date structure of other files.
 
-    Examples:
+    Examples
+    --------
         close_SMCmap_2019_11_09_dguerrero_1111.tif
     """
     filename = Path(file_path).stem
@@ -114,7 +118,7 @@ def parse_other_files(file_path):
 
 def parse_filename(file_path):
     """
-    Extract metadata from filename
+    Extract metadata from filename.
     """
     root, filename = os.path.split(file_path)
 

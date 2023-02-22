@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 
 import datetime as dt
+import logging
 import math
 import os
+import warnings
+
 import ee
 import numpy as np
-import warnings
-import logging
 
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 
 class GEE_extent(object):
-    """Class to create an interface with GEE for the extraction of arrays
+    """
+    Class to create an interface with GEE for the extraction of arrays.
 
-    Attributes:
+    Attributes
+    ----------
         minlon: minimum longitude in decimal degrees
         minlat: minumum latitude in decimal degress
         maxlon: maximum longitude in decimal degrees
@@ -24,7 +27,7 @@ class GEE_extent(object):
     """
 
     def __init__(self, minlon, minlat, maxlon, maxlat, workdir, sampling=20):
-        """Return a new GEE extent object"""
+        """Return a new GEE extent object."""
         ee.Reset()
         ee.Initialize()
 
@@ -64,7 +67,7 @@ class GEE_extent(object):
         self.TERRAIN = None
 
     def _multitemporalDespeckle(self, images, radius, units, opt_timeWindow=None):
-        """Function for multi-temporal"""
+        """Function for multi-temporal."""
 
         def mapMeanSpace(i):
             reducer = ee.Reducer.mean()
@@ -73,7 +76,7 @@ class GEE_extent(object):
             ratio = i.divide(mean).rename(bandNamesRatio)
             return i.addBands(mean).addBands(ratio)
 
-        if opt_timeWindow == None:
+        if opt_timeWindow is None:
             timeWindow = dict(before=-3, after=3, units="month")
         else:
             timeWindow = opt_timeWindow
@@ -131,8 +134,9 @@ class GEE_extent(object):
         ascending=False,
         maskLIA=True,
     ):
-        """Retrieve the S1 image for a given day from GEE and apply specific filters.
-        Assigns outputs to respective instance attributes
+        """
+        Retrieve the S1 image for a given day from GEE and apply specific filters.
+        Assigns outputs to respective instance attributes.
 
         """
 
@@ -163,7 +167,7 @@ class GEE_extent(object):
             # mask for terrain, local incidence angle and high and low backscatter
             tmp = ee.Image(image)
             # srtm dem
-            if maskLIA == False:
+            if maskLIA is False:
                 gee_srtm = ee.Image("USGS/SRTMGL1_003")
                 gee_srtm_slope = ee.Terrain.slope(gee_srtm)
                 mask = gee_srtm_slope.lt(20)
@@ -204,7 +208,6 @@ class GEE_extent(object):
             return tmp
 
         def mask_lc_globcover(image):
-
             tmp = ee.Image(image)
 
             # load lc
@@ -271,17 +274,16 @@ class GEE_extent(object):
             return image
 
         def toln(image):
-
             tmp = ee.Image(image)
 
             # Convert to linear
             vv = ee.Image(10).pow(tmp.select("VV").divide(10))
-            if dualpol == True:
+            if dualpol is True:
                 vh = ee.Image(10).pow(tmp.select("VH").divide(10))
 
             # Convert to ln
             out = vv.log()
-            if dualpol == True:
+            if dualpol is True:
                 out = out.addBands(vh.log())
                 out = out.select(["constant", "constant_1"], ["VV", "VH"])
             else:
@@ -290,16 +292,15 @@ class GEE_extent(object):
             return out.set("system:time_start", tmp.get("system:time_start"))
 
         def tolin(image):
-
             tmp = ee.Image(image)
 
             # Covert to linear
             vv = ee.Image(10).pow(tmp.select("VV").divide(10))
-            if dualpol == True:
+            if dualpol is True:
                 vh = ee.Image(10).pow(tmp.select("VH").divide(10))
 
             # Convert to
-            if dualpol == True:
+            if dualpol is True:
                 out = vv.addBands(vh)
                 out = out.select(["constant", "constant_1"], ["VV", "VH"])
             else:
@@ -308,7 +309,6 @@ class GEE_extent(object):
             return out.set("system:time_start", tmp.get("system:time_start"))
 
         def todb(image):
-
             tmp = ee.Image(image)
 
             return (
@@ -318,7 +318,6 @@ class GEE_extent(object):
             )
 
         def applysnowmask(image):
-
             tmp = ee.Image(image)
             sdiff = tmp.select("VH").subtract(snowref)
             wetsnowmap = sdiff.lte(-2.6).focal_mode(100, "square", "meters", 3)
@@ -332,7 +331,6 @@ class GEE_extent(object):
             return tmp
 
         def apply_explicit_t_mask(image):
-
             t_mask = ee.Image("users/felixgreifeneder/" + explicit_t_mask)
             mask = t_mask.eq(0)
             return image.updateMask(mask)
@@ -351,7 +349,7 @@ class GEE_extent(object):
             .filter(ee.Filter.listContains("transmitterReceiverPolarisation", "VV"))
         )
 
-        if ascending == True:
+        if ascending is True:
             gee_s1_filtered = gee_s1_filtered.filter(
                 ee.Filter.eq("orbitProperties_pass", "ASCENDING")
             )
@@ -360,7 +358,7 @@ class GEE_extent(object):
                 ee.Filter.eq("orbitProperties_pass", "DESCENDING")
             )
 
-        if dualpol == True:
+        if dualpol is True:
             # Consider only dual-pol scenes
             gee_s1_filtered = gee_s1_filtered.filter(
                 ee.Filter.listContains("transmitterReceiverPolarisation", "VH")
@@ -372,12 +370,12 @@ class GEE_extent(object):
                 ee.Filter.eq("relativeOrbitNumber_start", trackflt)
             )
 
-        if maskwinter == True:
+        if maskwinter is True:
             # Mask winter based on DOY
             gee_s1_filtered = gee_s1_filtered.filter(ee.Filter.dayOfYear(121, 304))
 
         # add LIA
-        if maskLIA == True:
+        if maskLIA is True:
             # compute the local incidence angle if it shall be used for masking
             gee_s1_filtered = gee_s1_filtered.map(computeLIA)
             s1_lia = gee_s1_filtered.select("lia")
@@ -386,24 +384,24 @@ class GEE_extent(object):
 
         s1_angle = gee_s1_filtered.select("angle")
 
-        if applylcmask == True:
+        if applylcmask is True:
             # apply land-cover mask based on Corine
             gee_s1_filtered = gee_s1_filtered.map(masklc)
-        if mask_globcover == True:
+        if mask_globcover is True:
             # apply land-cover mask based on globcover
             gee_s1_filtered = gee_s1_filtered.map(mask_lc_globcover)
 
         # Enable bilinear resampling (instead of NN)
         gee_s1_filtered = gee_s1_filtered.map(setresample)
 
-        if explicit_t_mask == None:
+        if explicit_t_mask is None:
             # apply masking based on the terraing (LIA)
             gee_s1_filtered = gee_s1_filtered.map(maskterrain)
         else:
             # apply specific terrain mask
             gee_s1_filtered = gee_s1_filtered.map(apply_explicit_t_mask)
 
-        if masksnow == True:
+        if masksnow is True:
             # automatic wet snow masking
             gee_s1_linear_vh = gee_s1_filtered.map(tolin).select("VH")
             snowref = ee.Image(10).multiply(
@@ -416,20 +414,20 @@ class GEE_extent(object):
         # create a list of availalbel dates
         tmp = gee_s1_filtered.getInfo()
         tmp_ids = [x["properties"]["system:index"] for x in tmp["features"]]
-        
+
         dates = np.array(
             [
                 dt.date(year=int(x[17:21]), month=int(x[21:23]), day=int(x[23:25]))
                 for x in tmp_ids
             ]
         )
-        
+
         if not len(dates):
             raise Exception(
                 "There are no S1 images with the selected filters, please consider "
                 "changing the area of interest or selecting a different orbit"
             )
-        
+
         # find the closest acquisitions
         doi = dt.date(year=year, month=month, day=day)
         doi_index = np.argmin(np.abs(dates - doi))
@@ -444,13 +442,13 @@ class GEE_extent(object):
             date_selected.strftime("%Y-%m-%d"),
             (date_selected + dt.timedelta(days=1)).strftime("%Y-%m-%d"),
         )
-        if maskLIA == True:
+        if maskLIA is True:
             s1_lia_drange = s1_lia.filterDate(
                 date_selected.strftime("%Y-%m-%d"),
                 (date_selected + dt.timedelta(days=1)).strftime("%Y-%m-%d"),
             )
         if gee_s1_drange.size().getInfo() > 1:
-            if maskLIA == True:
+            if maskLIA is True:
                 s1_lia = s1_lia_drange.mosaic()
             s1_angle = s1_angle_drange.mosaic()
             s1_sig0 = gee_s1_drange.mosaic()
@@ -471,7 +469,7 @@ class GEE_extent(object):
             "relativeOrbitNumber_start", "equals", track_nr
         )
 
-        if tempfilter == True:
+        if tempfilter is True:
             # despeckle
             radius = tempfilter_radius
             units = "pixels"
@@ -489,7 +487,7 @@ class GEE_extent(object):
             )
             s1_sig0_vv = gee_s1_fltrd_vv.mosaic()
 
-            if dualpol == True:
+            if dualpol is True:
                 gee_s1_dspckld_vh = self._multitemporalDespeckle(
                     gee_s1_linear.select("VH"),
                     radius,
@@ -503,7 +501,7 @@ class GEE_extent(object):
                 )
                 s1_sig0_vh = gee_s1_fltrd_vh.mosaic()
 
-            if dualpol == True:
+            if dualpol is True:
                 s1_sig0 = s1_sig0_vv.addBands(s1_sig0_vh).select(
                     ["constant", "constant_1"], ["VV", "VH"]
                 )
@@ -513,7 +511,7 @@ class GEE_extent(object):
         # extract information
         s1_sig0_vv = s1_sig0.select("VV")
         s1_sig0_vv = s1_sig0_vv.clip(self.roi)
-        if dualpol == True:
+        if dualpol is True:
             s1_sig0_vh = s1_sig0.select("VH")
             s1_sig0_vh = s1_sig0_vh.clip(self.roi)
 
@@ -528,7 +526,7 @@ class GEE_extent(object):
             self.roi
         )
 
-        if dualpol == True:
+        if dualpol is True:
             k1vh = ee.Image(gee_s1_ln.select("VH").mean()).clip(self.roi)
             k2vh = ee.Image(gee_s1_ln.select("VH").reduce(ee.Reducer.stdDev())).clip(
                 self.roi
@@ -539,7 +537,7 @@ class GEE_extent(object):
             )
 
         # export
-        if dualpol == False:
+        if dualpol is False:
             self.S1_SIG0_VV_db = s1_sig0_vv
             self.S1_ANGLE = s1_angle
             self.K1VV = k1vv
@@ -559,7 +557,7 @@ class GEE_extent(object):
             self.S1STD_VV = std_vv
             self.S1STD_VH = std_vh
 
-        if maskLIA == True:
+        if maskLIA is True:
             self.S1_LIA = s1_lia
 
     def estimate_SM(self):
@@ -653,8 +651,8 @@ class GEE_extent(object):
         k2_vh = self.K2VH
         lia = self.S1_ANGLE.rename(["lia"])
         aspect = self.TERRAIN[2].rename(["aspect"])
-        slope = self.TERRAIN[1].rename(["slope"])
-        height = self.TERRAIN[0].rename(["height"])
+        self.TERRAIN[1].rename(["slope"])
+        self.TERRAIN[0].rename(["height"])
         gldas_img = self.GLDAS_IMG
         gldas_mean = self.GLDAS_MEAN
         lc = self.LAND_COVER
@@ -800,8 +798,6 @@ class GEE_extent(object):
         vh = self.S1_SIG0_VH_db
         vv_mean = self.S1MEAN_VV
         vh_mean = self.S1MEAN_VH
-        vv_std = self.S1STD_VV
-        vh_std = self.S1STD_VH
 
         vv_lin = ee.Image(10).pow(vv.divide(10)).rename(["relVV"])
         vh_lin = ee.Image(10).pow(vh.divide(10)).rename(["relVH"])
@@ -892,17 +888,17 @@ class GEE_extent(object):
             .filter(ee.Filter.eq("platform_number", "A"))
             .filter(ee.Filter.listContains("transmitterReceiverPolarisation", "VV"))
         )
-        
-        if ascending == True:
+
+        if ascending is True:
             gee_s1_filtered = gee_s1_filtered.filter(
-                ee.Filter.eq('orbitProperties_pass', 'ASCENDING')
+                ee.Filter.eq("orbitProperties_pass", "ASCENDING")
             )
         else:
             gee_s1_filtered = gee_s1_filtered.filter(
-                ee.Filter.eq('orbitProperties_pass', 'DESCENDING')
+                ee.Filter.eq("orbitProperties_pass", "DESCENDING")
             )
 
-        if dualpol == True:
+        if dualpol is True:
             gee_s1_filtered = gee_s1_filtered.filter(
                 ee.Filter.listContains("transmitterReceiverPolarisation", "VH")
             )
@@ -911,7 +907,6 @@ class GEE_extent(object):
             gee_s1_filtered = gee_s1_filtered.filter(
                 ee.Filter.eq("relativeOrbitNumber_start", tracknr)
             )
-            
 
         # create a list of availalbel dates
         tmp = gee_s1_filtered.getInfo()
@@ -922,7 +917,7 @@ class GEE_extent(object):
                 for x in tmp_ids
             ]
         )
-        
+
         if not len(dates):
             raise Exception(
                 "There are no S1 images with the selected filters, please consider "
@@ -956,7 +951,7 @@ class GEE_extent(object):
             gldas_test = ee.ImageCollection("NASA/GLDAS/V021/NOAH/G025/T3H").select(
                 "SoilMoi0_10cm_inst"
             )
-            last_gldas = gldas_test.aggregate_max("system:index").getInfo()
+            gldas_test.aggregate_max("system:index").getInfo()
             # print(('ID of latest available product: ' + last_gldas))
             self.GLDAS_IMG = None
             self.GLDAS_MEAN = None
@@ -987,5 +982,5 @@ class GEE_extent(object):
         slop = (
             ee.Terrain.slope(ee.Image("CGIAR/SRTM90_V4")).select("slope").clip(self.roi)
         )
-        
+
         self.TERRAIN = (elev, aspe, slop)

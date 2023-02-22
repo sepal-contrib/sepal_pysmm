@@ -1,31 +1,29 @@
+import datetime
+import re
 from os import cpu_count
 from pathlib import Path
-import re
-import datetime
 
-from traitlets import link, dlink
-from ipywidgets import Output
 import ipyvuetify as v
-import sepal_ui.sepalwidgets as sw
 import sepal_ui.scripts.utils as su
+import sepal_ui.sepalwidgets as sw
+from ipywidgets import Output
+from traitlets import dlink
 
 import component.parameter as param
+import component.scripts as cs
 import component.widget as cw
 from component.message import cm
-import component.scripts as cs
-
 
 __all__ = ["StatisticsTile"]
 
 
 class StatisticsTile(v.Layout, sw.SepalWidget):
     def __init__(self, model, *args, **kwargs):
-
         self.class_ = "d-block"
         self._metadata = {"mount_id": "statistics"}
 
         super().__init__(*args, **kwargs)
-        
+
         self.model = model
 
         self.inputs_view = StatsInputView(model=self.model)
@@ -49,9 +47,8 @@ class StatisticsTile(v.Layout, sw.SepalWidget):
         ]
 
 
-class StatsInputView(v.Layout):
+class StatsInputView(sw.Layout):
     def __init__(self, model, *args, **kwargs):
-
         self.class_ = "d-flex"
 
         super().__init__(*args, **kwargs)
@@ -62,9 +59,34 @@ class StatsInputView(v.Layout):
             folder=param.PROCESSED_DIR.parent, wildcard="close*.tif"
         )
         self.w_selector = self.w_selector_view.w_selector
+        self.btn = sw.Btn("View images", class_="mb-2", small=True)
+        self.alert = sw.Alert()
 
         self.date_selector = cw.DateSelector(season=True, remove_method=["single"])
         self.date_selector.date_method = "all"
+
+        self.close = v.Icon(children=["mdi-close"], small=True)
+        self.w_summary = v.Dialog(
+            max_width=800,
+            min_width=800,
+            min_height=450,
+            max_height=450,
+            v_model=False,
+            style_="overflow: hidden;",
+            close_on_back=True,
+            close_on_content_click=True,
+            children=[
+                sw.Card(
+                    style_="overflow: hidden;",
+                    children=[
+                        sw.CardTitle(
+                            class_="pa-0 ma-0", children=[v.Spacer(), self.close]
+                        ),
+                        sw.CardText(children=[], attributes={"id": "summary_card"}),
+                    ],
+                )
+            ],
+        )
 
         self.children = [
             v.Row(
@@ -80,6 +102,9 @@ class StatsInputView(v.Layout):
                                 children=[
                                     v.CardTitle(children=["Date selection"]),
                                     self.date_selector,
+                                    self.btn,
+                                    self.w_summary,
+                                    self.alert,
                                 ]
                             )
                         ]
@@ -101,9 +126,25 @@ class StatsInputView(v.Layout):
         self.w_selector.observe(self.fill_season, "v_model")
         self.w_selector.v_model
 
-    def fill_season(self, change):
-        """Fill years and months when Season is Selected, receive a list of paths"""
+        self.btn.on_event("click", self.get_list_of_images)
+        self.close.on_event(
+            "click", lambda *args: setattr(self.w_summary, "v_model", False)
+        )
 
+    @su.loading_button(debug=True)
+    def get_list_of_images(self, *args):
+        """Display the list of images filtered by the date selector on a dialog."""
+        filter_images, _ = self.model.get_inputs()
+        summary = cs.images_summary(filter_images)
+
+        self.get_children(id_="summary_card")[0].children = [
+            cw.VueDataFrame(data=summary, title="Selected Images")
+        ]
+
+        setattr(self.w_summary, "v_model", True)
+
+    def fill_season(self, change):
+        """Fill years and months when Season is Selected, receive a list of paths."""
         months, years = self.get_months_years(change["new"])
 
         month_items = [
@@ -121,12 +162,13 @@ class StatsInputView(v.Layout):
         self.date_selector.selected_years = years
 
     def get_months_years(self, path):
+        """
+        Return the months and years present in the path.
 
-        """From a given path of images, the function will return a list
-        of the months/years present in the folder
+        From a given path of images, the function will return a list
+        of the months/years present in the folder.
 
         """
-
         if self.w_selector_view.w_recursive.v_model:
             tifs = [tif for folder in path for tif in Path(folder).rglob("[!.]*.tif")]
         else:
@@ -142,24 +184,23 @@ class StatsInputView(v.Layout):
     @staticmethod
     def get_date(image_path):
         """
-        Parse the date of the images
+        Parse the date of the images.
 
-        Examples:
+        Examples
+        --------
             close_SMCmap_2019_11_09_dguerrero_1111.tif
         """
         filename = Path(image_path).stem
 
         match = re.search(r"\d{4}_\d{2}_\d{2}", filename)
         if match:
-
             date = datetime.datetime.strptime(match.group(), "%Y_%m_%d").date()
-            jday = date.timetuple().tm_yday
+            date.timetuple().tm_yday
 
             return date
 
 
 class StatisticsView(v.Layout):
-
     STATS_DICT = {
         "Median": "median",
         "Mean": "mean",
@@ -172,7 +213,6 @@ class StatisticsView(v.Layout):
     }
 
     def __init__(self, model, *args, **kwargs):
-
         self.class_ = "d-block"
 
         super().__init__(*args, **kwargs)
@@ -181,12 +221,7 @@ class StatisticsView(v.Layout):
 
         self.alert = sw.Alert()
         self.btn = sw.Btn("Get stack", class_="mr-2")
-        self.btn_view = sw.Btn("View list of images", disabled=True)
         self.output = Output()
-
-        self.w_summary = v.Dialog(
-            max_width=800, min_height=500, v_model=False, children=[]
-        )
 
         self.w_stats = v.Select(
             label="Statistic",
@@ -231,11 +266,10 @@ class StatisticsView(v.Layout):
         )
 
         self.children = [
-            self.w_summary,
             self.w_stats,
             self.w_prefix,
             advanced_settings,
-            v.Flex(class_="d-flex mb-2", children=[self.btn, self.btn_view]),
+            v.Flex(class_="d-flex mb-2", children=[self.btn]),
             self.alert,
             self.output,
         ]
@@ -245,14 +279,9 @@ class StatisticsView(v.Layout):
         ).bind(self.w_chunk, "chunks").bind(self.w_prefix, "prefix")
 
         self.btn.on_event("click", self.on_click)
-        self.btn_view.on_event(
-            "click", lambda *args: setattr(self.w_summary, "v_model", True)
-        )
 
-    @su.switch("disabled", on_widgets=["btn_view"], targets=[False])
     @su.loading_button(debug=True)
-    def on_click(self, widget, event, data):
-
+    def on_click(self, *args):
         filter_images, output_name = self.model.get_inputs()
 
         self.alert.add_msg(
@@ -263,15 +292,11 @@ class StatisticsView(v.Layout):
         tmp_tif_file = param.STACK_DIR / "tmp_images.txt"
         tmp_tif_file.write_text("\n".join(filter_images))
 
-        summary = cs.images_summary(filter_images)
-
-        self.w_summary.children = [
-            cw.VueDataFrame(data=summary, title="Selected Images")
-        ]
-
         with self.output:
             self.output.clear_output()
             self.model.stack_composed(str(tmp_tif_file), str(output_name))
 
         # Once the process has ran remove the tmp_tif_file
         tmp_tif_file.unlink()
+
+        self.alert.add_msg(f"Done! results saved in {output_name.parent}")

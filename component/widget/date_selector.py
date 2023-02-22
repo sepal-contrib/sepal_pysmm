@@ -1,12 +1,11 @@
-from traitlets import Unicode, List, link
-from ipywidgets.widgets.trait_types import Date, date_serialization
 import ipyvuetify as v
 import sepal_ui.sepalwidgets as sw
+from traitlets import List, Unicode, link
+
 from component.widget.date_picker import DatePicker
 
 
 class DateSelector(sw.Layout):
-
     date_method = Unicode(None, allow_none=True).tag(sync=True)
     single_date = Unicode(None, allow_none=True).tag(sync=True)
 
@@ -32,9 +31,8 @@ class DateSelector(sw.Layout):
         remove_method=[],
         years_items=[],
         months_items=[],
-        **kwargs
+        **kwargs,
     ):
-
         self.align_center = True
         self.class_ = "d-block pa-2"
         super().__init__(*args, **kwargs)
@@ -57,18 +55,24 @@ class DateSelector(sw.Layout):
                     if to_remove not in method["value"]
                 ]
             if not new_items:
-                raise ValueError(f"The selected method does not exist")
+                raise ValueError("The selected method does not exist")
             self.w_date_method.items = new_items
-            
+
         if season:
             self.w_date_method.items = list(
-                self.w_date_method.items + [{"text": "Season", "value": "season"}]
+                [*self.w_date_method.items, {"text": "Season", "value": "season"}]
             )[:]
-            
-        self.w_unique_date = DatePicker(label="Date", attributes={"id":"unique_date"}).hide()
-        self.w_ini_date = DatePicker(label="Start date", attributes={"id":"ini_date"}).hide()
-        self.w_end_date = DatePicker(label="End date", attributes={"id":"end_date"}).hide()
-        
+
+        self.w_unique_date = DatePicker(
+            label="Date", attributes={"id": "unique_date"}
+        ).hide()
+        self.w_ini_date = DatePicker(
+            label="Start date", attributes={"id": "ini_date"}
+        ).hide()
+        self.w_end_date = DatePicker(
+            label="End date", attributes={"id": "end_date"}
+        ).hide()
+
         self.w_mmonths = v.Select(
             multiple=True,
             chips=True,
@@ -98,7 +102,7 @@ class DateSelector(sw.Layout):
         self.children = [
             self.w_date_method,
             self.w_unique_date,
-            v.Flex(children=[self.w_ini_date, self.w_end_date]),
+            v.Flex(class_="d-flex", children=[self.w_ini_date, self.w_end_date]),
             self.w_myears,
             self.w_mmonths,
         ]
@@ -106,7 +110,6 @@ class DateSelector(sw.Layout):
         self.w_date_method.observe(self.display_elements, "v_model")
 
     def display_elements(self, change):
-
         widgets = ["w_unique_date", "w_ini_date", "w_end_date", "w_mmonths", "w_myears"]
 
         # Hide all
@@ -115,11 +118,11 @@ class DateSelector(sw.Layout):
 
         if change["new"] == "single":
             self.w_unique_date.show()
-            
+
         elif change["new"] == "range":
             self.w_end_date.show()
             self.w_ini_date.show()
-            
+
         elif change["new"] == "season":
             self.w_mmonths.show()
             self.w_myears.show()

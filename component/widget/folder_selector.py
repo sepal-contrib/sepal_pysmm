@@ -1,24 +1,26 @@
 import json
-from sepal_ui.frontend import styles as ss
-import ipyvuetify as v
-from traitlets import Bool, link, List, observe, dlink
 from pathlib import Path
-from natsort import humansorted
+
+import ipyvuetify as v
 import sepal_ui.scripts.utils as su
 import sepal_ui.sepalwidgets as sw
-
-import component.parameter as param
+from natsort import humansorted
+from sepal_ui.frontend import styles as ss
+from traitlets import Bool, List, link, observe
 
 __all__ = ["FolderSelector", "FolderSelectorView"]
 
 
 class FolderSelectorView(v.Card):
     """
-    Folder selector view which contain the option to search the files ending with the
+    Folder selector view.
+    
+    Contains the option to search the files ending with the
     given wildcard with the recursive option. It will display the lenght of the found
     items in an alert header.
 
     Args:
+    ----
         wildcard (str): pattern to find files within the selected folders.
         ** FolderSelector args.
 
@@ -31,9 +33,9 @@ class FolderSelectorView(v.Card):
         max_selection=None,
         wildcard="*",
         *args,
-        **kwargs
+        **kwargs,
     ):
-        self.style_="overflow-x:none"
+        self.style_ = "overflow-x:hidden;"
         super().__init__(*args, **kwargs)
 
         self.wildcard = wildcard
@@ -55,10 +57,8 @@ class FolderSelectorView(v.Card):
 
     @su.switch("loading", "disabled", on_widgets=["w_selector"])
     def get_image_number(self, change):
-        """Get the number of images in the current path list"""
-
+        """Get the number of images in the current path list."""
         if change["new"]:
-
             if not self.w_recursive.v_model:
                 number_of_images = sum(
                     [
@@ -77,13 +77,15 @@ class FolderSelectorView(v.Card):
                 f"There are {number_of_images} images in the selected folder(s)."
             )
         else:
-            self.alert_info.add_msg(f"Please select a folder with images to process.")
+            self.alert_info.add_msg("Please select a folder with images to process.")
 
 
 class FolderSelector(v.List):
-    """Multiple folder selector widget
+    """
+    Multiple folder selector widget.
 
     Args:
+    ----
         folder (str, Path) (optional): Initial folder. Default : '/'
         max_depth (int): maximum depth levels allowed from the initial folder.
         max_selection (int): set the maximum number of elements that can be selected.
@@ -107,8 +109,8 @@ class FolderSelector(v.List):
 
     def __init__(self, folder="/", max_depth=None, max_selection=None, *args, **kwargs):
         p_style = json.loads((ss.JSON_DIR / "progress_bar.json").read_text())
-        
-        self.style_="overflow-x:none"
+
+        self.style_ = "overflow-x:none"
         self.folders = None
         self.max_depth = max_depth
         self.max_selection = max_selection
@@ -139,7 +141,7 @@ class FolderSelector(v.List):
         self.w_loading = v.ProgressLinear(
             indeterminate=False,
             background_color="grey darken-3",
-            color=p_style["color"][v.theme.dark]
+            color=p_style["color"][v.theme.dark],
         )
 
         self.item_group = ListItemGroup(
@@ -155,16 +157,16 @@ class FolderSelector(v.List):
         link((self.w_loading, "indeterminate"), (self, "loading"))
 
     def get_folder_group(self, path):
-        """Get the folders in the given path. Will be stored in folders class
-        variable.
-
         """
-
+        Get the folders in the given path. 
+        
+        Will be stored in folders class variable.
+        """
         folders = humansorted(
             [str(folder) for folder in Path(path).glob("[!.]*/") if folder.is_dir()]
         )
 
-        self.folders = [str(Path(path).parent)] + folders
+        self.folders = [str(Path(path).parent), *folders]
 
         # Enumerate items. We will be able to know which one is the parent
         return [
@@ -173,9 +175,7 @@ class FolderSelector(v.List):
 
     @su.switch("loading")
     def on_folder(self, change):
-
         if change["new"] is not None:
-
             # Check if we can access to this path or if it's restricted by depth
             restricted = (
                 Path(self.folders[change["new"]]) == self.max_depth_folder.parent
@@ -184,19 +184,18 @@ class FolderSelector(v.List):
             )
 
             if not restricted:
-
                 self.current_folder = Path(self.folders[change["new"]])
                 items = self.get_folder_group(self.current_folder)
                 self.item_group.children = items
                 self.item_group.v_model = None
 
     def reset(self):
-        """Clear current selected elements"""
+        """Clear current selected elements."""
         self.item_group.reset()
 
 
 class ListItem(v.Flex):
-    """Custom ListItem that will store a checkbox"""
+    """Custom ListItem that will store a checkbox."""
 
     # Workaround: It has to be a container: using directly a ListItem
     # will cause that the checkbox is inside the ListItem,
@@ -205,7 +204,6 @@ class ListItem(v.Flex):
     is_selected = Bool().tag(sync=True)
 
     def __init__(self, value, position, multiple=True, *args, **kwargs):
-
         self.value = value
         self.class_ = "d-flex"
         self.position = position
@@ -215,7 +213,7 @@ class ListItem(v.Flex):
         super().__init__(*args, **kwargs)
 
         self.w_selected = v.Checkbox(v_model=False)
-        
+
         ICON_TYPES = json.loads((ss.JSON_DIR / "file_icons.json").read_text())
 
         if position == 0:
@@ -253,11 +251,9 @@ class ListItem(v.Flex):
 
 
 class ListItemGroup(v.ListItemGroup):
-
     selected = List([]).tag(sync=None)
 
     def __init__(self, children, max_selection=None, *args, **kwargs):
-
         self.v_model = None
         self.max_selection = max_selection
         self.last_checked = 0
@@ -268,7 +264,7 @@ class ListItemGroup(v.ListItemGroup):
 
     @observe("children")
     def update_observe(self, change):
-        """Update widget observation once the childrens have changed"""
+        """Update widget observation once the childrens have changed."""
         # Reset previous selected items
         self.selected = []
 
@@ -276,8 +272,7 @@ class ListItemGroup(v.ListItemGroup):
         _ = [item.observe(self.set_selected, "is_selected") for item in self.children]
 
     def set_selected(self, change):
-        """Bind every item with the selected trait if it's checkbox is checkd"""
-
+        """Bind every item with the selected trait if it's checkbox is checkd."""
         # Create an index to store the last selection.
         # Will be used to un-select an element when the max_selection is given
         self.last_checked += 1
@@ -296,6 +291,5 @@ class ListItemGroup(v.ListItemGroup):
                 self.selected_widgets[0].w_selected.v_model = False
 
     def reset(self):
-        """Clear selected elements"""
-
+        """Clear selected elements."""
         [setattr(chld, "is_selected", False) for chld in self.children]

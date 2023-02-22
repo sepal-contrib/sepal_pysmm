@@ -1,0 +1,21 @@
+ignore-init-module-imports = true
+fix = false
+select = ["E", "F", "W", "I", "D", "RUF"]
+ignore = [
+    "E501",  # line too long | Black take care of it
+    "W605",  # invalid escape sequence | we escape specific characters for sphinx
+    "D212", # Multi-line docstring | we use a different convention, too late
+    "D200", # One-line docstring should fit on one line | too late
+    "D101", # Missing docstring in public class | set it in __init__
+    "D417", #  Missing argument descriptions in the docstring | seems buggy TODO
+    "D100", # I have to fix it some day (documentation to fucntions)
+    "D102", # I have to fix it some day (documentation to public method)
+    "D107", # I have to fix it some day (documentation to classes)
+    "D104", # I have to fix it some day (documentation to packages)
+    "D103", # I have to fix it some day (Missing docstring in public function)
+]
+exclude = [
+    "stackcomposed",
+    "GEE_wrappers.py",
+    "__init__.py"
+]

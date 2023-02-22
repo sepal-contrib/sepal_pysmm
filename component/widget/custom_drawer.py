@@ -1,12 +1,14 @@
-from component.scripts.resize import rt
 import ipyvuetify as v
-from traitlets import Bool, observe, link
 import sepal_ui.sepalwidgets as sw
-from sepal_ui.message import ms
 from sepal_ui import color
+from sepal_ui.message import ms
+from traitlets import Bool, link, observe
+
+from component.scripts.resize import rt
+
 
 class DrawerItem(sw.ListItem):
-    """Forked sepal_ui.sepalwidgets.DrawerItem version to fix https://github.com/sepal-contrib/sepal_pysmm/issues/26"""
+    """Forked sepal_ui.sepalwidgets.DrawerItem version to fix https://github.com/sepal-contrib/sepal_pysmm/issues/26."""
 
     rt = None
     "sw.ResizeTrigger: the trigger to resize maps and other javascript object when jumping from a tile to another"
@@ -27,7 +29,6 @@ class DrawerItem(sw.ListItem):
         bind_var=None,
         **kwargs,
     ):
-
         # set the resizetrigger
         self.rt = rt
 
@@ -74,8 +75,7 @@ class DrawerItem(sw.ListItem):
 
     @observe("alert")
     def add_notif(self, change):
-        """Add a notification alert to drawer"""
-
+        """Add a notification alert to drawer."""
         if change["new"]:
             if self.alert_badge not in self.children:
                 new_children = self.children[:]
@@ -87,8 +87,7 @@ class DrawerItem(sw.ListItem):
         return
 
     def remove_notif(self):
-        """Remove notification alert"""
-
+        """Remove notification alert."""
         if self.alert_badge in self.children:
             new_children = self.children[:]
             new_children.remove(self.alert_badge)
@@ -100,21 +99,22 @@ class DrawerItem(sw.ListItem):
     def display_tile(self, tiles):
         """
         Display the apropriate tiles when the item is clicked.
-        The tile to display will be all tile in the list with the mount_id as the current object
+        
+        The tile to display will be all tile in the list with the mount_id as the current object.
 
         Args:
+        ----
             tiles ([sw.Tile]) : the list of all the available tiles in the app
 
         Return:
+        ------
             self
         """
-
         self.on_event("click", lambda *args: self._on_click(tiles=tiles))
 
         return self
 
     def _on_click(self, *args, tiles):
-
         for tile in tiles:
             if self._metadata["card_id"] == tile._metadata["mount_id"]:
                 tile.show()
@@ -132,15 +132,14 @@ class DrawerItem(sw.ListItem):
 
         return self
 
-    
+
 class NavDrawer(sw.NavigationDrawer):
-    """Forked sepal_ui.sepalwidgets.DrawerItem version to fix https://github.com/sepal-contrib/sepal_pysmm/issues/26"""
+    """Forked sepal_ui.sepalwidgets.DrawerItem version to fix https://github.com/sepal-contrib/sepal_pysmm/issues/26."""
 
     items = []
     "list: the list of all the drawerItem to display in the drawer"
 
     def __init__(self, items=[], code=None, wiki=None, issue=None, **kwargs):
-
         self.items = items
 
         code_link = []
@@ -181,28 +180,27 @@ class NavDrawer(sw.NavigationDrawer):
 
     def display_drawer(self, toggleButton):
         """
-        Bind the drawer to the app toggleButton
+        Bind the drawer to the app toggleButton.
 
         Args:
+        ----
             toggleButton(v.Btn) : the button that activate the drawer
         """
-
         toggleButton.on_event("click", self._on_drawer_click)
 
         return self
 
     def _on_drawer_click(self, widget, event, data):
         """
-        Toggle the drawer visibility
+        Toggle the drawer visibility.
         """
-
         self.v_model = not self.v_model
 
         return self
 
     def _on_item_click(self, change):
         """
-        Deactivate all the other items when on of the is activated
+        Deactivate all the other items when on of the is activated.
         """
         if change["new"] is False:
             return self
