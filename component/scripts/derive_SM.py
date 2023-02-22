@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 
 import os
-import sys
-
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import time
 import ee
 import datetime
-from tqdm.auto import tqdm
 from copy import deepcopy
 
 
@@ -68,7 +64,6 @@ def get_map(
     maxlat,
     outpath,
     alert,
-    output,
     sampling=100,
     year=None,
     month=None,
@@ -81,6 +76,7 @@ def get_map(
     filename=None,
     start_date=False,
     stop_date=False,
+    counter=0,
     **model_kwargs
 ):
 
@@ -101,7 +97,6 @@ def get_map(
     filename: (string) add to file name
 
     """
-    print = alert.append_msg
     
     if "ascending" in model_kwargs:
         ascending = model_kwargs["ascending"]
@@ -130,14 +125,7 @@ def get_map(
         if asked_date <= gldas_last_date:
 
             alert.add_msg(f"Processing the closest image to {year}-{month}-{day}...")
-            with output:
-                output.clear_output()
-                p_bar = tqdm(
-                    total=1,
-                    desc="Starting...",
-                    ncols=700,
-                    bar_format="{l_bar}{bar}{r_bar}",
-                )
+
             tasks = []
 
             start = time.perf_counter()
@@ -179,7 +167,7 @@ def get_map(
             GEE_interface.estimate_SM()
 
             finish = time.perf_counter()
-            p_bar.desc = f"Image {outname}.tif processed"
+            alert.append_msg(f"Image {outname}.tif processed")
 
             task, f_name = export_sm(GEE_interface, outname)
             tasks.append(f"{task.id}, {f_name}\n")
@@ -187,8 +175,9 @@ def get_map(
             # Write the text file
             with open(tasks_file_name, "a") as tasks_file:
                 tasks_file.write(f"{task.id}, {f_name}\n")
-            p_bar.update(1)
-            p_bar.close()
+
+            alert.update_progress(1, total=1)
+
             return tasks
         else:
             alert.add_msg(
@@ -209,21 +198,24 @@ def get_map(
         dates = pd.DataFrame(np.unique(dates)).set_index(0).sort_index()
         gldas_last_date = gldas_date()
         if not gldas_last_date:
-            raise Exception("There is not ")
+            raise Exception("There is not.")
 
         if start_date:
             # The user has selected a range
             dates = dates[start_date:stop_date]
             dates = dates[:gldas_last_date]
-
+            if len(dates) == 0:
+                raise Exception(
+                    f"No images available for the selected range.")
+            
             first = dates.index.to_list()[0]
             last = dates.tail(1).index.to_list()[0]
 
             alert.append_msg(
                 f"Processing all images available between {start_date} and {stop_date}..."
             )
-            print(f"There are {len(dates)} unique images.")
-            print(f"The first available date is {first} and the last is {last}.\n")
+            alert.append_msg(f"There are {len(dates)} unique images.")
+            alert.append_msg(f"The first available date is {first} and the last is {last}.\n")
         else:
             # The user has selected the entire series
             first = dates.index.to_list()[0]
@@ -231,23 +223,16 @@ def get_map(
 
             last = dates.tail(1).index.to_list()[0]
 
-            print(f"Processing all available images in the time series...")
-            print(f"There are {len(dates)} unique images.\n")
-            print(f"The first available date is {first} and the last is {last}.\n")
+            alert.append_msg(f"Processing all available images in the time series...")
+            alert.update_progress(0, total=len(dates))
+            alert.append_msg(f"There are {len(dates)} unique images.\n")
+            alert.append_msg(f"The first available date is {first} and the last is {last}.\n")
         tasks = []
         i = 0
-        with output:
-            output.clear_output()
-            p_bar = tqdm(
-                total=len(dates),
-                desc="Starting...",
-                ncols=700,
-                bar_format="{l_bar}{bar}{r_bar}",
-            )
-        for dateI, rows in dates.iterrows():
-            start = time.perf_counter()
-            GEE_interface2 = deepcopy(GEE_interface)
 
+        for dateI, _ in dates.iterrows():
+
+            GEE_interface2 = deepcopy(GEE_interface)
             GEE_interface2.get_S1(
                 dateI.year,
                 dateI.month,
@@ -270,7 +255,7 @@ def get_map(
                     filename,
                 )
 
-                p_bar.desc = f"Processing: {outname}..."
+                alert.append_msg(f"Processing: {outname}...")
 
                 # get Globcover
                 GEE_interface2.get_globcover()
@@ -292,8 +277,10 @@ def get_map(
                 del GEE_interface2
 
                 # Finish time count
-                finish = time.perf_counter()
-            p_bar.update(1)
-        p_bar.close()
+
+            counter += 1
+            alert.update_progress(counter, total=len(dates))
+            
         GEE_interface = None
+
         return tasks

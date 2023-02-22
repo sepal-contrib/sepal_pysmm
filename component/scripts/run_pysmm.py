@@ -10,7 +10,7 @@ import logging
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 
-def run_pysmm(aoi_model, date_model, model, alert, output):
+def run_pysmm(aoi_model, date_model, model, alert, counter):
     """Process the input variables to start the "derive_sm" module.
 
     Args:
@@ -83,7 +83,6 @@ def run_pysmm(aoi_model, date_model, model, alert, output):
     args = (minlon, minlat, maxlon, maxlat, str(outpath))
     kwargs = {
         "alert": alert,
-        "output": output,
         "sampling": 100,
         "tracknr": None,
         "tempfilter": True,
@@ -96,7 +95,8 @@ def run_pysmm(aoi_model, date_model, model, alert, output):
         "day": None,
         "start_date": False,
         "stop_date": False,
-        "ascending": model.ascending
+        "ascending": model.ascending,
+        "counter": counter,
     }
 
     # To process single date or non row dates.
@@ -120,12 +120,13 @@ def run_pysmm(aoi_model, date_model, model, alert, output):
             tasks = get_map(*args, **kwargs)
     if tasks:
 
-        alert.add_msg(
+        alert.append_msg(
             (
                 "Done: The images are being processed into your GEE account."
                 "Now you can close your SEPAL session and use the download tool "
                 "when the process is done."
             ),
+            section=True,
             type_="success",
         )
     del tasks

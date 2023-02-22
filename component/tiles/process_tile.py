@@ -1,5 +1,3 @@
-from traitlets import observe, link
-from ipywidgets import Output
 import ipyvuetify as v
 
 import sepal_ui.sepalwidgets as sw
@@ -14,7 +12,7 @@ from component.scripts.resize import rt
 __all__ = ["ProcessTile"]
 
 
-class ProcessTile(v.Stepper, sw.SepalWidget):
+class ProcessTile(sw.Stepper):
     def __init__(self, model, *args, **kwargs):
 
         self._metadata = {"mount_id": "process"}
@@ -39,7 +37,8 @@ class ProcessTile(v.Stepper, sw.SepalWidget):
         process_view = ProcessView(
             self.model,
             self.aoi_tile.view.model, 
-            self.date_view
+            self.date_view,
+            attributes = {"id": "process_view"},
         )
 
         content = ["", self.aoi_tile, self.date_view, process_view]
@@ -75,6 +74,10 @@ class ProcessTile(v.Stepper, sw.SepalWidget):
 
 
 class ProcessView(v.Layout):
+
+    counter = 0
+    "int: counter to keep track of the number of images already processed by run_pysmm function."
+
     def __init__(self, model, aoi_model, date_model, *args, **kwargs):
         self.class_ = "pa-2 d-block"
 
@@ -83,6 +86,7 @@ class ProcessView(v.Layout):
         self.model = model
         self.aoi_model = aoi_model
         self.date_model = date_model
+        self.counter = 0
         self.w_ascending = v.RadioGroup(
             label='Select an orbit:',
             row=True,
@@ -93,20 +97,22 @@ class ProcessView(v.Layout):
             ],
         )
         
-        self.output = Output()
         self.btn = sw.Btn("Start process", class_="mb-2")
-        self.alert = sw.Alert()
+        self.alert = cw.Alert()
         
         self.model.bind(self.w_ascending, "ascending")
 
-        self.children = [self.w_ascending, self.btn, self.alert, self.output]
+        self.children = [self.w_ascending, self.btn, self.alert]
 
         self.btn.on_event("click", self.run_process)
 
     @su.loading_button(debug=True)
     def run_process(self, widget, event, data):
+        
+        # Restart counter everytime the process is run
+        self.counter = 0
         run_pysmm.run_pysmm(
-            self.aoi_model, self.date_model, self.model, self.alert, self.output
+            self.aoi_model, self.date_model, self.model, self.alert, self.counter
         )
 
 
