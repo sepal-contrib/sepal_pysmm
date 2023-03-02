@@ -412,7 +412,20 @@ class GEE_extent(object):
         #### SHOULD BE IF STATEMENT HERE
 
         # create a list of availalbel dates
-        tmp = gee_s1_filtered.getInfo()
+        try:
+            tmp = gee_s1_filtered.getInfo()
+            
+        except Exception as e:
+            # If EEException: Collection query aborted after accumulating over 5000 elements.
+            # raise an error and suggest to use a smaller area of interest
+            if "5000" in str(e):
+                raise Exception(
+                    "There are too many S1 images with the selected filters, please consider "
+                    "reducing the area of interest."
+                )
+            else:
+                raise e
+
         tmp_ids = [x["properties"]["system:index"] for x in tmp["features"]]
 
         dates = np.array(
@@ -909,7 +922,20 @@ class GEE_extent(object):
             )
 
         # create a list of availalbel dates
-        tmp = gee_s1_filtered.getInfo()
+        try:
+            tmp = gee_s1_filtered.getInfo()
+            
+        except Exception as e:
+            # If EEException: Collection query aborted after accumulating over 5000 elements.
+            # raise an error and suggest to use a smaller area of interest
+            if "5000" in str(e):
+                raise Exception(
+                    "There are too many S1 images with the selected filters, please consider "
+                    "reducing the area of interest."
+                )
+            else:
+                raise e
+            
         tmp_ids = [x["properties"]["system:index"] for x in tmp["features"]]
         dates = np.array(
             [
