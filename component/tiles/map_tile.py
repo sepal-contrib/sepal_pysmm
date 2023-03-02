@@ -7,7 +7,7 @@ import sepal_ui.scripts.utils as su
 import sepal_ui.sepalwidgets as sw
 
 from component.message import cm
-
+from component.parameter.directory import BASE_DIR
 
 class MapTile(v.Card):
     def __init__(self, *args, **kwargs):
@@ -15,7 +15,7 @@ class MapTile(v.Card):
 
         super().__init__(*args, **kwargs)
 
-        self.file_chooser = sw.FileInput(extentions=[".tif"])
+        self.file_chooser = sw.FileInput(extentions=[".tif"], folder=Path(BASE_DIR))
 
         self.map_ = sm.SepalMap(basemaps=["SATELLITE"], vinspector=True)
 
