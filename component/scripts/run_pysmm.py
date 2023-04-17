@@ -55,7 +55,6 @@ def run_pysmm(aoi_model, date_model, model, alert, counter):
 
     # Create a subfolder when is a filter selection
     if aoi_model.method in ["SHAPE", "ASSET"]:
-        
         if aoi_model.asset_json["pathname"] or aoi_model.vector_json["pathname"]:
             # Create a folder to download pysmm images
 
@@ -82,7 +81,6 @@ def run_pysmm(aoi_model, date_model, model, alert, counter):
     args = (minlon, minlat, maxlon, maxlat, str(outpath))
     kwargs = {
         "alert": alert,
-        "sampling": 100,
         "tracknr": None,
         "tempfilter": True,
         "mask": "Globcover",
