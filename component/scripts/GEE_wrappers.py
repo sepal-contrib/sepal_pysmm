@@ -22,11 +22,9 @@ class GEE_extent(object):
         minlat: minumum latitude in decimal degress
         maxlon: maximum longitude in decimal degrees
         maxlat: maximum latitude in decimal degrees
-        workdir: path to directory for exported files
-        sampling: sampling of exported grids
     """
 
-    def __init__(self, minlon, minlat, maxlon, maxlat, workdir, sampling=20):
+    def __init__(self, minlon, minlat, maxlon, maxlat):
         """Return a new GEE extent object."""
         ee.Reset()
         ee.Initialize()
@@ -43,8 +41,6 @@ class GEE_extent(object):
         )
 
         self.roi = roi
-        self.sampling = sampling
-        self.workdir = workdir
 
         # Placeholders
         self.S1_SIG0_VV_db = None
@@ -414,7 +410,7 @@ class GEE_extent(object):
         # create a list of availalbel dates
         try:
             tmp = gee_s1_filtered.getInfo()
-            
+
         except Exception as e:
             # If EEException: Collection query aborted after accumulating over 5000 elements.
             # raise an error and suggest to use a smaller area of interest
@@ -924,7 +920,7 @@ class GEE_extent(object):
         # create a list of availalbel dates
         try:
             tmp = gee_s1_filtered.getInfo()
-            
+
         except Exception as e:
             # If EEException: Collection query aborted after accumulating over 5000 elements.
             # raise an error and suggest to use a smaller area of interest
@@ -935,7 +931,7 @@ class GEE_extent(object):
                 )
             else:
                 raise e
-            
+
         tmp_ids = [x["properties"]["system:index"] for x in tmp["features"]]
         dates = np.array(
             [

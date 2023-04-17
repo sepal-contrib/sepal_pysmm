@@ -46,7 +46,7 @@ def export_sm(image, file_name):
         image=image.__getattribute__("ESTIMATED_SM"),
         description=description,
         fileNamePrefix=file_name,
-        scale=image.sampling,
+        scale=100,
         region=image.roi.getInfo()["coordinates"],
         maxPixels=1e13,
     )
@@ -278,3 +278,53 @@ def get_map(
         GEE_interface = None
 
         return tasks
+
+
+def calculate_sm(minlon, minlat, maxlon, maxlat, outpath):
+    GEE_interface = GEE_extent(
+        minlon, minlat, maxlon, maxlat, outpath, sampling=sampling
+    )
+
+    # retrieve S1
+    GEE_interface.get_S1(
+        year,
+        month,
+        day,
+        tempfilter=tempfilter,
+        applylcmask=maskcorine,
+        mask_globcover=maskglobcover,
+        trackflt=tracknr,
+        masksnow=masksnow,
+        ascending=ascending,
+    )
+
+    # retrieve GLDAS
+    GEE_interface.get_gldas()
+    if GEE_interface.GLDAS_IMG is None:
+        return
+
+    # get Globcover
+    GEE_interface.get_globcover()
+
+    # get the SRTM
+    GEE_interface.get_terrain()
+
+    outname = create_out_name(
+        GEE_interface.S1_DATE.year,
+        GEE_interface.S1_DATE.month,
+        GEE_interface.S1_DATE.day,
+        filename,
+    )
+
+    # Estimate soil moisture
+    GEE_interface.estimate_SM()
+
+    time.perf_counter()
+    alert.append_msg(f"Image {outname}.tif processed")
+
+    task, f_name = export_sm(GEE_interface, outname)
+    tasks.append(f"{task.id}, {f_name}\n")
+
+    # Write the text file
+    with open(tasks_file_name, "a") as tasks_file:
+        tasks_file.write(f"{task.id}, {f_name}\n")
