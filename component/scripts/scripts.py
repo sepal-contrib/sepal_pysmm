@@ -77,7 +77,7 @@ def re_range(lst):
         result.append(",".join(map(str, lst[scan:])))
 
     return ",".join(result)
-    pd.DataFrame._repr_javascript_ = _repr_datatable_ # noqa
+    pd.DataFrame._repr_javascript_ = _repr_datatable_  # noqa
 
 
 def filter_images_by_date(tifs, months=None, years=None, ini_date=None, end_date=None):
@@ -119,3 +119,70 @@ def images_summary(tifs):
     df.index = df.index.strftime("%Y-%m-%d")
 
     return df
+
+
+import ee
+
+# Initialize the Earth Engine API
+ee.Initialize()
+
+
+def get_geogrid_bounds(geometry, cell_size_deg):
+    """Creates a list of bounds for each of the tiles based on the cell_size"""
+
+    def add_bounds_properties(feature):
+        """adds a bounds property to each feature."""
+        bounds = feature.geometry().bounds()
+        coords = ee.List(bounds.coordinates().get(0))
+        ll = ee.List(coords.get(0))
+        ur = ee.List(coords.get(2))
+
+        return feature.set({"bounds": [ll.get(0), ll.get(1), ur.get(0), ur.get(1)]})
+
+    def make_row(y):
+        """creates the fishnet grid"""
+        y = ee.Number(y).multiply(cell_size_deg).add(ll.get(1))
+
+        def make_rect(x):
+            x = ee.Number(x).multiply(cell_size_deg).add(ll.get(0))
+            coords = ee.List([x, y, x.add(cell_size_deg), y.add(cell_size_deg)])
+            return ee.Feature(ee.Geometry.Rectangle(coords))
+
+        return x_list.map(make_rect)
+
+    # Get the bounding box of the geometry
+    bounds = geometry.bounds()
+    coords = ee.List(bounds.coordinates().get(0))
+    ll = ee.List(coords.get(0))
+    ur = ee.List(coords.get(2))
+
+    # Calculate the number of grid cells in x and y directions
+    x_cells = ee.Number(ur.get(0)).subtract(ll.get(0)).divide(cell_size_deg).ceil()
+    y_cells = ee.Number(ur.get(1)).subtract(ll.get(1)).divide(cell_size_deg).ceil()
+
+    # Check if the AOI is smaller than the grid size
+    if x_cells.getInfo() == 0 or y_cells.getInfo() == 0:
+        geom_with_bounds = geometry.map(add_bounds_properties)
+        return geom_with_bounds.aggregate_array("bounds").getInfo()
+
+    # Create lists with start and end coordinates in x and y directions
+    x_list = ee.List.sequence(0, x_cells, 1)
+    y_list = ee.List.sequence(0, y_cells, 1)
+
+    # Get the grid
+    grid = ee.FeatureCollection(y_list.map(make_row).flatten())
+
+    # Filter out geometries that are not overlapping the area of interest
+    intersected_grid = grid.map(lambda f: ee.Feature(f.intersection(geometry)))
+
+    # Add an 'area' property to each feature so we can filter out the ones that doesn't have any
+    intersected_grid = intersected_grid.map(
+        lambda f: f.set("area", f.geometry().area())
+    )
+    intersected_grid = intersected_grid.filter(ee.Filter.gt("area", 0))
+
+    # Add minlon, minlat, maxlon, and maxlat properties to each feature
+    intersected_grid_with_bounds = intersected_grid.map(add_bounds_properties)
+    chip_bounds = intersected_grid_with_bounds.aggregate_array("bounds").getInfo()
+
+    return chip_bounds

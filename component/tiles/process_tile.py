@@ -2,6 +2,7 @@ import ipyvuetify as v
 import sepal_ui.scripts.utils as su
 import sepal_ui.sepalwidgets as sw
 from sepal_ui.aoi import AoiTile
+from traitlets import Int
 
 import component.widget as cw
 from component.message import cm
@@ -14,6 +15,7 @@ __all__ = ["ProcessTile"]
 class ProcessTile(sw.Stepper):
     def __init__(self, model, *args, **kwargs):
         self._metadata = {"mount_id": "process"}
+        self.attributes = {"id": "process_tile"}
 
         super().__init__(*args, **kwargs)
 
@@ -72,9 +74,6 @@ class ProcessTile(sw.Stepper):
 
 
 class ProcessView(v.Layout):
-    counter = 0
-    "int: counter to keep track of the number of images already processed by run_pysmm function."
-
     def __init__(self, model, aoi_model, date_model, *args, **kwargs):
         self.class_ = "pa-2 d-block"
 
@@ -94,22 +93,128 @@ class ProcessView(v.Layout):
             ],
         )
 
-        self.btn = sw.Btn("Start process", class_="mb-2")
+        # Define HTML spans. These will be added to the alert view after
+        # some initial messages are displayed
+        self.images_span = CountSpan("Images")
+        self.chips_span = CountSpan("chips")
+
+        question_icon = v.Icon(children=["mdi-help-circle"], small=True)
+
+        self.btn = sw.Btn("Start process", class_="my-2")
         self.alert = cw.Alert()
 
         self.model.bind(self.w_ascending, "ascending")
 
-        self.children = [self.w_ascending, self.btn, self.alert]
+        # Define a sw.Slider to control the grid size
+        self.w_grid_size = sw.Slider(
+            label="Grid size",
+            v_model=0.5,
+            min=0.1,
+            max=2,
+            step=0.1,
+            class_="mb-2",
+            thumb_label="always",
+        )
+
+        # Add grid_size and w_ascending to an expansion panel as advanced options
+        advanced_options = v.ExpansionPanels(
+            class_="mb-2",
+            v_model=False,
+            children=[
+                v.ExpansionPanel(
+                    children=[
+                        v.ExpansionPanelHeader(children=["Advanced options"]),
+                        v.ExpansionPanelContent(
+                            children=[
+                                v.Flex(
+                                    class_="d-flex align-center",
+                                    children=[
+                                        self.w_grid_size,
+                                        sw.Tooltip(
+                                            question_icon,
+                                            cm.help.grid_size,
+                                            left=True,
+                                            max_width=300,
+                                        ),
+                                    ],
+                                ),
+                                v.Flex(
+                                    class_="d-flex",
+                                    children=[
+                                        self.w_ascending,
+                                        sw.Tooltip(
+                                            question_icon,
+                                            cm.help.orbit,
+                                            right=True,
+                                            max_width=300,
+                                        ),
+                                    ],
+                                ),
+                            ]
+                        ),
+                    ]
+                )
+            ],
+        )
+
+        self.children = [
+            advanced_options,
+            self.btn,
+            self.alert,
+        ]
 
         self.btn.on_event("click", self.run_process)
 
     @su.loading_button(debug=True)
     def run_process(self, widget, event, data):
         # Restart counter everytime the process is run
-        self.counter = 0
+
+        self.images_span.reset()
+        self.chips_span.reset()
+
         run_pysmm.run_pysmm(
-            self.aoi_model, self.date_model, self.model, self.alert, self.counter
+            self.aoi_model,
+            self.date_model,
+            self.model,
+            self.alert,
+            self.images_span,
+            self.chips_span,
+            self.w_grid_size.v_model,
         )
+
+
+class CountSpan(sw.Html):
+    """HTML span component to control the number of images or chips that have been processed"""
+
+    value = Int(0).tag(sync=True)
+    total = Int(0).tag(sync=True)
+
+    def __init__(self, name, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.tag = "span"
+        self.name = name + ": "
+        self.children = self.get_value()
+
+    def get_value(self):
+        """Get the value of the span"""
+        return [self.name, f"{self.value}/{self.total}"]
+
+    def update(self):
+        """Update the value of the span"""
+        self.value += 1
+        self.children = self.get_value()
+
+    def set_total(self, total):
+        """Set the total value of the span"""
+        self.total = total
+        self.children = self.get_value()
+
+    def reset(self):
+        """Reset the value of the span"""
+        self.value = -1
+        self.total = 0
+        self.update()
 
 
 class StepperContent(v.StepperContent):
