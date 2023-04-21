@@ -1,8 +1,4 @@
 import logging
-import os
-import time
-
-import ee
 import ipyvuetify as v
 import sepal_ui.scripts.utils as su
 import sepal_ui.sepalwidgets as sw
@@ -10,14 +6,10 @@ import sepal_ui.sepalwidgets as sw
 import component.parameter as param
 import component.widget as cw
 from component.message import cm
-from component.scripts.utils import GDrive
-
-FAILED = "FAILED"
-CANCEL_REQUESTED = "CANCEL_REQUESTED"
-CANCELLED = "CANCELLED"
-COMPLETED = "COMPLETED"
-UNKNOWN = "UNKNOWN"
-
+import component.scripts.google_handler as goog
+from component.scripts.taks_controller import TaskController
+from component.widget.count_span import CountSpan
+from component.widget.count_span import DownloadAlert
 
 
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
@@ -55,8 +47,20 @@ class DownloadView(v.Card):
 
         super().__init__(*args, **kwargs)
 
-        self.alert = cw.Alert()
-        self.result_alert = cw.Alert()
+        # Define HTML spans. These will be added to the alert view after
+        # some initial messages are displayed
+
+        self.status_span = sw.Html(children=[])
+        self.success_span = CountSpan("success", color="success")
+        self.error_span = CountSpan("error", color="error", with_total=False)
+        self.running_span = CountSpan("running", color="warning", with_total=False)
+
+        self.alert = DownloadAlert(
+            self.status_span,
+            self.success_span,
+            self.error_span,
+            self.running_span,
+        )
 
         self.w_overwrite = v.Switch(
             v_model=True, label="Overwrite SEPAL images", small=True, class_="mr-4"
@@ -68,7 +72,10 @@ class DownloadView(v.Card):
 
         self.w_selection = sw.FileInput(folder=str(param.RAW_DIR), extentions=[".txt"])
 
-        self.btn = sw.Btn(text="Download", icon="mdi-download")
+        self.btn = sw.Btn(text="Download", icon="mdi-download", small=True)
+        self.stop_btn = sw.Btn(
+            text="Cancel", icon="mdi-cancel", small=True, class_="ml-2"
+        )
 
         self.children = [
             self.w_selection,
@@ -79,9 +86,24 @@ class DownloadView(v.Card):
                     self.w_remove,
                 ],
             ),
-            self.btn,
+            sw.Flex(
+                class_="d-flex",
+                children=[
+                    self.btn,
+                    self.stop_btn,
+                ],
+            ),
             self.alert,
-            self.result_alert,
+            sw.Layout(
+                class_="d-block",
+                # create a space between elements
+                justify_content="space-between",
+                children=[
+                    self.success_span,
+                    self.error_span,
+                    self.running_span,
+                ],
+            ),
         ]
 
         self.btn.on_event("click", self.download_to_sepal)
@@ -91,99 +113,30 @@ class DownloadView(v.Card):
         """
         Download images from Google Drive to SEPAL.
 
-        It will loop over the task file and download the images 
+        It will loop over the task file and download the images
         if they have a status of COMPLETED.
-        
+
         """
         task_file = self.w_selection.v_model
-        alerts = [self.alert, self.result_alert]
         overwrite = self.w_overwrite.v_model
-        rmdrive = self.w_remove.v_model
-        self.counter = 0
+        remove_from_drive = self.w_remove.v_model
 
-        state_alert = alerts[0]
-        result_alert = alerts[1]
+        if not task_file:
+            raise ValueError("Please select a task file")
 
-        state_alert.reset()
-        result_alert.reset()
+        downloader = goog.ImageDownloader(
+            task_file,
+            overwrite,
+            remove_from_drive,
+            self.alert,
+            self.status_span,
+            self.success_span,
+            self.error_span,
+            self.running_span,
+        )
 
-        out_path = os.path.split(task_file)[0]
+        task_controller = TaskController(
+            self.btn, self.stop_btn, downloader.download_to_sepal
+        )
 
-        ee.Initialize()
-
-        to_remove_states = {CANCEL_REQUESTED, CANCELLED, FAILED, COMPLETED, UNKNOWN}
-
-        tasks = []
-        with open(task_file, "r") as tf:
-            for line in tf:
-                tasks.append([x.strip() for x in line.split(",")])
-
-        drive_handler = GDrive()
-
-        def remove_from_list(task_to_remove):
-            with open(task_file, "r") as f:
-                lines = f.readlines()
-
-            # Overwrite the file without the task to remove
-            with open(task_file, "w") as f:
-                for line in lines:
-                    if task_to_remove not in line:
-                        f.write(line)
-
-        def check_for_not_completed(task):
-            state = ee.data.getTaskStatus(task[0])[0]["state"]
-            file_name = task[1]
-
-            if state in to_remove_states:
-                if state == COMPLETED:
-                    output_file = os.path.join(out_path, f"{file_name}.tif")
-
-                    self.counter += 1
-                    # result_alert.update_progress(self.counter, total=len(tasks))
-
-                    if not overwrite:
-                        if not os.path.exists(output_file):
-                            result_alert.append_msg(f"Downloading: {file_name}")
-                            drive_handler.download_file(
-                                f"{file_name}.tif", output_file, items_to_search
-                            )
-                        else:
-                            result_alert.append_msg(f"Skipping: {file_name}")
-                    else:
-                        result_alert.append_msg(f"Overwriting: {file_name}")
-                        drive_handler.download_file(
-                            f"{file_name}.tif", output_file, items_to_search
-                        )
-                    if rmdrive:
-                        result_alert.append_msg(f"Removing from drive: {file_name}")
-                        remove_from_list(task[0])
-                        drive_handler.delete_file(items_to_search, f"{file_name}.tif")
-                elif state in [UNKNOWN, FAILED]:
-                    result_alert.add_msg(
-                        "There was an error task, state", type_="error"
-                    )
-                return False
-
-            return True
-
-        def download(tasks):
-            while tasks:
-                state_alert.add_msg("Retrieving tasks status...", type_="info")
-                global items_to_search
-                items_to_search = drive_handler.get_items()
-                tasks = list(filter(check_for_not_completed, tasks))
-                if tasks:
-                    state_alert.add_msg("Waiting...", type_="info")
-                    time.sleep(45)
-
-        if tasks:
-            download(tasks)
-            state_alert.reset()
-            result_alert.append_msg(
-                "All the images were downloaded succesfully", type_="success"
-            )
-        else:
-            state_alert.reset()
-            result_alert.append_msg(
-                "All the images were already downloaded.", type_="warning"
-            )
+        task_controller.start_task()

@@ -8,6 +8,7 @@ import component.widget as cw
 from component.message import cm
 from component.scripts import run_pysmm
 from component.scripts.resize import rt
+from component.widget.count_span import CountSpan
 
 __all__ = ["ProcessTile"]
 
@@ -181,40 +182,6 @@ class ProcessView(v.Layout):
             self.chips_span,
             self.w_grid_size.v_model,
         )
-
-
-class CountSpan(sw.Html):
-    """HTML span component to control the number of images or chips that have been processed"""
-
-    value = Int(0).tag(sync=True)
-    total = Int(0).tag(sync=True)
-
-    def __init__(self, name, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.tag = "span"
-        self.name = name + ": "
-        self.children = self.get_value()
-
-    def get_value(self):
-        """Get the value of the span"""
-        return [self.name, f"{self.value}/{self.total}"]
-
-    def update(self):
-        """Update the value of the span"""
-        self.value += 1
-        self.children = self.get_value()
-
-    def set_total(self, total):
-        """Set the total value of the span"""
-        self.total = total
-        self.children = self.get_value()
-
-    def reset(self):
-        """Reset the value of the span"""
-        self.value = -1
-        self.total = 0
-        self.update()
 
 
 class StepperContent(v.StepperContent):
