@@ -3,13 +3,12 @@ import logging
 from pathlib import Path
 
 import component.parameter as param
-import component.scripts.scripts as cs
 from component.scripts.derive_SM import get_map
 
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 
-def run_pysmm(aoi_model, date_model, model, alert, counter):
+def run_pysmm(aoi_model, date_model, model, alert, images_span, chips_span, grid_size):
     """
     Process the input variables to start the "derive_sm" module.
 
@@ -50,12 +49,8 @@ def run_pysmm(aoi_model, date_model, model, alert, counter):
         year, month, day = False, False, False
         start_date = False
 
-    # Read EE coordinates
-    minlon, minlat, maxlon, maxlat = cs.get_bounds(aoi_model.feature_collection)
-
     # Create a subfolder when is a filter selection
     if aoi_model.method in ["SHAPE", "ASSET"]:
-        
         if aoi_model.asset_json["pathname"] or aoi_model.vector_json["pathname"]:
             # Create a folder to download pysmm images
 
@@ -71,31 +66,32 @@ def run_pysmm(aoi_model, date_model, model, alert, counter):
 
             outpath = Path(param.RAW_DIR, name, column, value)
 
-            file_sufix = f"{user}_{name}_{column}_{value}"
+            file_suffix = f"{user}_{name}_{column}_{value}"
     else:
         # For all the other types of selections
         outpath = Path(param.RAW_DIR, aoi_model.name)
-        file_sufix = f"{aoi_model.name}"
+        file_suffix = f"{aoi_model.name}"
 
     outpath.mkdir(exist_ok=True, parents=True)
 
-    args = (minlon, minlat, maxlon, maxlat, str(outpath))
     kwargs = {
+        "aoi": aoi_model.feature_collection,
+        "outpath": str(outpath),
         "alert": alert,
-        "sampling": 100,
-        "tracknr": None,
         "tempfilter": True,
         "mask": "Globcover",
         "masksnow": False,
         "overwrite": True,
-        "filename": file_sufix,
+        "file_suffix": file_suffix,
         "year": None,
         "month": None,
         "day": None,
         "start_date": False,
         "stop_date": False,
         "ascending": model.ascending,
-        "counter": counter,
+        "images_span": images_span,
+        "chips_span": chips_span,
+        "grid_size": grid_size,
     }
 
     # To process single date or non row dates.
@@ -104,17 +100,17 @@ def run_pysmm(aoi_model, date_model, model, alert, counter):
         kwargs["year"] = year
         kwargs["month"] = month
         kwargs["day"] = day
-        tasks = get_map(*args, **kwargs)
+        tasks = get_map(**kwargs)
     # To get the the series map in row
     else:
         # To get the series map in a specified range
         if start_date:
             kwargs["start_date"] = start_date
             kwargs["stop_date"] = stop_date
-            tasks = get_map(*args, **kwargs)
+            tasks = get_map(**kwargs)
         # To retreive the entire series
         else:
-            tasks = get_map(*args, **kwargs)
+            tasks = get_map(**kwargs)
     if tasks:
         alert.append_msg(
             (
