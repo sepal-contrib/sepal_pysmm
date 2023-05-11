@@ -1,0 +1,1083 @@
+test.py:
+	{'KYE_TO_REPLACE': 'Forked sepal_ui.sepalwidgets.DrawerItem version to fix https://github.com/sepal-contrib/sepal_pysmm/issues/26.'}
+	{'KYE_TO_REPLACE': 'sw.ResizeTrigger: the trigger to resize maps and other javascript object when jumping from a tile to another'}
+	{'KYE_TO_REPLACE': 'Bool: trait to control visibility of an alert in the drawer item'}
+	{'KYE_TO_REPLACE': 'v.ListItemAction: red circle to display in the drawer'}
+	{'KYE_TO_REPLACE': 'fa-regular fa-folder'}
+	{'KYE_TO_REPLACE': 'white--text'}
+	{'KYE_TO_REPLACE': 'white--text'}
+	{'KYE_TO_REPLACE': 'link'}
+	{'KYE_TO_REPLACE': 'children'}
+	{'KYE_TO_REPLACE': 'input_value'}
+	{'KYE_TO_REPLACE': 'input_value'}
+	{'KYE_TO_REPLACE': 'href'}
+	{'KYE_TO_REPLACE': 'target'}
+	{'KYE_TO_REPLACE': '_blank'}
+	{'KYE_TO_REPLACE': '_metadata'}
+	{'KYE_TO_REPLACE': '_metadata'}
+	{'KYE_TO_REPLACE': '_metadata'}
+	{'KYE_TO_REPLACE': 'card_id'}
+	{'KYE_TO_REPLACE': 'href'}
+	{'KYE_TO_REPLACE': 'href'}
+	{'KYE_TO_REPLACE': 'target'}
+	{'KYE_TO_REPLACE': 'target'}
+	{'KYE_TO_REPLACE': 'fa-solid fa-circle'}
+	{'KYE_TO_REPLACE': 'red'}
+	{'KYE_TO_REPLACE': 'You have selected a model, you need a trait to bind with drawer.'}
+	{'KYE_TO_REPLACE': 'alert'}
+	{'KYE_TO_REPLACE': 'Add a notification alert to drawer.'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'alert'}
+	{'KYE_TO_REPLACE': 'Remove notification alert.'}
+	{'KYE_TO_REPLACE': 'name_x'}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': 'card_id'}
+	{'KYE_TO_REPLACE': 'mount_id'}
+	{'KYE_TO_REPLACE': 'Forked sepal_ui.sepalwidgets.DrawerItem version to fix https://github.com/sepal-contrib/sepal_pysmm/issues/26.'}
+	{'KYE_TO_REPLACE': 'list: the list of all the drawerItem to display in the drawer'}
+	{'KYE_TO_REPLACE': 'fa-regular fa-file-code'}
+	{'KYE_TO_REPLACE': 'fa-solid fa-book-open'}
+	{'KYE_TO_REPLACE': 'fa-solid fa-bug'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'app'}
+	{'KYE_TO_REPLACE': 'color'}
+	{'KYE_TO_REPLACE': 'color'}
+	{'KYE_TO_REPLACE': 'children'}
+	{'KYE_TO_REPLACE': 'input_value'}
+	{'KYE_TO_REPLACE': '\n        Bind the drawer to the app toggleButton.\n\n        Args:\n        ----\n            toggleButton(v.Btn) : the button that activate the drawer\n        '}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': '\n        Toggle the drawer visibility.\n        '}
+	{'KYE_TO_REPLACE': '\n        Deactivate all the other items when on of the is activated.\n        '}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'owner'}
+derive_SM.py:
+	{'KYE_TO_REPLACE': 'googleapiclient.discovery_cache'}
+	{'KYE_TO_REPLACE': '0'}
+	{'KYE_TO_REPLACE': '0'}
+	{'KYE_TO_REPLACE': 'SMCmap_'}
+	{'KYE_TO_REPLACE': '_'}
+	{'KYE_TO_REPLACE': '_'}
+	{'KYE_TO_REPLACE': '_'}
+	{'KYE_TO_REPLACE': 'NASA/GLDAS/V021/NOAH/G025/T3H'}
+	{'KYE_TO_REPLACE': 'SoilMoi0_10cm_inst'}
+	{'KYE_TO_REPLACE': 'system:index'}
+	{'KYE_TO_REPLACE': 'fileexp_'}
+	{'KYE_TO_REPLACE': 'ESTIMATED_SM'}
+	{'KYE_TO_REPLACE': 'coordinates'}
+	{'KYE_TO_REPLACE': 'Globcover'}
+	{'KYE_TO_REPLACE': "\n    Get S1 soil moisture map.\n\n    Atributes:\n    minlon, minlat, maxlon, maxlat: (float) extent of soil moisture map\n    outpath: (string) destination for soil moisture map export\n    sampling: (integer) map sampling\n    year, month, day (optional): specify date for extracted map - if not specified, the entire\n                                 time-series of maps will be extracted; if specified, the S1 acquisition\n                                 closest (in time) will be selected\n    tracknr (optional): (integer) Use data from a specific Sentinel-1 track only\n    tempfilter: (boolean) apply multi-temporal speckle filter\n    mask: (string) select 'Globcover' or 'Corine' (europe only) land-cover classifications for the\n           masking of the map\n    masksnow: (boolean) apply snow mask\n    filename: (string) add to file name\n\n    "}
+	{'KYE_TO_REPLACE': 'ascending'}
+	{'KYE_TO_REPLACE': 'ascending'}
+	{'KYE_TO_REPLACE': '%Y%m%d_%H%M%S'}
+	{'KYE_TO_REPLACE': 'task_'}
+	{'KYE_TO_REPLACE': '.txt'}
+	{'KYE_TO_REPLACE': 'Globcover'}
+	{'KYE_TO_REPLACE': 'Corine'}
+	{'KYE_TO_REPLACE': ' is not recognised as a valid land-cover classification'}
+	{'KYE_TO_REPLACE': 'Processing the closest image to '}
+	{'KYE_TO_REPLACE': '-'}
+	{'KYE_TO_REPLACE': '-'}
+	{'KYE_TO_REPLACE': '...'}
+	{'KYE_TO_REPLACE': 'Image '}
+	{'KYE_TO_REPLACE': '.tif processed'}
+	{'KYE_TO_REPLACE': ', '}
+	{'KYE_TO_REPLACE': '\n'}
+	{'KYE_TO_REPLACE': 'a'}
+	{'KYE_TO_REPLACE': ', '}
+	{'KYE_TO_REPLACE': '\n'}
+	{'KYE_TO_REPLACE': 'There is not image available for the requested date.                 Try with a date before to '}
+	{'KYE_TO_REPLACE': '.'}
+	{'KYE_TO_REPLACE': 'warning'}
+	{'KYE_TO_REPLACE': 'There is not.'}
+	{'KYE_TO_REPLACE': 'No images available for the selected range.'}
+	{'KYE_TO_REPLACE': 'Processing all images available between '}
+	{'KYE_TO_REPLACE': ' and '}
+	{'KYE_TO_REPLACE': '...'}
+	{'KYE_TO_REPLACE': 'There are '}
+	{'KYE_TO_REPLACE': ' unique images.'}
+	{'KYE_TO_REPLACE': 'The first available date is '}
+	{'KYE_TO_REPLACE': ' and the last is '}
+	{'KYE_TO_REPLACE': '.\n'}
+	{'KYE_TO_REPLACE': 'Processing all available images in the time series...'}
+	{'KYE_TO_REPLACE': 'There are '}
+	{'KYE_TO_REPLACE': ' unique images.\n'}
+	{'KYE_TO_REPLACE': 'The first available date is '}
+	{'KYE_TO_REPLACE': ' and the last is '}
+	{'KYE_TO_REPLACE': '.\n'}
+	{'KYE_TO_REPLACE': 'Processing: '}
+	{'KYE_TO_REPLACE': '...'}
+	{'KYE_TO_REPLACE': ', '}
+	{'KYE_TO_REPLACE': '\n'}
+	{'KYE_TO_REPLACE': 'a'}
+	{'KYE_TO_REPLACE': ', '}
+	{'KYE_TO_REPLACE': '\n'}
+resize.py:
+	{'KYE_TO_REPLACE': '\n            <script>\n                {methods: {\n                    jupyter_resize(){\n                        console.log("Resizing");\n                        window.dispatchEvent(new Event(\'resize\'));\n                    }\n                }}\n            </script>\n        '}
+	{'KYE_TO_REPLACE': 'template'}
+	{'KYE_TO_REPLACE': 'method'}
+	{'KYE_TO_REPLACE': 'resize'}
+filter_closing_smm.py:
+	{'KYE_TO_REPLACE': 'tmp_closing.tif'}
+	{'KYE_TO_REPLACE': 'otbcli_GrayScaleMorphologicalOperation'}
+	{'KYE_TO_REPLACE': '-in'}
+	{'KYE_TO_REPLACE': '-out'}
+	{'KYE_TO_REPLACE': '-structype'}
+	{'KYE_TO_REPLACE': 'ball'}
+	{'KYE_TO_REPLACE': '-xradius'}
+	{'KYE_TO_REPLACE': '1'}
+	{'KYE_TO_REPLACE': '-yradius'}
+	{'KYE_TO_REPLACE': '1'}
+	{'KYE_TO_REPLACE': '-filter'}
+	{'KYE_TO_REPLACE': 'closing'}
+	{'KYE_TO_REPLACE': 'close_'}
+	{'KYE_TO_REPLACE': 'gdal_calc.py'}
+	{'KYE_TO_REPLACE': '-A'}
+	{'KYE_TO_REPLACE': '-B'}
+	{'KYE_TO_REPLACE': '--NoDataValue=0'}
+	{'KYE_TO_REPLACE': '--co=COMPRESS=LZW'}
+	{'KYE_TO_REPLACE': '--type=UInt16'}
+	{'KYE_TO_REPLACE': '--overwrite'}
+	{'KYE_TO_REPLACE': '--outfile='}
+	{'KYE_TO_REPLACE': '--calc=B*(A==0)+A'}
+	{'KYE_TO_REPLACE': '0_raw'}
+	{'KYE_TO_REPLACE': '1_processed'}
+	{'KYE_TO_REPLACE': 'close_'}
+	{'KYE_TO_REPLACE': 'Processing: '}
+	{'KYE_TO_REPLACE': '...'}
+	{'KYE_TO_REPLACE': 'Skipping: Image "'}
+	{'KYE_TO_REPLACE': '" already exists'}
+utils.py:
+	{'KYE_TO_REPLACE': 'googleapiclient.discovery_cache'}
+	{'KYE_TO_REPLACE': '.config/earthengine/credentials'}
+	{'KYE_TO_REPLACE': 'access_token'}
+	{'KYE_TO_REPLACE': 'drive'}
+	{'KYE_TO_REPLACE': 'v3'}
+	{'KYE_TO_REPLACE': 'nextPageToken, files(id, name)'}
+	{'KYE_TO_REPLACE': 'files'}
+	{'KYE_TO_REPLACE': 'No files found.'}
+	{'KYE_TO_REPLACE': 'Files:'}
+	{'KYE_TO_REPLACE': '{0} ({1})'}
+	{'KYE_TO_REPLACE': 'name'}
+	{'KYE_TO_REPLACE': 'id'}
+	{'KYE_TO_REPLACE': "mimeType='image/tiff'"}
+	{'KYE_TO_REPLACE': 'nextPageToken, files(id, name)'}
+	{'KYE_TO_REPLACE': 'files'}
+	{'KYE_TO_REPLACE': 'name'}
+	{'KYE_TO_REPLACE': 'id'}
+	{'KYE_TO_REPLACE': ' not found'}
+	{'KYE_TO_REPLACE': ' not found'}
+	{'KYE_TO_REPLACE': 'wb'}
+	{'KYE_TO_REPLACE': ' not found'}
+scripts.py:
+	{'KYE_TO_REPLACE': 'get_bounds'}
+	{'KYE_TO_REPLACE': 're_range'}
+	{'KYE_TO_REPLACE': 'filter_images_by_date'}
+	{'KYE_TO_REPLACE': 'images_summary'}
+	{'KYE_TO_REPLACE': '\n    Return the min(lon,lat) and max(lon, lat) from the given asset.\n\n    Args:\n        ee_asset (ee.object): GEE asset (FeatureCollection, Geometry)\n        cardinal (boolean) (optional)\n\n\n    Returns\n    -------\n        If cardinal True: returns cardinal points tl, bl, tr, br\n        If cardinal False: returns bounding box\n    '}
+	{'KYE_TO_REPLACE': '{}-{}'}
+	{'KYE_TO_REPLACE': '_'}
+	{'KYE_TO_REPLACE': ','}
+	{'KYE_TO_REPLACE': ','}
+	{'KYE_TO_REPLACE': 'Return a list of images filtered by months and years.'}
+	{'KYE_TO_REPLACE': 'date'}
+	{'KYE_TO_REPLACE': 'image_name'}
+	{'KYE_TO_REPLACE': 'date'}
+	{'KYE_TO_REPLACE': 'date'}
+	{'KYE_TO_REPLACE': 'image_name'}
+	{'KYE_TO_REPLACE': 'date'}
+	{'KYE_TO_REPLACE': 'Image name'}
+	{'KYE_TO_REPLACE': 'date'}
+	{'KYE_TO_REPLACE': 'date'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+GEE_wrappers.py:
+	{'KYE_TO_REPLACE': 'googleapiclient.discovery_cache'}
+	{'KYE_TO_REPLACE': '\n    Class to create an interface with GEE for the extraction of arrays.\n\n    Attributes\n    ----------\n        minlon: minimum longitude in decimal degrees\n        minlat: minumum latitude in decimal degress\n        maxlon: maximum longitude in decimal degrees\n        maxlat: maximum latitude in decimal degrees\n        workdir: path to directory for exported files\n        sampling: sampling of exported grids\n    '}
+	{'KYE_TO_REPLACE': 'Return a new GEE extent object.'}
+	{'KYE_TO_REPLACE': 'Function for multi-temporal.'}
+	{'KYE_TO_REPLACE': 'month'}
+	{'KYE_TO_REPLACE': '_mean'}
+	{'KYE_TO_REPLACE': '_ratio'}
+	{'KYE_TO_REPLACE': 'before'}
+	{'KYE_TO_REPLACE': 'units'}
+	{'KYE_TO_REPLACE': 'after'}
+	{'KYE_TO_REPLACE': 'units'}
+	{'KYE_TO_REPLACE': 'relativeOrbitNumber_start'}
+	{'KYE_TO_REPLACE': 'relativeOrbitNumber_start'}
+	{'KYE_TO_REPLACE': 'system:time_start'}
+	{'KYE_TO_REPLACE': 'system:time_start'}
+	{'KYE_TO_REPLACE': '\n        Retrieve the S1 image for a given day from GEE and apply specific filters.\n        Assigns outputs to respective instance attributes.\n\n        '}
+	{'KYE_TO_REPLACE': 'USGS/SRTMGL1_003'}
+	{'KYE_TO_REPLACE': 'angle'}
+	{'KYE_TO_REPLACE': 'angle'}
+	{'KYE_TO_REPLACE': 'lia'}
+	{'KYE_TO_REPLACE': 'USGS/SRTMGL1_003'}
+	{'KYE_TO_REPLACE': 'lia'}
+	{'KYE_TO_REPLACE': 'users/felixgreifeneder/corine'}
+	{'KYE_TO_REPLACE': 'ESA/GLOBCOVER_L4_200901_200912_V2_3'}
+	{'KYE_TO_REPLACE': 'landcover'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'system:time_start'}
+	{'KYE_TO_REPLACE': 'system:time_start'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'system:time_start'}
+	{'KYE_TO_REPLACE': 'system:time_start'}
+	{'KYE_TO_REPLACE': 'system:time_start'}
+	{'KYE_TO_REPLACE': 'system:time_start'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'square'}
+	{'KYE_TO_REPLACE': 'meters'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'angle'}
+	{'KYE_TO_REPLACE': 'angle'}
+	{'KYE_TO_REPLACE': 'users/felixgreifeneder/'}
+	{'KYE_TO_REPLACE': 'COPERNICUS/S1_GRD'}
+	{'KYE_TO_REPLACE': 'instrumentMode'}
+	{'KYE_TO_REPLACE': 'IW'}
+	{'KYE_TO_REPLACE': 'platform_number'}
+	{'KYE_TO_REPLACE': 'A'}
+	{'KYE_TO_REPLACE': 'transmitterReceiverPolarisation'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'orbitProperties_pass'}
+	{'KYE_TO_REPLACE': 'ASCENDING'}
+	{'KYE_TO_REPLACE': 'orbitProperties_pass'}
+	{'KYE_TO_REPLACE': 'DESCENDING'}
+	{'KYE_TO_REPLACE': 'transmitterReceiverPolarisation'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'relativeOrbitNumber_start'}
+	{'KYE_TO_REPLACE': 'lia'}
+	{'KYE_TO_REPLACE': 'angle'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'properties'}
+	{'KYE_TO_REPLACE': 'system:index'}
+	{'KYE_TO_REPLACE': 'features'}
+	{'KYE_TO_REPLACE': 'There are no S1 images with the selected filters, please consider changing the area of interest or selecting a different orbit'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': 'properties'}
+	{'KYE_TO_REPLACE': 'relativeOrbitNumber_start'}
+	{'KYE_TO_REPLACE': 'relativeOrbitNumber_start'}
+	{'KYE_TO_REPLACE': 'equals'}
+	{'KYE_TO_REPLACE': 'pixels'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'before'}
+	{'KYE_TO_REPLACE': 'after'}
+	{'KYE_TO_REPLACE': 'units'}
+	{'KYE_TO_REPLACE': 'month'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'before'}
+	{'KYE_TO_REPLACE': 'after'}
+	{'KYE_TO_REPLACE': 'units'}
+	{'KYE_TO_REPLACE': 'month'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'ignore'}
+	{'KYE_TO_REPLACE': 'ignore'}
+	{'KYE_TO_REPLACE': 'model_dict.npy'}
+	{'KYE_TO_REPLACE': 'model1'}
+	{'KYE_TO_REPLACE': 'alpha_array'}
+	{'KYE_TO_REPLACE': 'model1'}
+	{'KYE_TO_REPLACE': 'alpha_array'}
+	{'KYE_TO_REPLACE': 'model1'}
+	{'KYE_TO_REPLACE': 'gamma'}
+	{'KYE_TO_REPLACE': 'model1'}
+	{'KYE_TO_REPLACE': 'intercept'}
+	{'KYE_TO_REPLACE': 'model1'}
+	{'KYE_TO_REPLACE': 'support_vectors'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'constant_2'}
+	{'KYE_TO_REPLACE': 'constant_3'}
+	{'KYE_TO_REPLACE': 'constant_4'}
+	{'KYE_TO_REPLACE': 'constant_5'}
+	{'KYE_TO_REPLACE': 'constant_6'}
+	{'KYE_TO_REPLACE': 'constant_7'}
+	{'KYE_TO_REPLACE': 'VVk1'}
+	{'KYE_TO_REPLACE': 'VHk1'}
+	{'KYE_TO_REPLACE': 'VVk2'}
+	{'KYE_TO_REPLACE': 'VHk2'}
+	{'KYE_TO_REPLACE': 'lc'}
+	{'KYE_TO_REPLACE': 'lia'}
+	{'KYE_TO_REPLACE': 'aspect'}
+	{'KYE_TO_REPLACE': 'gldas_mean'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'constant_2'}
+	{'KYE_TO_REPLACE': 'constant_3'}
+	{'KYE_TO_REPLACE': 'constant_4'}
+	{'KYE_TO_REPLACE': 'constant_5'}
+	{'KYE_TO_REPLACE': 'constant_6'}
+	{'KYE_TO_REPLACE': 'constant_7'}
+	{'KYE_TO_REPLACE': 'VVk1'}
+	{'KYE_TO_REPLACE': 'VHk1'}
+	{'KYE_TO_REPLACE': 'VVk2'}
+	{'KYE_TO_REPLACE': 'VHk2'}
+	{'KYE_TO_REPLACE': 'lc'}
+	{'KYE_TO_REPLACE': 'lia'}
+	{'KYE_TO_REPLACE': 'aspect'}
+	{'KYE_TO_REPLACE': 'gldas_mean'}
+	{'KYE_TO_REPLACE': 'lia'}
+	{'KYE_TO_REPLACE': 'aspect'}
+	{'KYE_TO_REPLACE': 'slope'}
+	{'KYE_TO_REPLACE': 'height'}
+	{'KYE_TO_REPLACE': 'model1'}
+	{'KYE_TO_REPLACE': 'scaler_scale'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'constant_2'}
+	{'KYE_TO_REPLACE': 'constant_3'}
+	{'KYE_TO_REPLACE': 'constant_4'}
+	{'KYE_TO_REPLACE': 'constant_5'}
+	{'KYE_TO_REPLACE': 'constant_6'}
+	{'KYE_TO_REPLACE': 'constant_7'}
+	{'KYE_TO_REPLACE': 'VVk1'}
+	{'KYE_TO_REPLACE': 'VHk1'}
+	{'KYE_TO_REPLACE': 'VVk2'}
+	{'KYE_TO_REPLACE': 'VHk2'}
+	{'KYE_TO_REPLACE': 'lc'}
+	{'KYE_TO_REPLACE': 'lia'}
+	{'KYE_TO_REPLACE': 'aspect'}
+	{'KYE_TO_REPLACE': 'gldas_mean'}
+	{'KYE_TO_REPLACE': 'model1'}
+	{'KYE_TO_REPLACE': 'scaler_center'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'constant_2'}
+	{'KYE_TO_REPLACE': 'constant_3'}
+	{'KYE_TO_REPLACE': 'constant_4'}
+	{'KYE_TO_REPLACE': 'constant_5'}
+	{'KYE_TO_REPLACE': 'constant_6'}
+	{'KYE_TO_REPLACE': 'constant_7'}
+	{'KYE_TO_REPLACE': 'VVk1'}
+	{'KYE_TO_REPLACE': 'VHk1'}
+	{'KYE_TO_REPLACE': 'VVk2'}
+	{'KYE_TO_REPLACE': 'VHk2'}
+	{'KYE_TO_REPLACE': 'lc'}
+	{'KYE_TO_REPLACE': 'lia'}
+	{'KYE_TO_REPLACE': 'aspect'}
+	{'KYE_TO_REPLACE': 'gldas_mean'}
+	{'KYE_TO_REPLACE': 'model2'}
+	{'KYE_TO_REPLACE': 'alpha_array'}
+	{'KYE_TO_REPLACE': 'model2'}
+	{'KYE_TO_REPLACE': 'alpha_array'}
+	{'KYE_TO_REPLACE': 'model2'}
+	{'KYE_TO_REPLACE': 'gamma'}
+	{'KYE_TO_REPLACE': 'model2'}
+	{'KYE_TO_REPLACE': 'intercept'}
+	{'KYE_TO_REPLACE': 'model2'}
+	{'KYE_TO_REPLACE': 'support_vectors'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'constant_2'}
+	{'KYE_TO_REPLACE': 'relVV'}
+	{'KYE_TO_REPLACE': 'relVH'}
+	{'KYE_TO_REPLACE': 'gldas'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'constant_2'}
+	{'KYE_TO_REPLACE': 'relVV'}
+	{'KYE_TO_REPLACE': 'relVH'}
+	{'KYE_TO_REPLACE': 'gldas'}
+	{'KYE_TO_REPLACE': 'relVV'}
+	{'KYE_TO_REPLACE': 'relVH'}
+	{'KYE_TO_REPLACE': 'gldas'}
+	{'KYE_TO_REPLACE': 'model2'}
+	{'KYE_TO_REPLACE': 'scaler_scale'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'constant_2'}
+	{'KYE_TO_REPLACE': 'relVV'}
+	{'KYE_TO_REPLACE': 'relVH'}
+	{'KYE_TO_REPLACE': 'gldas'}
+	{'KYE_TO_REPLACE': 'model2'}
+	{'KYE_TO_REPLACE': 'scaler_center'}
+	{'KYE_TO_REPLACE': 'constant'}
+	{'KYE_TO_REPLACE': 'constant_1'}
+	{'KYE_TO_REPLACE': 'constant_2'}
+	{'KYE_TO_REPLACE': 'relVV'}
+	{'KYE_TO_REPLACE': 'relVH'}
+	{'KYE_TO_REPLACE': 'gldas'}
+	{'KYE_TO_REPLACE': 'COPERNICUS/S1_GRD'}
+	{'KYE_TO_REPLACE': 'instrumentMode'}
+	{'KYE_TO_REPLACE': 'IW'}
+	{'KYE_TO_REPLACE': 'platform_number'}
+	{'KYE_TO_REPLACE': 'A'}
+	{'KYE_TO_REPLACE': 'transmitterReceiverPolarisation'}
+	{'KYE_TO_REPLACE': 'VV'}
+	{'KYE_TO_REPLACE': 'orbitProperties_pass'}
+	{'KYE_TO_REPLACE': 'ASCENDING'}
+	{'KYE_TO_REPLACE': 'orbitProperties_pass'}
+	{'KYE_TO_REPLACE': 'DESCENDING'}
+	{'KYE_TO_REPLACE': 'transmitterReceiverPolarisation'}
+	{'KYE_TO_REPLACE': 'VH'}
+	{'KYE_TO_REPLACE': 'relativeOrbitNumber_start'}
+	{'KYE_TO_REPLACE': 'properties'}
+	{'KYE_TO_REPLACE': 'system:index'}
+	{'KYE_TO_REPLACE': 'features'}
+	{'KYE_TO_REPLACE': 'There are no S1 images with the selected filters, please consider changing the area of interest or selecting a different orbit'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': 'NASA/GLDAS/V021/NOAH/G025/T3H'}
+	{'KYE_TO_REPLACE': 'SoilMoi0_10cm_inst'}
+	{'KYE_TO_REPLACE': '2014-10-01'}
+	{'KYE_TO_REPLACE': '2018-01-22'}
+	{'KYE_TO_REPLACE': 'NASA/GLDAS/V021/NOAH/G025/T3H'}
+	{'KYE_TO_REPLACE': 'SoilMoi0_10cm_inst'}
+	{'KYE_TO_REPLACE': 'hour'}
+	{'KYE_TO_REPLACE': 'NASA/GLDAS/V021/NOAH/G025/T3H'}
+	{'KYE_TO_REPLACE': 'SoilMoi0_10cm_inst'}
+	{'KYE_TO_REPLACE': 'system:index'}
+	{'KYE_TO_REPLACE': 'ESA/GLOBCOVER_L4_200901_200912_V2_3'}
+	{'KYE_TO_REPLACE': 'landcover'}
+	{'KYE_TO_REPLACE': 'CGIAR/SRTM90_V4'}
+	{'KYE_TO_REPLACE': 'elevation'}
+	{'KYE_TO_REPLACE': 'CGIAR/SRTM90_V4'}
+	{'KYE_TO_REPLACE': 'aspect'}
+	{'KYE_TO_REPLACE': 'CGIAR/SRTM90_V4'}
+	{'KYE_TO_REPLACE': 'slope'}
+run_pysmm.py:
+	{'KYE_TO_REPLACE': 'googleapiclient.discovery_cache'}
+	{'KYE_TO_REPLACE': '\n    Process the input variables to start the "derive_sm" module.\n\n    Args:\n    ----\n        Aoi (AoiModel): Aoi Model which stores the inputs from the user\n        Date (DateSelector): Date selector custom widget which stores the input data from the user\n    '}
+	{'KYE_TO_REPLACE': '~'}
+	{'KYE_TO_REPLACE': "Please select an Area of Interest in step 2: 'AOI selection'."}
+	{'KYE_TO_REPLACE': "Please select the analysis dates in step 3: 'Date Selection'."}
+	{'KYE_TO_REPLACE': 'single'}
+	{'KYE_TO_REPLACE': 'You have selected the '}
+	{'KYE_TO_REPLACE': ' method but not selected a date.'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': 'range'}
+	{'KYE_TO_REPLACE': 'You have selected the '}
+	{'KYE_TO_REPLACE': ' method but not selected a date.'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': 'SHAPE'}
+	{'KYE_TO_REPLACE': 'ASSET'}
+	{'KYE_TO_REPLACE': 'pathname'}
+	{'KYE_TO_REPLACE': 'pathname'}
+	{'KYE_TO_REPLACE': 'ASSET'}
+	{'KYE_TO_REPLACE': 'pathname'}
+	{'KYE_TO_REPLACE': 'column'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': '_'}
+	{'KYE_TO_REPLACE': '_'}
+	{'KYE_TO_REPLACE': '_'}
+	{'KYE_TO_REPLACE': 'alert'}
+	{'KYE_TO_REPLACE': 'sampling'}
+	{'KYE_TO_REPLACE': 'tracknr'}
+	{'KYE_TO_REPLACE': 'tempfilter'}
+	{'KYE_TO_REPLACE': 'mask'}
+	{'KYE_TO_REPLACE': 'masksnow'}
+	{'KYE_TO_REPLACE': 'overwrite'}
+	{'KYE_TO_REPLACE': 'filename'}
+	{'KYE_TO_REPLACE': 'year'}
+	{'KYE_TO_REPLACE': 'month'}
+	{'KYE_TO_REPLACE': 'day'}
+	{'KYE_TO_REPLACE': 'start_date'}
+	{'KYE_TO_REPLACE': 'stop_date'}
+	{'KYE_TO_REPLACE': 'ascending'}
+	{'KYE_TO_REPLACE': 'counter'}
+	{'KYE_TO_REPLACE': 'Globcover'}
+	{'KYE_TO_REPLACE': 'year'}
+	{'KYE_TO_REPLACE': 'month'}
+	{'KYE_TO_REPLACE': 'day'}
+	{'KYE_TO_REPLACE': 'start_date'}
+	{'KYE_TO_REPLACE': 'stop_date'}
+	{'KYE_TO_REPLACE': 'Done: The images are being processed into your GEE account.Now you can close your SEPAL session and use the download tool when the process is done.'}
+	{'KYE_TO_REPLACE': 'success'}
+date.py:
+	{'KYE_TO_REPLACE': 'MONTHS_DICT'}
+	{'KYE_TO_REPLACE': 'January'}
+	{'KYE_TO_REPLACE': 'February'}
+	{'KYE_TO_REPLACE': 'March'}
+	{'KYE_TO_REPLACE': 'April'}
+	{'KYE_TO_REPLACE': 'May'}
+	{'KYE_TO_REPLACE': 'June'}
+	{'KYE_TO_REPLACE': 'July'}
+	{'KYE_TO_REPLACE': 'August'}
+	{'KYE_TO_REPLACE': 'September'}
+	{'KYE_TO_REPLACE': 'October'}
+	{'KYE_TO_REPLACE': 'November'}
+	{'KYE_TO_REPLACE': 'December'}
+directory.py:
+	{'KYE_TO_REPLACE': 'BASE_DIR'}
+	{'KYE_TO_REPLACE': 'RAW_DIR'}
+	{'KYE_TO_REPLACE': 'PROCESSED_DIR'}
+	{'KYE_TO_REPLACE': 'STACK_DIR'}
+	{'KYE_TO_REPLACE': '~'}
+	{'KYE_TO_REPLACE': 'module_results/pysmm_downloads'}
+	{'KYE_TO_REPLACE': '0_raw'}
+	{'KYE_TO_REPLACE': '1_processed'}
+	{'KYE_TO_REPLACE': '2_stack'}
+model.py:
+	{'KYE_TO_REPLACE': 'New_stack'}
+	{'KYE_TO_REPLACE': 'Run stack composed algorithm.'}
+	{'KYE_TO_REPLACE': '\n        Return filtered images by date_method and the output composed stack name.\n\n        Params:\n            folders (list): Will use the bind folders from the statistics_tile folder\n                            selector widget.\n        '}
+	{'KYE_TO_REPLACE': 'You have not selected any folder to process.'}
+	{'KYE_TO_REPLACE': 'close*.tif'}
+	{'KYE_TO_REPLACE': 'close*.tif'}
+	{'KYE_TO_REPLACE': 'season'}
+	{'KYE_TO_REPLACE': 'Please select at least one year '}
+	{'KYE_TO_REPLACE': 'No month(s) selected, executing stack for all images in '}
+	{'KYE_TO_REPLACE': ', '}
+	{'KYE_TO_REPLACE': '.'}
+	{'KYE_TO_REPLACE': 'No year(s) selected, executing stack for all images in '}
+	{'KYE_TO_REPLACE': ', '}
+	{'KYE_TO_REPLACE': '.'}
+	{'KYE_TO_REPLACE': '_Stack_'}
+	{'KYE_TO_REPLACE': '_Y'}
+	{'KYE_TO_REPLACE': '_m'}
+	{'KYE_TO_REPLACE': '.tif'}
+	{'KYE_TO_REPLACE': 'range'}
+	{'KYE_TO_REPLACE': 'Please select a start and end date.'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+	{'KYE_TO_REPLACE': '_Stack_'}
+	{'KYE_TO_REPLACE': '_'}
+	{'KYE_TO_REPLACE': '_'}
+	{'KYE_TO_REPLACE': '.tif'}
+	{'KYE_TO_REPLACE': '_Stack_'}
+	{'KYE_TO_REPLACE': '.tif'}
+	{'KYE_TO_REPLACE': 'There are no images in the selected folders/dates, please try with a different date/folder.'}
+	{'KYE_TO_REPLACE': 'There is only one image in the selected range, to calculate statistics you need at least 2 images, please try a wider range.'}
+download_tile.py:
+	{'KYE_TO_REPLACE': 'FAILED'}
+	{'KYE_TO_REPLACE': 'CANCEL_REQUESTED'}
+	{'KYE_TO_REPLACE': 'CANCELLED'}
+	{'KYE_TO_REPLACE': 'COMPLETED'}
+	{'KYE_TO_REPLACE': 'UNKNOWN'}
+	{'KYE_TO_REPLACE': 'googleapiclient.discovery_cache'}
+	{'KYE_TO_REPLACE': 'DownloadTile'}
+	{'KYE_TO_REPLACE': 'd-block'}
+	{'KYE_TO_REPLACE': 'mount_id'}
+	{'KYE_TO_REPLACE': 'download'}
+	{'KYE_TO_REPLACE': 'mb-2'}
+	{'KYE_TO_REPLACE': 'int: counter to keep track of the number of images downloaded'}
+	{'KYE_TO_REPLACE': 'pa-2'}
+	{'KYE_TO_REPLACE': 'Overwrite SEPAL images'}
+	{'KYE_TO_REPLACE': 'mr-4'}
+	{'KYE_TO_REPLACE': 'Remove images from Google Drive'}
+	{'KYE_TO_REPLACE': '.txt'}
+	{'KYE_TO_REPLACE': 'Download'}
+	{'KYE_TO_REPLACE': 'mdi-download'}
+	{'KYE_TO_REPLACE': 'd-flex'}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': '\n        Download images from Google Drive to SEPAL.\n\n        It will loop over the task file and download the images \n        if they have a status of COMPLETED.\n        \n        '}
+	{'KYE_TO_REPLACE': 'r'}
+	{'KYE_TO_REPLACE': ','}
+	{'KYE_TO_REPLACE': 'r'}
+	{'KYE_TO_REPLACE': 'w'}
+	{'KYE_TO_REPLACE': 'state'}
+	{'KYE_TO_REPLACE': '.tif'}
+	{'KYE_TO_REPLACE': 'Downloading: '}
+	{'KYE_TO_REPLACE': '.tif'}
+	{'KYE_TO_REPLACE': 'Skipping: '}
+	{'KYE_TO_REPLACE': 'Overwriting: '}
+	{'KYE_TO_REPLACE': '.tif'}
+	{'KYE_TO_REPLACE': 'Removing from drive: '}
+	{'KYE_TO_REPLACE': '.tif'}
+	{'KYE_TO_REPLACE': 'There was an error task, state'}
+	{'KYE_TO_REPLACE': 'error'}
+	{'KYE_TO_REPLACE': 'Retrieving tasks status...'}
+	{'KYE_TO_REPLACE': 'info'}
+	{'KYE_TO_REPLACE': 'Waiting...'}
+	{'KYE_TO_REPLACE': 'info'}
+	{'KYE_TO_REPLACE': 'All the images were downloaded succesfully'}
+	{'KYE_TO_REPLACE': 'success'}
+	{'KYE_TO_REPLACE': 'All the images were already downloaded.'}
+	{'KYE_TO_REPLACE': 'warning'}
+process_tile.py:
+	{'KYE_TO_REPLACE': 'ProcessTile'}
+	{'KYE_TO_REPLACE': 'mount_id'}
+	{'KYE_TO_REPLACE': 'process'}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': '-POINTS'}
+	{'KYE_TO_REPLACE': 'users/dafguerrerom/ReducedAreas_107PHU'}
+	{'KYE_TO_REPLACE': 'id'}
+	{'KYE_TO_REPLACE': 'process_view'}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': 'Introduction'}
+	{'KYE_TO_REPLACE': 'AOI selection'}
+	{'KYE_TO_REPLACE': 'Date selection'}
+	{'KYE_TO_REPLACE': 'Run proces'}
+	{'KYE_TO_REPLACE': 'background:#1e1e1e;'}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': 'int: counter to keep track of the number of images already processed by run_pysmm function.'}
+	{'KYE_TO_REPLACE': 'pa-2 d-block'}
+	{'KYE_TO_REPLACE': 'Select an orbit:'}
+	{'KYE_TO_REPLACE': 'Ascending'}
+	{'KYE_TO_REPLACE': 'Descending'}
+	{'KYE_TO_REPLACE': 'Start process'}
+	{'KYE_TO_REPLACE': 'mb-2'}
+	{'KYE_TO_REPLACE': 'ascending'}
+	{'KYE_TO_REPLACE': 'click'}
+statistics_tile.py:
+	{'KYE_TO_REPLACE': 'StatisticsTile'}
+	{'KYE_TO_REPLACE': 'd-block'}
+	{'KYE_TO_REPLACE': 'mount_id'}
+	{'KYE_TO_REPLACE': 'statistics'}
+	{'KYE_TO_REPLACE': 'Inputs'}
+	{'KYE_TO_REPLACE': 'Process'}
+	{'KYE_TO_REPLACE': 'mb-2'}
+	{'KYE_TO_REPLACE': 'pa-2 mb-2'}
+	{'KYE_TO_REPLACE': 'd-flex'}
+	{'KYE_TO_REPLACE': 'close*.tif'}
+	{'KYE_TO_REPLACE': 'View images'}
+	{'KYE_TO_REPLACE': 'mb-2'}
+	{'KYE_TO_REPLACE': 'single'}
+	{'KYE_TO_REPLACE': 'all'}
+	{'KYE_TO_REPLACE': 'mdi-close'}
+	{'KYE_TO_REPLACE': 'overflow: hidden;'}
+	{'KYE_TO_REPLACE': 'overflow: hidden;'}
+	{'KYE_TO_REPLACE': 'pa-0 ma-0'}
+	{'KYE_TO_REPLACE': 'id'}
+	{'KYE_TO_REPLACE': 'summary_card'}
+	{'KYE_TO_REPLACE': 'Date selection'}
+	{'KYE_TO_REPLACE': 'recursive'}
+	{'KYE_TO_REPLACE': 'folders'}
+	{'KYE_TO_REPLACE': 'date_method'}
+	{'KYE_TO_REPLACE': 'date_method'}
+	{'KYE_TO_REPLACE': 'start_date'}
+	{'KYE_TO_REPLACE': 'start_date'}
+	{'KYE_TO_REPLACE': 'end_date'}
+	{'KYE_TO_REPLACE': 'end_date'}
+	{'KYE_TO_REPLACE': 'selected_years'}
+	{'KYE_TO_REPLACE': 'selected_years'}
+	{'KYE_TO_REPLACE': 'selected_months'}
+	{'KYE_TO_REPLACE': 'selected_months'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'Display the list of images filtered by the date selector on a dialog.'}
+	{'KYE_TO_REPLACE': 'summary_card'}
+	{'KYE_TO_REPLACE': 'Selected Images'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'Fill years and months when Season is Selected, receive a list of paths.'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'text'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': '\n        Return the months and years present in the path.\n\n        From a given path of images, the function will return a list\n        of the months/years present in the folder.\n\n        '}
+	{'KYE_TO_REPLACE': '[!.]*.tif'}
+	{'KYE_TO_REPLACE': '[!.]*.tif'}
+	{'KYE_TO_REPLACE': '\n        Parse the date of the images.\n\n        Examples\n        --------\n            close_SMCmap_2019_11_09_dguerrero_1111.tif\n        '}
+	{'KYE_TO_REPLACE': '\\d{4}_\\d{2}_\\d{2}'}
+	{'KYE_TO_REPLACE': '%Y_%m_%d'}
+	{'KYE_TO_REPLACE': 'Median'}
+	{'KYE_TO_REPLACE': 'Mean'}
+	{'KYE_TO_REPLACE': 'Geometric mean'}
+	{'KYE_TO_REPLACE': 'Maximum'}
+	{'KYE_TO_REPLACE': 'Minimum'}
+	{'KYE_TO_REPLACE': 'Standard deviation'}
+	{'KYE_TO_REPLACE': 'Valid pixels'}
+	{'KYE_TO_REPLACE': 'Linear trend'}
+	{'KYE_TO_REPLACE': 'median'}
+	{'KYE_TO_REPLACE': 'mean'}
+	{'KYE_TO_REPLACE': 'gmean'}
+	{'KYE_TO_REPLACE': 'max'}
+	{'KYE_TO_REPLACE': 'min'}
+	{'KYE_TO_REPLACE': 'std'}
+	{'KYE_TO_REPLACE': 'valid_pixels'}
+	{'KYE_TO_REPLACE': 'linear_trend'}
+	{'KYE_TO_REPLACE': 'd-block'}
+	{'KYE_TO_REPLACE': 'Get stack'}
+	{'KYE_TO_REPLACE': 'mr-2'}
+	{'KYE_TO_REPLACE': 'Statistic'}
+	{'KYE_TO_REPLACE': 'text'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': 'mean'}
+	{'KYE_TO_REPLACE': 'Create a suffix for the output'}
+	{'KYE_TO_REPLACE': 'Always'}
+	{'KYE_TO_REPLACE': 'Processors'}
+	{'KYE_TO_REPLACE': 'Always'}
+	{'KYE_TO_REPLACE': 'Chunk size'}
+	{'KYE_TO_REPLACE': 'mb-3'}
+	{'KYE_TO_REPLACE': 'Advanced settings'}
+	{'KYE_TO_REPLACE': 'd-flex mb-2'}
+	{'KYE_TO_REPLACE': 'items'}
+	{'KYE_TO_REPLACE': 'selected_stat'}
+	{'KYE_TO_REPLACE': 'cores'}
+	{'KYE_TO_REPLACE': 'chunks'}
+	{'KYE_TO_REPLACE': 'prefix'}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': 'Executing '}
+	{'KYE_TO_REPLACE': ' for '}
+	{'KYE_TO_REPLACE': ' images...'}
+	{'KYE_TO_REPLACE': 'tmp_images.txt'}
+	{'KYE_TO_REPLACE': '\n'}
+	{'KYE_TO_REPLACE': 'Done! results saved in '}
+map_tile.py:
+	{'KYE_TO_REPLACE': 'mount_id'}
+	{'KYE_TO_REPLACE': 'map'}
+	{'KYE_TO_REPLACE': '.tif'}
+	{'KYE_TO_REPLACE': 'SATELLITE'}
+	{'KYE_TO_REPLACE': 'Display image'}
+	{'KYE_TO_REPLACE': 'block'}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': 'mt-5'}
+	{'KYE_TO_REPLACE': 'Please select a valid image'}
+	{'KYE_TO_REPLACE': 'error'}
+filter_tile.py:
+	{'KYE_TO_REPLACE': 'FilterTile'}
+	{'KYE_TO_REPLACE': 'd-block'}
+	{'KYE_TO_REPLACE': 'mount_id'}
+	{'KYE_TO_REPLACE': 'filter'}
+	{'KYE_TO_REPLACE': 'mb-2'}
+	{'KYE_TO_REPLACE': '600px'}
+	{'KYE_TO_REPLACE': 'pa-2'}
+	{'KYE_TO_REPLACE': 'Apply morphological filter'}
+	{'KYE_TO_REPLACE': 'mb-2'}
+	{'KYE_TO_REPLACE': '[!.]*.tif'}
+	{'KYE_TO_REPLACE': 'Process'}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': 'Run filter script.'}
+	{'KYE_TO_REPLACE': 'Please select a folder containing .tif images.'}
+	{'KYE_TO_REPLACE': '[!.]*.tif'}
+	{'KYE_TO_REPLACE': '[!.]*.tif'}
+	{'KYE_TO_REPLACE': "Error: The given folders doesn't have any .tif image to process, please make sure you have processed and downloaded the images, in the step 1 and 2. Or try with a different folder."}
+	{'KYE_TO_REPLACE': 'There are '}
+	{'KYE_TO_REPLACE': ' images to process, please wait...'}
+	{'KYE_TO_REPLACE': 'info'}
+	{'KYE_TO_REPLACE': 'The image dimension is '}
+	{'KYE_TO_REPLACE': ' x '}
+	{'KYE_TO_REPLACE': ' px'}
+	{'KYE_TO_REPLACE': 'All the images were correctly processed.'}
+	{'KYE_TO_REPLACE': 'success'}
+alert.py:
+	{'KYE_TO_REPLACE': '\nCustom alert widget. The unique difference with the sepal_ui.sepalwidgets.\n\nAlert is that instead of adding thee progress bar to the end, it will be added to the\nbeginning of the alert.\n'}
+	{'KYE_TO_REPLACE': 'Divider'}
+	{'KYE_TO_REPLACE': 'Alert'}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': 'Added type\\_ trait to specify the current color of the divider'}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': "\n        Divider with the ability to dynamically change color.\n\n        Whenever the type\\_ trait is modified, the divider class will change accordingly.\n\n        Args:\n        ----\n            class\\_: the initial color of the divider\n            kwargs (optional): any parameter from a v.Divider. if set, 'class\\_' will be overwritten.\n        "}
+	{'KYE_TO_REPLACE': 'class_'}
+	{'KYE_TO_REPLACE': "\n        Change the color of the divider according to the type\\_.\n\n        It is binded to the type\\_ traitlet but can also be called manually.\n\n        Args:\n        ----\n            change: the only useful key is 'new' which is the new required color\n        "}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'type_'}
+	{'KYE_TO_REPLACE': 'the progress bar of the alert'}
+	{'KYE_TO_REPLACE': 'the output object where the progress bar is stored'}
+	{'KYE_TO_REPLACE': 'info'}
+	{'KYE_TO_REPLACE': "\n        Get a custom Alert widget.\n\n        It is used as the output of all processes in the framework.\n        In the voila interfaces, print statement will not be displayed.\n        Instead use the sw.Alert method to provide information to the user.\n        It's hidden by default.\n\n        Args:\n        ----\n            type\\_: The color of the Alert\n            kwargs (optional): any parameter from a v.Alert. If set, 'type' will be overwritten.\n        "}
+	{'KYE_TO_REPLACE': 'text'}
+	{'KYE_TO_REPLACE': 'type'}
+	{'KYE_TO_REPLACE': 'class_'}
+	{'KYE_TO_REPLACE': 'mt-5'}
+	{'KYE_TO_REPLACE': 'Progress'}
+	{'KYE_TO_REPLACE': '\n        Update the Alert message with a tqdm progress bar.\n\n        .. note::\n\n            set the ``total`` argumentent of tqdm to use differnet values than [0, 1]\n\n        Args:\n        ----\n            progress: the progress status in float\n            msg: The message to use before the progress bar\n            tqdm_args (optional): any arguments supported by a tqdm progress bar\n        '}
+	{'KYE_TO_REPLACE': 'total'}
+	{'KYE_TO_REPLACE': 'progress should be in [0, '}
+	{'KYE_TO_REPLACE': '], '}
+	{'KYE_TO_REPLACE': ' given'}
+	{'KYE_TO_REPLACE': 'bar_format'}
+	{'KYE_TO_REPLACE': '{l_bar}{bar}{n_fmt}/{total_fmt}'}
+	{'KYE_TO_REPLACE': 'dynamic_ncols'}
+	{'KYE_TO_REPLACE': 'total'}
+	{'KYE_TO_REPLACE': 'desc'}
+	{'KYE_TO_REPLACE': 'colour'}
+	{'KYE_TO_REPLACE': '--text'}
+	{'KYE_TO_REPLACE': '--text'}
+	{'KYE_TO_REPLACE': 'info'}
+	{'KYE_TO_REPLACE': '\n        Add a message in the alert by replacing all the existing one.\n\n        The color can also be changed dynamically.\n\n        Args:\n        ----\n            msg: the message to display\n            type\\_: the color to use in the widget\n        '}
+	{'KYE_TO_REPLACE': 'p'}
+	{'KYE_TO_REPLACE': 'info'}
+	{'KYE_TO_REPLACE': '\n        Add a message in the alert by replacing all the existing one.\n\n        Also add the timestamp of the display. The color can also be changed dynamically.\n\n        Args:\n        ----\n            msg: the message to display\n            type\\_: the color to use in the widget\n        '}
+	{'KYE_TO_REPLACE': '%Y/%m/%d, %H:%M:%S'}
+	{'KYE_TO_REPLACE': 'p'}
+	{'KYE_TO_REPLACE': '[{}]'}
+	{'KYE_TO_REPLACE': 'p'}
+	{'KYE_TO_REPLACE': 'info'}
+	{'KYE_TO_REPLACE': '\n        Append a message in a new parragraph, with or without divider.\n\n        Args:\n        ----\n            msg: the message to display\n            section: add a Divider before the added message\n            type\\_: the color to use in the widget\n        '}
+	{'KYE_TO_REPLACE': 'my-4'}
+	{'KYE_TO_REPLACE': 'opacity: 0.22'}
+	{'KYE_TO_REPLACE': 'type'}
+	{'KYE_TO_REPLACE': 'type_'}
+	{'KYE_TO_REPLACE': 'p'}
+	{'KYE_TO_REPLACE': 'p'}
+	{'KYE_TO_REPLACE': '\n        Remove the last msg printed in the Alert widget.\n        '}
+	{'KYE_TO_REPLACE': '\n        Empty the messages and hide it.\n        '}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': '\n        Check if the inpupt value is initialized.\n\n        If not return false and display an error message else return True.\n\n        Args:\n            input\\_: the input to check\n            msg: the message to display if the input is not set\n\n        Returns\n        -------\n            check if the value is initialized\n        '}
+	{'KYE_TO_REPLACE': '3.0'}
+	{'KYE_TO_REPLACE': 'This method is now part of the utils module'}
+folder_selector.py:
+	{'KYE_TO_REPLACE': 'FolderSelector'}
+	{'KYE_TO_REPLACE': 'FolderSelectorView'}
+	{'KYE_TO_REPLACE': '\n    Folder selector view.\n    \n    Contains the option to search the files ending with the\n    given wildcard with the recursive option. It will display the lenght of the found\n    items in an alert header.\n\n    Args:\n    ----\n        wildcard (str): pattern to find files within the selected folders.\n        ** FolderSelector args.\n\n    '}
+	{'KYE_TO_REPLACE': '/'}
+	{'KYE_TO_REPLACE': '*'}
+	{'KYE_TO_REPLACE': 'overflow-x:hidden;'}
+	{'KYE_TO_REPLACE': 'Please select a folder with .tif images'}
+	{'KYE_TO_REPLACE': 'Search recursively'}
+	{'KYE_TO_REPLACE': 'Select a folder'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'Get the number of images in the current path list.'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'There are '}
+	{'KYE_TO_REPLACE': ' images in the selected folder(s).'}
+	{'KYE_TO_REPLACE': 'Please select a folder with images to process.'}
+	{'KYE_TO_REPLACE': 'loading'}
+	{'KYE_TO_REPLACE': 'disabled'}
+	{'KYE_TO_REPLACE': 'w_selector'}
+	{'KYE_TO_REPLACE': "\n    Multiple folder selector widget.\n\n    Args:\n    ----\n        folder (str, Path) (optional): Initial folder. Default : '/'\n        max_depth (int): maximum depth levels allowed from the initial folder.\n        max_selection (int): set the maximum number of elements that can be selected.\n\n    Params:\n        max_depth (int): Maximum levels of depth that can be accessed.\n        base_folder (Path): base folder, given from the folder arg.\n        max_depth_folder (Path): Maximum depth folder. Given by max_depth arg.\n        current_folder (Path): Folder in the current state of the widget.\n        folders (list): Folders in the current folder.\n        max_selection (int): Maximum nunmber of folders that can be selected\n\n        Traits:\n            v_model: Will store the selected elements.\n            loading (bool): Whether the Folder Selector is loading or not.\n\n    "}
+	{'KYE_TO_REPLACE': '/'}
+	{'KYE_TO_REPLACE': 'progress_bar.json'}
+	{'KYE_TO_REPLACE': 'overflow-x:none'}
+	{'KYE_TO_REPLACE': '/'}
+	{'KYE_TO_REPLACE': 'The folder '}
+	{'KYE_TO_REPLACE': ' only has a '}
+	{'KYE_TO_REPLACE': " depth. You've selected "}
+	{'KYE_TO_REPLACE': ' as max depth.'}
+	{'KYE_TO_REPLACE': 'overflow: auto; border-radius: 0 0 0 0;overflow-x:none'}
+	{'KYE_TO_REPLACE': '340px'}
+	{'KYE_TO_REPLACE': '300px'}
+	{'KYE_TO_REPLACE': 'grey darken-3'}
+	{'KYE_TO_REPLACE': 'color'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'selected'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'indeterminate'}
+	{'KYE_TO_REPLACE': 'loading'}
+	{'KYE_TO_REPLACE': '\n        Get the folders in the given path. \n        \n        Will be stored in folders class variable.\n        '}
+	{'KYE_TO_REPLACE': '[!.]*/'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'loading'}
+	{'KYE_TO_REPLACE': 'Clear current selected elements.'}
+	{'KYE_TO_REPLACE': 'Custom ListItem that will store a checkbox.'}
+	{'KYE_TO_REPLACE': 'd-flex'}
+	{'KYE_TO_REPLACE': 'file_icons.json'}
+	{'KYE_TO_REPLACE': 'PARENT'}
+	{'KYE_TO_REPLACE': 'icon'}
+	{'KYE_TO_REPLACE': 'PARENT'}
+	{'KYE_TO_REPLACE': 'color'}
+	{'KYE_TO_REPLACE': 'icon'}
+	{'KYE_TO_REPLACE': 'color'}
+	{'KYE_TO_REPLACE': 'DEFAULT'}
+	{'KYE_TO_REPLACE': 'icon'}
+	{'KYE_TO_REPLACE': 'DEFAULT'}
+	{'KYE_TO_REPLACE': 'color'}
+	{'KYE_TO_REPLACE': '../'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'is_selected'}
+	{'KYE_TO_REPLACE': 'Update widget observation once the childrens have changed.'}
+	{'KYE_TO_REPLACE': 'is_selected'}
+	{'KYE_TO_REPLACE': 'children'}
+	{'KYE_TO_REPLACE': "Bind every item with the selected trait if it's checkbox is checkd."}
+	{'KYE_TO_REPLACE': 'owner'}
+	{'KYE_TO_REPLACE': 'Clear selected elements.'}
+	{'KYE_TO_REPLACE': 'is_selected'}
+date_selector.py:
+	{'KYE_TO_REPLACE': 'text'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': 'All time series'}
+	{'KYE_TO_REPLACE': 'all'}
+	{'KYE_TO_REPLACE': 'text'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': 'Range'}
+	{'KYE_TO_REPLACE': 'range'}
+	{'KYE_TO_REPLACE': 'text'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': 'Single date'}
+	{'KYE_TO_REPLACE': 'single'}
+	{'KYE_TO_REPLACE': 'd-block pa-2'}
+	{'KYE_TO_REPLACE': 'mount-id'}
+	{'KYE_TO_REPLACE': 'data-input'}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': 'Specify the selection date method'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': 'The selected method does not exist'}
+	{'KYE_TO_REPLACE': 'text'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': 'Season'}
+	{'KYE_TO_REPLACE': 'season'}
+	{'KYE_TO_REPLACE': 'Date'}
+	{'KYE_TO_REPLACE': 'id'}
+	{'KYE_TO_REPLACE': 'unique_date'}
+	{'KYE_TO_REPLACE': 'Start date'}
+	{'KYE_TO_REPLACE': 'id'}
+	{'KYE_TO_REPLACE': 'ini_date'}
+	{'KYE_TO_REPLACE': 'End date'}
+	{'KYE_TO_REPLACE': 'id'}
+	{'KYE_TO_REPLACE': 'end_date'}
+	{'KYE_TO_REPLACE': 'Months'}
+	{'KYE_TO_REPLACE': 'Years'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'date_method'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'end_date'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'start_date'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'single_date'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'selected_months'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'selected_years'}
+	{'KYE_TO_REPLACE': 'items'}
+	{'KYE_TO_REPLACE': 'months_items'}
+	{'KYE_TO_REPLACE': 'items'}
+	{'KYE_TO_REPLACE': 'years_items'}
+	{'KYE_TO_REPLACE': 'd-flex'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'w_unique_date'}
+	{'KYE_TO_REPLACE': 'w_ini_date'}
+	{'KYE_TO_REPLACE': 'w_end_date'}
+	{'KYE_TO_REPLACE': 'w_mmonths'}
+	{'KYE_TO_REPLACE': 'w_myears'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'single'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'range'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'season'}
+custom_drawer.py:
+	{'KYE_TO_REPLACE': 'Forked sepal_ui.sepalwidgets.DrawerItem version to fix https://github.com/sepal-contrib/sepal_pysmm/issues/26.'}
+	{'KYE_TO_REPLACE': 'sw.ResizeTrigger: the trigger to resize maps and other javascript object when jumping from a tile to another'}
+	{'KYE_TO_REPLACE': 'Bool: trait to control visibility of an alert in the drawer item'}
+	{'KYE_TO_REPLACE': 'v.ListItemAction: red circle to display in the drawer'}
+	{'KYE_TO_REPLACE': 'fa-regular fa-folder'}
+	{'KYE_TO_REPLACE': 'white--text'}
+	{'KYE_TO_REPLACE': 'white--text'}
+	{'KYE_TO_REPLACE': 'link'}
+	{'KYE_TO_REPLACE': 'children'}
+	{'KYE_TO_REPLACE': 'input_value'}
+	{'KYE_TO_REPLACE': 'input_value'}
+	{'KYE_TO_REPLACE': 'href'}
+	{'KYE_TO_REPLACE': 'target'}
+	{'KYE_TO_REPLACE': '_blank'}
+	{'KYE_TO_REPLACE': '_metadata'}
+	{'KYE_TO_REPLACE': '_metadata'}
+	{'KYE_TO_REPLACE': '_metadata'}
+	{'KYE_TO_REPLACE': 'card_id'}
+	{'KYE_TO_REPLACE': 'href'}
+	{'KYE_TO_REPLACE': 'href'}
+	{'KYE_TO_REPLACE': 'target'}
+	{'KYE_TO_REPLACE': 'target'}
+	{'KYE_TO_REPLACE': 'fa-solid fa-circle'}
+	{'KYE_TO_REPLACE': 'red'}
+	{'KYE_TO_REPLACE': 'You have selected a model, you need a trait to bind with drawer.'}
+	{'KYE_TO_REPLACE': 'alert'}
+	{'KYE_TO_REPLACE': 'Add a notification alert to drawer.'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'alert'}
+	{'KYE_TO_REPLACE': 'Remove notification alert.'}
+	{'KYE_TO_REPLACE': '\n        Display the apropriate tiles when the item is clicked.\n        \n        The tile to display will be all tile in the list with the mount_id as the current object.\n\n        Args:\n        ----\n            tiles ([sw.Tile]) : the list of all the available tiles in the app\n\n        Return:\n        ------\n            self\n        '}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': 'card_id'}
+	{'KYE_TO_REPLACE': 'mount_id'}
+	{'KYE_TO_REPLACE': 'Forked sepal_ui.sepalwidgets.DrawerItem version to fix https://github.com/sepal-contrib/sepal_pysmm/issues/26.'}
+	{'KYE_TO_REPLACE': 'list: the list of all the drawerItem to display in the drawer'}
+	{'KYE_TO_REPLACE': 'fa-regular fa-file-code'}
+	{'KYE_TO_REPLACE': 'fa-solid fa-book-open'}
+	{'KYE_TO_REPLACE': 'fa-solid fa-bug'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'app'}
+	{'KYE_TO_REPLACE': 'color'}
+	{'KYE_TO_REPLACE': 'color'}
+	{'KYE_TO_REPLACE': 'children'}
+	{'KYE_TO_REPLACE': 'input_value'}
+	{'KYE_TO_REPLACE': '\n        Bind the drawer to the app toggleButton.\n\n        Args:\n        ----\n            toggleButton(v.Btn) : the button that activate the drawer\n        '}
+	{'KYE_TO_REPLACE': 'click'}
+	{'KYE_TO_REPLACE': '\n        Toggle the drawer visibility.\n        '}
+	{'KYE_TO_REPLACE': '\n        Deactivate all the other items when on of the is activated.\n        '}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'owner'}
+date_picker.py:
+	{'KYE_TO_REPLACE': 'DatePicker'}
+	{'KYE_TO_REPLACE': 'the menu widget to display the datepicker'}
+	{'KYE_TO_REPLACE': 'the text field of the datepicker widget'}
+	{'KYE_TO_REPLACE': 'the disabled status of the Datepicker object'}
+	{'KYE_TO_REPLACE': 'Date'}
+	{'KYE_TO_REPLACE': '\n        Input widget to provide a reusable DatePicker.\n\n        It allows to choose date as a string in the following format YYYY-MM-DD.\n\n        Args:\n        ----\n            label: the label of the datepicker field\n            layout_kwargs: any parameter for the wrapper v.Layout\n            kwargs: any parameter from a v.DatePicker object.\n        '}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': 'YYYY-MM-DD format'}
+	{'KYE_TO_REPLACE': 'event'}
+	{'KYE_TO_REPLACE': 'menuData.on'}
+	{'KYE_TO_REPLACE': '290px'}
+	{'KYE_TO_REPLACE': 'scale-transition'}
+	{'KYE_TO_REPLACE': 'name'}
+	{'KYE_TO_REPLACE': 'variable'}
+	{'KYE_TO_REPLACE': 'children'}
+	{'KYE_TO_REPLACE': 'activator'}
+	{'KYE_TO_REPLACE': 'menuData'}
+	{'KYE_TO_REPLACE': 'row'}
+	{'KYE_TO_REPLACE': 'class_'}
+	{'KYE_TO_REPLACE': 'pa-5'}
+	{'KYE_TO_REPLACE': 'align_center'}
+	{'KYE_TO_REPLACE': 'children'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': "\n        Check if the data is formatted date.\n\n        A method to check if the value of the set v_model is a correctly formated date\n        Reset the widget and display an error if it's not the case.\n        "}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'new'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'Close the menu of the datepicker programatically.'}
+	{'KYE_TO_REPLACE': 'v_model'}
+	{'KYE_TO_REPLACE': 'Disable the appropriate components in the datipkcer object.'}
+	{'KYE_TO_REPLACE': 'children'}
+	{'KYE_TO_REPLACE': 'disabled'}
+	{'KYE_TO_REPLACE': '\n        Check if the date is provided using the date format required for the widget.\n\n        Args:\n        ----\n            date: the date to test in YYYY-MM-DD format\n        Returns:\n            the date to test.\n        '}
+	{'KYE_TO_REPLACE': '%Y-%m-%d'}
+table.py:
+	{'KYE_TO_REPLACE': 'VueDataFrame'}
+	{'KYE_TO_REPLACE': '\n    Vuetify DataTable rendering of a pandas DataFrame.\n\n    Args:\n    ----\n        data (DataFrame) - the data to render\n        title (str) - optional title\n    '}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': 'DataFrame'}
+	{'KYE_TO_REPLACE': ''}
+	{'KYE_TO_REPLACE': '\n        <template>\n          <v-card>\n            <v-card-title>\n              <span class="title font-weight-bold">{{ title }}</span>\n              <v-spacer></v-spacer>\n                <v-text-field\n                    v-model="search"\n                    append-icon="mdi-magnify"\n                    label="Search ..."\n                    single-line\n                    hide-details\n                ></v-text-field>\n            </v-card-title>\n            <v-data-table\n                :headers="headers"\n                :items="items"\n                :search="search"\n                :item-key="index_col"\n                :footer-props="{\'items-per-page-options\': [5, 20, 40]}"\n            >\n                <template v-slot:no-data>\n                  <v-alert :value="true" color="error" icon="mdi-alert">\n                    Sorry, nothing to display here :(\n                  </v-alert>\n                </template>\n                <template v-slot:no-results>\n                    <v-alert :value="true" color="error" icon="mdi-alert">\n                      Your search for "{{ search }}" found no results.\n                    </v-alert>\n                </template>\n                <template v-slot:items="rows">\n                  <td v-for="(element, label, index) in rows.item"\n                      @click=cell_click(element)\n                      >\n                    {{ element }}\n                  </td>\n                </template>\n            </v-data-table>\n          </v-card>\n        </template>\n        '}
+	{'KYE_TO_REPLACE': 'text'}
+	{'KYE_TO_REPLACE': 'value'}
+	{'KYE_TO_REPLACE': 'align'}
+	{'KYE_TO_REPLACE': 'sortable'}
+	{'KYE_TO_REPLACE': 'left'}
+	{'KYE_TO_REPLACE': 'records'}
