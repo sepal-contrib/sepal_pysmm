@@ -22,6 +22,17 @@ class DownloadAlert(sw.Alert):
         ]
 
     def reset(self):
+        """return all elements from the alert to their initial state"""
+
+        self.type = "info"
+
+        # reset all elements to their initial state
+        self.status_span.children = []
+        self.success_span.reset()
+        self.error_span.reset()
+        self.running_span.reset()
+
+        # reassign the children so we remove all append elements
         self.children = [
             self.status_span,
             self.success_span,
@@ -42,6 +53,9 @@ class CountSpan(sw.Html):
         # make text bigger and change color to red
         self.with_total = with_total
 
+        # Hide the span by default
+        self.hide()
+
         if color:
             color = getattr(sepal_color, color)
             self.style_ = f"color: {color};"
@@ -59,6 +73,7 @@ class CountSpan(sw.Html):
 
     def update(self):
         """Update the value of the span"""
+        self.show()
         self.value += 1
         self.children = self.get_value()
 
@@ -69,6 +84,8 @@ class CountSpan(sw.Html):
 
     def reset(self):
         """Reset the value of the span"""
+
         self.value = -1
         self.total = 0
         self.update()
+        self.hide()
