@@ -16,6 +16,7 @@ class TaskController:
 
     def long_running_task(self):
         self.function(self.shared_variable)
+        self.start_button.loading = False
 
     def start_task(self, *args):
         self.stop_thread_flag = False

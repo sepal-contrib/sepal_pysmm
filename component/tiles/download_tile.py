@@ -49,18 +49,17 @@ class DownloadView(v.Card):
 
         # Define HTML spans. These will be added to the alert view after
         # some initial messages are displayed
-
-        self.status_span = sw.Html(children=[])
-        self.success_span = CountSpan("success", color="success")
+        self.status_span = sw.Html(tag="span", children=[])
+        self.success_span = CountSpan("downloaded", with_total=True)
         self.error_span = CountSpan("error", color="error", with_total=False)
-        self.running_span = CountSpan("running", color="warning", with_total=False)
+        self.running_span = CountSpan("running", with_total=False)
 
         self.alert = DownloadAlert(
             self.status_span,
             self.success_span,
             self.error_span,
             self.running_span,
-        )
+        ).hide()
 
         self.w_overwrite = v.Switch(
             v_model=True, label="Overwrite SEPAL images", small=True, class_="mr-4"
@@ -74,7 +73,7 @@ class DownloadView(v.Card):
 
         self.btn = sw.Btn(text="Download", icon="mdi-download", small=True)
         self.stop_btn = sw.Btn(
-            text="Cancel", icon="mdi-cancel", small=True, class_="ml-2"
+            text="Stop", small=True, class_="ml-2", color="secondary    "
         )
 
         self.children = [
@@ -94,21 +93,10 @@ class DownloadView(v.Card):
                 ],
             ),
             self.alert,
-            sw.Layout(
-                class_="d-block",
-                # create a space between elements
-                justify_content="space-between",
-                children=[
-                    self.success_span,
-                    self.error_span,
-                    self.running_span,
-                ],
-            ),
         ]
 
         self.btn.on_event("click", self.download_to_sepal)
 
-    @su.loading_button(debug=True)
     def download_to_sepal(self, *args):
         """
         Download images from Google Drive to SEPAL.
@@ -120,6 +108,9 @@ class DownloadView(v.Card):
         task_file = self.w_selection.v_model
         overwrite = self.w_overwrite.v_model
         remove_from_drive = self.w_remove.v_model
+
+        # reset alert
+        self.alert.reset()
 
         if not task_file:
             raise ValueError("Please select a task file")

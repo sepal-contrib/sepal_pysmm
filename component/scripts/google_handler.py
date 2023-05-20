@@ -56,33 +56,29 @@ class ImageDownloader:
         """
         Download images from Google Drive to SEPAL.
 
-        It will loop over the task file and download the images
-        if they have a status of COMPLETED.
+        It will loop over the task file and download the images if they have a status of COMPLETED.
 
         """
-        self.alert.reset()
         self.stop_event = stop_event
 
         tasks = self.read_tasks_from_file()
 
         if tasks:
             self.download_images(tasks)
-            self.alert.reset()
 
             if self.stop_event.is_set():
+                print("stopped")
                 self.alert.append_msg(
-                    "The download was interrupted by the user.", type_="warning"
+                    "The process was interrupted by the user.", type_="warning"
                 )
                 return
 
+            type_color = "warning" if self.failed_counter else "success"
             self.alert.append_msg(
-                "All the images were downloaded successfully", type_="success"
-            )
-            self.alert.append_msg(
-                f"Downloaded {self.download_counter} images, {self.failed_counter} tasks failed"
+                f"Downloaded {self.download_counter} images, {self.failed_counter} tasks failed",
+                type_=type_color,
             )
         else:
-            self.alert.reset()
             self.alert.append_msg(
                 "All the images were already downloaded.", type_="warning"
             )
@@ -140,6 +136,7 @@ class ImageDownloader:
     def download_images(self, tasks):
         self.success_span.reset()
         self.success_span.set_total(len(tasks))
+        self.alert.show()
 
         while tasks and not self.stop_event.is_set():
             self.status_span.children = ["Retrieving tasks status..."]
