@@ -10,7 +10,7 @@ logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 def run_pysmm(aoi_model, date_model, model, alert, images_span, chips_span, grid_size):
     """
-    Process the input variables to start the "derive_sm" module.
+    Process the input variables to start the "derive_sm" mtempfilterodule.
 
     Args:
     ----
@@ -78,7 +78,7 @@ def run_pysmm(aoi_model, date_model, model, alert, images_span, chips_span, grid
         "aoi": aoi_model.feature_collection,
         "outpath": str(outpath),
         "alert": alert,
-        "tempfilter": True,
+        "tempfilter": False,
         "mask": "Globcover",
         "masksnow": False,
         "overwrite": True,
