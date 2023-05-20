@@ -25,7 +25,7 @@ def get_map(
     month=None,
     day=None,
     overwrite=False,
-    tempfilter=True,
+    tempfilter=False,
     mask="Globcover",
     masksnow=True,
     file_suffix=None,

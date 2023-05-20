@@ -119,7 +119,7 @@ class GEE_extent(object):
         year,
         month,
         day,
-        tempfilter=True,
+        tempfilter=False,
         tempfilter_radius=7,
         applylcmask=False,
         mask_globcover=True,
