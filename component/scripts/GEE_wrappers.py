@@ -137,6 +137,13 @@ class GEE_extent(object):
 
         """
 
+        # save orbit direction based on ascending/descending
+        if ascending is True:
+            self.ORBIT = "ASCENDING"
+
+        else:
+            self.ORBIT = "DESCENDING"
+
         def computeLIA(image):
             # comput the local incidence angle (LIA) based on the srtm and the s1 viewing angle
             # get the srtm

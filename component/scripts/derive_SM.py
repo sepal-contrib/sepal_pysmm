@@ -164,16 +164,19 @@ def get_map(
         return tasks
 
 
-def create_out_name(year, month, day, file_suffix):
+def create_out_name(year, month, day, orbit, file_suffix):
     year = str(year)
     month = str(month)
     day = str(day)
+
+    orbit_prefix = orbit[:3]
 
     if len(day) < 2:
         day = f"0{day}"
     if len(month) < 2:
         month = f"0{month}"
-    return f"SMCmap_{year}_{month}_{day}_{file_suffix}"
+
+    return f"SMCmap_{year}_{month}_{day}_{orbit_prefix}_{file_suffix}"
 
 
 def gldas_date():
@@ -284,6 +287,12 @@ def get_sm(
         # get GEE interface
         GEE_interface = GEE_extent(minlon, minlat, maxlon, maxlat)
 
+        if algorithm == "gbr":
+            # get list of S1 dates
+            dates, orbits = GEE_interface.get_S1_dates(
+                tracknr=tracknr, ascending=False, start=start, stop=stop
+            )
+
         # retrieve S1
         GEE_interface.get_S1(
             year,
@@ -304,6 +313,7 @@ def get_sm(
                 GEE_interface.S1_DATE.year,
                 GEE_interface.S1_DATE.month,
                 GEE_interface.S1_DATE.day,
+                GEE_interface.ORBIT,
                 suffix + f"chip_{i}",
             )
 
@@ -343,3 +353,6 @@ def get_sm(
         images_span.update()
 
     return tasks
+
+
+# To retrieve the soil moisture map using second scripts
