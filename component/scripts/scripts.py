@@ -1,3 +1,4 @@
+from typing import List, Tuple
 import ee
 import pandas as pd
 import sepal_ui.scripts.utils as su
@@ -127,10 +128,20 @@ import ee
 ee.Initialize()
 
 
-def get_geogrid_bounds(geometry, cell_size_deg):
-    """Creates a list of bounds for each of the tiles based on the cell_size"""
+def get_geogrid_bounds(
+    geometry: ee.Geometry, cell_size_deg: float, chip_process: bool = True
+) -> List[Tuple[float, float, float, float]]:
+    """Creates a list of bounds for each of the tiles based on the cell_size
 
-    def add_bounds_properties(feature):
+    Args:
+        chip_proces: Either to run the chip process or not
+
+    Returns:
+        A list of bounds for each of the tiles
+
+    """
+
+    def add_bounds_properties(feature: ee.Feature):
         """adds a bounds property to each feature."""
         bounds = feature.geometry().bounds()
         coords = ee.List(bounds.coordinates().get(0))
@@ -149,6 +160,10 @@ def get_geogrid_bounds(geometry, cell_size_deg):
             return ee.Feature(ee.Geometry.Rectangle(coords))
 
         return x_list.map(make_rect)
+
+    if not chip_process:
+        # Just return the bounds of the geometry
+        return [add_bounds_properties(ee.Feature(geometry)).get("bounds").getInfo()]
 
     # Get the bounding box of the geometry
     bounds = geometry.bounds()

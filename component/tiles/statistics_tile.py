@@ -230,7 +230,7 @@ class StatisticsView(v.Layout):
         )
 
         self.w_prefix = v.TextField(
-            label="Create a suffix for the output",
+            label="Create a prefix for the output",
             v_model=self.model.prefix,
         )
 

@@ -8,7 +8,16 @@ from component.scripts.derive_SM import get_map
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 
-def run_pysmm(aoi_model, date_model, model, alert, images_span, chips_span, grid_size):
+def run_pysmm(
+    aoi_model,
+    date_model,
+    model,
+    alert,
+    images_span,
+    chips_span,
+    grid_size,
+    chip_process: bool,
+):
     """
     Process the input variables to start the "derive_sm" mtempfilterodule.
 
@@ -92,6 +101,7 @@ def run_pysmm(aoi_model, date_model, model, alert, images_span, chips_span, grid
         "images_span": images_span,
         "chips_span": chips_span,
         "grid_size": grid_size,
+        "chip_process": chip_process,
     }
 
     # To process single date or non row dates.

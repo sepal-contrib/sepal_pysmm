@@ -108,13 +108,29 @@ class ProcessView(v.Layout):
 
         # Define a sw.Slider to control the grid size
         self.w_grid_size = sw.Slider(
-            label="Grid size",
-            v_model=0.5,
+            label="Grid size (deg)",
+            v_model=2,
             min=0.1,
-            max=2,
+            max=5,
             step=0.1,
             class_="mb-2",
             thumb_label="always",
+            disabled=True,
+        )
+
+        self.w_grid = v.Switch(
+            label="Create chips",
+            v_model=False,
+            class_="mb-2 mt-0 mr-2",
+        )
+
+        self.w_grid.observe(
+            lambda chg: setattr(self.w_grid_size, "disabled", not chg["new"]), "v_model"
+        )
+
+        w_grid = v.Flex(
+            class_="d-flex",
+            children=[self.w_grid, self.w_grid_size],
         )
 
         # Add grid_size and w_ascending to an expansion panel as advanced options
@@ -130,7 +146,7 @@ class ProcessView(v.Layout):
                                 v.Flex(
                                     class_="d-flex align-center",
                                     children=[
-                                        self.w_grid_size,
+                                        w_grid,
                                         sw.Tooltip(
                                             question_icon,
                                             cm.help.grid_size,
@@ -181,6 +197,7 @@ class ProcessView(v.Layout):
             self.images_span,
             self.chips_span,
             self.w_grid_size.v_model,
+            chip_process=self.w_grid.v_model,
         )
 
 

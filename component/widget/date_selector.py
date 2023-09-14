@@ -43,7 +43,7 @@ class DateSelector(sw.Layout):
         self.w_date_method = v.Select(
             v_model="",
             label="Specify the selection date method",
-            items=self.SELECTION_METHODS,
+            items=self.SELECTION_METHODS[1:],
         )
 
         if remove_method:
