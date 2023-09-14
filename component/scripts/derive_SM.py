@@ -2,6 +2,7 @@ import concurrent.futures
 import datetime
 import logging
 import os
+from typing import Tuple
 
 import ee
 import numpy as np
@@ -32,6 +33,7 @@ def get_map(
     start_date=False,
     stop_date=False,
     grid_size=0.5,
+    chip_process=False,
     **model_kwargs,
 ):
     """
@@ -79,7 +81,9 @@ def get_map(
 
     # Chop into small pieces from 0.5 degrees
     # We need to create a process for each of the tiles that we are going to create
-    chip_bounds = cs.get_geogrid_bounds(aoi.geometry(), cell_size_deg=grid_size)
+    chip_bounds = cs.get_geogrid_bounds(
+        aoi.geometry(), cell_size_deg=grid_size, chip_process=chip_process
+    )
 
     if year is not None:
         asked_date = datetime.datetime(year, month, day).date()
@@ -169,7 +173,7 @@ def create_out_name(year, month, day, orbit, file_suffix):
     month = str(month)
     day = str(day)
 
-    orbit_prefix = orbit[:3]
+    orbit_prefix = orbit[:4]
 
     if len(day) < 2:
         day = f"0{day}"
@@ -281,17 +285,13 @@ def get_sm(
 ):
     """Instantiate the GEE interface and run the S1 and GLDAS retrievals to get the SM map."""
 
-    def sm_process(i, chip_bound):
+    def sm_process(
+        i: int, chip_bound: Tuple[float, float, float, float], n_chips: int
+    ) -> str:
         minlon, minlat, maxlon, maxlat = chip_bound
 
         # get GEE interface
         GEE_interface = GEE_extent(minlon, minlat, maxlon, maxlat)
-
-        if algorithm == "gbr":
-            # get list of S1 dates
-            dates, orbits = GEE_interface.get_S1_dates(
-                tracknr=tracknr, ascending=False, start=start, stop=stop
-            )
 
         # retrieve S1
         GEE_interface.get_S1(
@@ -317,6 +317,9 @@ def get_sm(
                 suffix + f"chip_{i}",
             )
 
+            if n_chips == 1:
+                outname = outname.replace("chip_0", "")
+
             # get Globcover
             GEE_interface.get_globcover()
 
@@ -340,10 +343,11 @@ def get_sm(
             return task_line
 
     tasks = []
+    n_chips = len(chip_bounds)
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = [
-            executor.submit(sm_process, i=i, chip_bound=chip_bound)
+            executor.submit(sm_process, i=i, chip_bound=chip_bound, n_chips=n_chips)
             for i, chip_bound in enumerate(chip_bounds)
         ]
 
@@ -353,6 +357,3 @@ def get_sm(
         images_span.update()
 
     return tasks
-
-
-# To retrieve the soil moisture map using second scripts

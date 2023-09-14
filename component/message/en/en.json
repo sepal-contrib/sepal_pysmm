@@ -30,7 +30,7 @@
         "desc": "Use the <i>Search</i> button to search images stored in your SEPAL session. You can select the <i>inspector</i>checkbox inside the map to explore the image by clicking over the interest area."
     },
     "help" : {
-        "grid_size" : "Depending on the size on the size of the AOI, the grid size can be changed to reduce lack of memory errors in Google Earth Engine tasks. The lower value the more tasks to process.",
+        "grid_size" : "Depending on the size on the size of the AOI, the grid size can be changed to reduce lack of memory errors in Google Earth Engine tasks. The lower value the more tasks to process. If disabled, the moduel won´t clip the images and the processing will be done within the entire area.",
         "orbit" : "The Sentinel-1 satellites are in a near-polar orbit around the Earth, meaning they pass over the Earth's poles on each orbit. The orbit direction can be either ascending or descending depending on whether the satellite is moving from south to north or north to south, respectively."
     }
 }
