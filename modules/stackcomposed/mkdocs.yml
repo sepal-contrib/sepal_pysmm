@@ -6,14 +6,14 @@ site_url: https://smbyc.bitbucket.io/stackcomposed
 repo_url: https://bitbucket.org/smbyc/stackcomposed
 theme: mkdocs
 extra_css:
-    - css/extra.css
+  - css/extra.css
 markdown_extensions:
   - smarty
   - admonition
   - toc:
       permalink: true
 pages:
-- Home: index.md
-- About: about.md
-- Installation: installation.md
-- How to use: how_to_use.md
+  - Home: index.md
+  - About: about.md
+  - Installation: installation.md
+  - How to use: how_to_use.md

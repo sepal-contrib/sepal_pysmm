@@ -26,7 +26,6 @@ __all__ = ["Divider", "Alert"]
 
 
 class Divider(v.Divider, SepalWidget):
-
     type_: t.Unicode = t.Unicode("").tag(sync=True)
     "Added type\_ trait to specify the current color of the divider"
 
@@ -62,7 +61,6 @@ class Divider(v.Divider, SepalWidget):
 
 
 class Alert(v.Alert, SepalWidget):
-
     progress_bar: Optional[tqdm] = None
     "the progress bar of the alert"
 
@@ -122,7 +120,6 @@ class Alert(v.Alert, SepalWidget):
 
         # Prevent adding multiple times
         if self.progress_output not in self.children:
-
             self.children = [self.progress_output]
 
             tqdm_args.setdefault("bar_format", "{l_bar}{bar}{n_fmt}/{total_fmt}")

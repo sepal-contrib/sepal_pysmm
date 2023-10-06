@@ -9,3 +9,34 @@ changelog_incremental = true
 version_files = [
     "pyproject.toml:version",
 ]
+
+[tool.ruff]
+ignore-init-module-imports = true
+fix = true
+select = ["E", "F", "W", "I", "D", "RUF"]
+ignore = [
+    "E501",  # line too long | Black take care of it
+    "W605",  # invalid escape sequence | we escape specific characters for sphinx
+    "D200", # One-line docstring should fit on one line | too late
+    "D101", # Missing docstring in public class | set it in __init__
+    "D107", # Missing docstring in `__init__`
+    "D417", #  Missing argument descriptions in the docstring
+    "F403", #  unable to detect undefined names because of import * (too many)
+    "D100", #  Missing docstring in public module
+    "D103", # Missing docstring in public function (some day maybe)
+    "D104", # Missing docstring in public package (some day maybe)
+    "D102", # Missing docstring in public method (some day maybe)
+]
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.per-file-ignores]
+"*/__init__.py" = ["F403"] # unable to detect undefined names | hide internal structure
+"setup.py" = ["D100"] # nothing to see there
+
+[tool.black]
+force-exclude = "component/scripts/no_GLDAS_decisiontree_GEE__1step*"

@@ -8,6 +8,7 @@ from component.scripts.resize import rt
 
 
 class DrawerItem(sw.ListItem):
+
     """Forked sepal_ui.sepalwidgets.DrawerItem version to fix https://github.com/sepal-contrib/sepal_pysmm/issues/26."""
 
     rt = None
@@ -99,7 +100,7 @@ class DrawerItem(sw.ListItem):
     def display_tile(self, tiles):
         """
         Display the apropriate tiles when the item is clicked.
-        
+
         The tile to display will be all tile in the list with the mount_id as the current object.
 
         Args:
@@ -134,6 +135,7 @@ class DrawerItem(sw.ListItem):
 
 
 class NavDrawer(sw.NavigationDrawer):
+
     """Forked sepal_ui.sepalwidgets.DrawerItem version to fix https://github.com/sepal-contrib/sepal_pysmm/issues/26."""
 
     items = []
