@@ -1,3 +1,10 @@
+## 0.1.1 (2023-10-06)
+
+### Refactor
+
+- remove custom_drawer and use sepal_ui oen
+- remove legacy file
+
 ## 0.1.0 (2023-10-06)
 
 ### Feat
