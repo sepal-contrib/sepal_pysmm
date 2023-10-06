@@ -24,6 +24,7 @@ class TaskController:
         self.start_button.loading = True
         self.task_thread = threading.Thread(target=self.long_running_task)
         self.task_thread.start()
+        self.task_thread.join()
 
     def stop_task(self, *args):
         self.stop_button.loading = True
