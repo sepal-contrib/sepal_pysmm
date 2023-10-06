@@ -9,9 +9,11 @@ import sepal_ui.sepalwidgets as sw
 from component.message import cm
 from component.parameter.directory import BASE_DIR
 
-class MapTile(v.Card):
+
+class MapTile(sw.Card):
     def __init__(self, *args, **kwargs):
         self._metadata = {"mount_id": "map"}
+        self.attributes = {"id": "map_tile"}
 
         super().__init__(*args, **kwargs)
 
@@ -35,7 +37,6 @@ class MapTile(v.Card):
 
     @su.loading_button()
     def display_image(self, widget, event, data):
-
         image = self.file_chooser.file
         image_path = Path(image)
         layer_name = image_path.stem
