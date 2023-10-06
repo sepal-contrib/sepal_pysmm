@@ -5,7 +5,7 @@ earthengine-api
 # and javascript links error fixed + versioning + navdrawer fix 
 git+https://github.com/12rambau/sepal_ui.git@4e0055d08110e352789878829bfe5afff62dc4a8
 
-numpy
+gdal[numpy]
 pandas
 
 # custom libs
