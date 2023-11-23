@@ -1,3 +1,9 @@
+## 0.2.0 (2023-11-23)
+
+### Feat
+
+- update venv and requirements
+
 ## 0.1.1 (2023-10-06)
 
 ### Refactor
