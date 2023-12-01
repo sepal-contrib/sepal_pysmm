@@ -131,7 +131,7 @@ class StatsInputView(sw.Layout):
             "click", lambda *args: setattr(self.w_summary, "v_model", False)
         )
 
-    @su.loading_button(debug=True)
+    @su.loading_button()
     def get_list_of_images(self, *args):
         """Display the list of images filtered by the date selector on a dialog."""
         filter_images, _ = self.model.get_inputs()
@@ -280,7 +280,7 @@ class StatisticsView(v.Layout):
 
         self.btn.on_event("click", self.on_click)
 
-    @su.loading_button(debug=True)
+    @su.loading_button()
     def on_click(self, *args):
         filter_images, output_name = self.model.get_inputs()
 
