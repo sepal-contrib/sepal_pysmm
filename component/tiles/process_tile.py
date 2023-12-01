@@ -182,7 +182,7 @@ class ProcessView(v.Layout):
 
         self.btn.on_event("click", self.run_process)
 
-    @su.loading_button(debug=True)
+    @su.loading_button()
     def run_process(self, widget, event, data):
         # Restart counter everytime the process is run
 
