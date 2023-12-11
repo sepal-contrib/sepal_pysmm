@@ -1,3 +1,17 @@
+## 0.3.0 (2023-12-11)
+
+### Feat
+
+- use sepal_ui==2.17 to avoid conflicts with ipyleaflet
+
+### Fix
+
+- fix wrong css id for waiting message
+
+### Refactor
+
+- **decorator**: drop debug param
+
 ## 0.2.0 (2023-11-23)
 
 ### Feat
