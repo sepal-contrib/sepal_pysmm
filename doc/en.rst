@@ -224,5 +224,3 @@ Visualizing imagery
 Open-source data from Sentinel-1 operates using C-band synthetic aperture radar imaging. C-band type has a wavelength of 3.8–7.5 cm, and thus has limited penetration into dense forest canopies. Therefore, forested areas should be excluded from the analysis. L-band data should be used instead of such areas.
 
 It is recommended that densely vegetated areas are excluded from analysis due to the limitation of C-band radar to penetrate dense canopy cover. Use a **forest map** to exclude dense forest areas from the analysis.
-
-.. custom-edit:: https://raw.githubusercontent.com/sepal-contrib/sepal_pysmm/release/doc/en.rst
