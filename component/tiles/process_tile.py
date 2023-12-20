@@ -30,9 +30,6 @@ class ProcessTile(sw.Stepper):
         ]
 
         self.aoi_tile = AoiTile(methods=["-POINTS"])
-        self.aoi_tile.view.w_asset.w_file.default_asset = (
-            "users/dafguerrerom/ReducedAreas_107PHU"
-        )
 
         self.date_view = cw.DateSelector()
         process_view = ProcessView(
