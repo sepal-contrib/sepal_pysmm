@@ -141,7 +141,7 @@ def get_map(
 
         tasks = []
 
-        with concurrent.futures.ThreadPoolExecutor() as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             futures = [
                 executor.submit(
                     get_sm,
@@ -345,7 +345,7 @@ def get_sm(
     tasks = []
     n_chips = len(chip_bounds)
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
         futures = [
             executor.submit(sm_process, i=i, chip_bound=chip_bound, n_chips=n_chips)
             for i, chip_bound in enumerate(chip_bounds)
