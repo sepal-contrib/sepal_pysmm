@@ -1,6 +1,7 @@
 import datetime as dt
 import logging
 from pathlib import Path
+import threading
 
 import component.parameter as param
 from component.scripts.derive_SM import get_map
@@ -9,6 +10,7 @@ logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 
 def run_pysmm(
+    shared_variable: threading.Event,
     aoi_model,
     date_model,
     model,
@@ -23,6 +25,7 @@ def run_pysmm(
 
     Args:
     ----
+        shared_variable (threading.Event): Shared variable to control the threading
         Aoi (AoiModel): Aoi Model which stores the inputs from the user
         Date (DateSelector): Date selector custom widget which stores the input data from the user
     """
@@ -102,6 +105,7 @@ def run_pysmm(
         "chips_span": chips_span,
         "grid_size": grid_size,
         "chip_process": chip_process,
+        "shared_variable": shared_variable,
     }
 
     # To process single date or non row dates.

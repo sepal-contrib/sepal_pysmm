@@ -1,4 +1,5 @@
 import ipyvuetify as v
+from component.scripts.taks_controller import TaskController
 import sepal_ui.scripts.utils as su
 import sepal_ui.sepalwidgets as sw
 from sepal_ui.aoi import AoiTile
@@ -59,7 +60,6 @@ class ProcessTile(sw.Stepper):
         self.children = [
             stepper_header,
             v.StepperItems(
-                style_="background:#1e1e1e;",
                 children=[
                     StepperContent(key, content[0], content[1])
                     for key, content in enumerate(zip(titles, content), 1)
@@ -98,7 +98,11 @@ class ProcessView(v.Layout):
 
         question_icon = v.Icon(children=["mdi-help-circle"], small=True)
 
-        self.btn = sw.Btn("Start process", class_="my-2")
+        self.btn = sw.Btn("Start process", class_="my-2", small=True)
+        self.stop_btn = sw.Btn(
+            text="Stop", small=True, class_="ml-2", color="secondary    "
+        )
+
         self.alert = cw.Alert()
 
         self.model.bind(self.w_ascending, "ascending")
@@ -174,19 +178,20 @@ class ProcessView(v.Layout):
         self.children = [
             advanced_options,
             self.btn,
+            self.stop_btn,
             self.alert,
         ]
 
         self.btn.on_event("click", self.run_process)
 
-    @su.loading_button()
+    # @su.loading_button()
     def run_process(self, widget, event, data):
         # Restart counter everytime the process is run
 
         self.images_span.reset()
         self.chips_span.reset()
 
-        run_pysmm.run_pysmm(
+        args = [
             self.aoi_model,
             self.date_model,
             self.model,
@@ -194,8 +199,18 @@ class ProcessView(v.Layout):
             self.images_span,
             self.chips_span,
             self.w_grid_size.v_model,
-            chip_process=self.w_grid.v_model,
+            self.w_grid.v_model,
+        ]
+
+        task_controller = TaskController(
+            self.btn,
+            self.stop_btn,
+            self.alert,
+            run_pysmm.run_pysmm,
+            *args,
         )
+
+        task_controller.start_task()
 
 
 class StepperContent(v.StepperContent):

@@ -34,6 +34,7 @@ def get_map(
     stop_date=False,
     grid_size=0.5,
     chip_process=False,
+    shared_variable=None,
     **model_kwargs,
 ):
     """
@@ -103,6 +104,7 @@ def get_map(
             tasks = []
 
             tasks += get_sm(
+                shared_variable=shared_variable,
                 chip_bounds=chip_bounds,
                 year=year,
                 month=month,
@@ -141,10 +143,11 @@ def get_map(
 
         tasks = []
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             futures = [
                 executor.submit(
                     get_sm,
+                    shared_variable=shared_variable,
                     chip_bounds=chip_bounds,
                     year=dateI.year,
                     month=dateI.month,
@@ -163,7 +166,10 @@ def get_map(
             ]
 
             for future in concurrent.futures.as_completed(futures):
-                tasks += future.result()
+                if (
+                    future.result() is not None
+                ):  # Check if the result is not None before adding
+                    tasks += future.result()
 
         return tasks
 
@@ -269,6 +275,7 @@ def get_dates(aoi, ascending, start_date, stop_date, alert):
 
 
 def get_sm(
+    shared_variable,
     chip_bounds,
     year,
     month,
@@ -284,6 +291,9 @@ def get_sm(
     chips_span,
 ):
     """Instantiate the GEE interface and run the S1 and GLDAS retrievals to get the SM map."""
+
+    if shared_variable.is_set():
+        return
 
     def sm_process(
         i: int, chip_bound: Tuple[float, float, float, float], n_chips: int
@@ -339,13 +349,12 @@ def get_sm(
                 tasks_file.write(task_line)
 
             chips_span.update()
-
             return task_line
 
     tasks = []
     n_chips = len(chip_bounds)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         futures = [
             executor.submit(sm_process, i=i, chip_bound=chip_bound, n_chips=n_chips)
             for i, chip_bound in enumerate(chip_bounds)

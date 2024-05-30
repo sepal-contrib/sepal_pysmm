@@ -109,9 +109,6 @@ class DownloadView(v.Card):
         overwrite = self.w_overwrite.v_model
         remove_from_drive = self.w_remove.v_model
 
-        # reset alert
-        self.alert.reset()
-
         if not task_file:
             raise ValueError("Please select a task file")
 
@@ -127,7 +124,7 @@ class DownloadView(v.Card):
         )
 
         task_controller = TaskController(
-            self.btn, self.stop_btn, downloader.download_to_sepal
+            self.btn, self.stop_btn, self.alert, downloader.download_to_sepal
         )
 
         task_controller.start_task()

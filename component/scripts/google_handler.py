@@ -67,10 +67,6 @@ class ImageDownloader:
             self.download_images(tasks)
 
             if self.stop_event.is_set():
-                print("stopped")
-                self.alert.append_msg(
-                    "The process was interrupted by the user.", type_="warning"
-                )
                 return
 
             type_color = "warning" if self.failed_counter else "success"
@@ -154,10 +150,18 @@ class ImageDownloader:
 class GDrive:
     def __init__(self):
         self.initialize = ee.Initialize()
-        # Access to sepal access token
-        self.access_token = json.loads(
-            (Path.home() / ".config/earthengine/credentials").read_text()
-        ).get("access_token")
+
+        home_path = Path.home()
+        credentials_file = (
+            ".config/earthengine/credentials"
+            if "sepal-user" in home_path.name
+            else ".config/earthengine/sepal_credentials"
+        )
+        credentials_path = home_path / credentials_file
+
+        self.access_token = json.loads((credentials_path).read_text()).get(
+            "access_token"
+        )
         self.service = discovery.build(
             serviceName="drive",
             version="v3",

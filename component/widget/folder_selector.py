@@ -106,7 +106,6 @@ class FolderSelector(v.List):
     loading = Bool().tag(sync=True)
 
     def __init__(self, folder="/", max_depth=None, max_selection=None, *args, **kwargs):
-        p_style = json.loads((ss.JSON_DIR / "progress_bar.json").read_text())
 
         self.style_ = "overflow-x:none"
         self.folders = None
@@ -139,7 +138,7 @@ class FolderSelector(v.List):
         self.w_loading = v.ProgressLinear(
             indeterminate=False,
             background_color="grey darken-3",
-            color=p_style["color"][v.theme.dark],
+            color="primary",
         )
 
         self.item_group = ListItemGroup(
@@ -230,9 +229,11 @@ class ListItem(v.Flex):
                     children=[
                         v.ListItemTitle(
                             children=[
-                                str(f"../{value.stem}")
-                                if position == 0
-                                else str(value.stem)
+                                (
+                                    str(f"../{value.stem}")
+                                    if position == 0
+                                    else str(value.stem)
+                                )
                             ]
                         ),
                     ]

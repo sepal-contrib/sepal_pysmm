@@ -6,7 +6,7 @@ class ResizeTrigger(v.VuetifyTemplate):
     @default("template")
     def _template(self):
         return """
-            <script>
+            <script class='sepal-ui-scripts'>
                 {methods: {
                     jupyter_resize(){
                         console.log("Resizing");

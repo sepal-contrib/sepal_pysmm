@@ -81,6 +81,7 @@ class CountSpan(sw.Html):
         """Set the total value of the span"""
         self.total = total
         self.children = self.get_value()
+        self.show()
 
     def reset(self):
         """Reset the value of the span"""
