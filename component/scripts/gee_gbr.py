@@ -27,8 +27,6 @@ class GEE_extent(object):
     def __init__(self, minlon, minlat, maxlon, maxlat, workdir, sampling=20):
         """Return a new GEE extent object"""
         ee.Reset()
-        ee.Initialize()
-
         # construct roi
         roi = ee.Geometry.Polygon(
             [

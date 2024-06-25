@@ -9,7 +9,8 @@ __pycache__/
 *test*.ipynb*
 # C extensions
 *.so
-
+*nox_ui.ipynb
+*Untitled*
 # ignore test folder
 tests/
 

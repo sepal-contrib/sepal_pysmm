@@ -149,7 +149,6 @@ class ImageDownloader:
 
 class GDrive:
     def __init__(self):
-        self.initialize = ee.Initialize()
 
         home_path = Path.home()
         credentials_file = (

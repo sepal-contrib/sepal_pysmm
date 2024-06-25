@@ -13,8 +13,6 @@ from .GEE_wrappers import GEE_extent
 
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
-ee.Initialize()
-
 
 def get_map(
     aoi,
