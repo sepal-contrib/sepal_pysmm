@@ -122,12 +122,6 @@ def images_summary(tifs):
     return df
 
 
-import ee
-
-# Initialize the Earth Engine API
-ee.Initialize()
-
-
 def get_geogrid_bounds(
     geometry: ee.Geometry, cell_size_deg: float, chip_process: bool = True
 ) -> List[Tuple[float, float, float, float]]:

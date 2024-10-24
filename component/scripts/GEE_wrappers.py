@@ -10,7 +10,6 @@ import ee
 import numpy as np
 
 logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
-ee.Initialize()
 
 
 class GEE_extent(object):
@@ -27,8 +26,6 @@ class GEE_extent(object):
 
     def __init__(self, minlon, minlat, maxlon, maxlat):
         """Return a new GEE extent object."""
-        # ee.Reset()
-        # ee.Initialize()
 
         # construct roi
         roi = ee.Geometry.Polygon(
@@ -339,8 +336,6 @@ class GEE_extent(object):
             mask = t_mask.eq(0)
             return image.updateMask(mask)
 
-        # ee.Reset()
-        # ee.Initialize()
 
         # load S1 data
         gee_s1_collection = ee.ImageCollection("COPERNICUS/S1_GRD")
