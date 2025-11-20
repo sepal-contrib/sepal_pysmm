@@ -6,7 +6,7 @@ dependencies:
   - python=3.10
   - pyproj  # Always include to avoid PROJ conflicts
   - voila
-  - rasterio<1.3.11
+  - rasterio
   - gdal=3.8.3
   - pandas
   - dask
