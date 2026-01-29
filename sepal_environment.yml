@@ -6,7 +6,6 @@ dependencies:
   - python=3.10
   - pyproj  # Always include to avoid PROJ conflicts
   - voila
-  - rasterio
   - gdal=3.8.3
   - pandas
   - dask
@@ -18,3 +17,4 @@ dependencies:
   - pip:
     - sepal_ui==2.20.3
     - git+https://github.com/openforis/earthengine-api.git@v1.1.5rc0#egg=earthengine-api&subdirectory=python
+    - rasterio<=1.4.3
