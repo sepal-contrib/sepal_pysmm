@@ -14,7 +14,7 @@ dependencies:
   - natsort
   - pypandoc
   - scikit-learn
+  - rasterio<=1.4.3
   - pip
   - pip:
     - git+https://github.com/openforis/earthengine-api.git@v1.1.5rc0#egg=earthengine-api&subdirectory=python
-    - rasterio<=1.4.3
