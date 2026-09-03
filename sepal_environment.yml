@@ -4,11 +4,11 @@ channels:
   - defaults
 dependencies:
   - python=3.10
-  - sepal-ui>=2.22.1,<3
+  - sepal-ui>=2.22.2,<3
   - pygaul<0.4  # pin to avoid GAUL 2024 property name mismatch with sepal_ui
   - pyproj  # Always include to avoid PROJ conflicts
   - voila
-  - gdal=3.8.3
+  - gdal=3.10
   - pandas
   - dask
   - tqdm
